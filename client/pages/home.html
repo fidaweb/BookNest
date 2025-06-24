@@ -13,39 +13,67 @@
             margin: 0;
             border: 0;
             /* background-color: rebeccapurple; */
-            background-color: var(--tertiary-color)
+            background-color: var(--tertiary-color);
+
+
         }
     </style>
 </head>
 <body>
     <my-navbar></my-navbar>
-    <div class="p-3 gap-3  d-flex justify-content-around" style="background: var(--main-background);">
     
-    <my-card>
-        <span slot="title">Hello World</span>
-        <span slot="content">This is loaded from external files.</span>
-    </my-card>
-
-    <my-card>
-        <span slot="title">Hello World</span>
-        <span slot="content">This is loaded from external files.</span>
-    </my-card>
-
-    <my-card>
-        <span slot="title">Hello World</span>
-        <span slot="content">This is loaded from external files.</span>
-    </my-card>
-
+    <div id="main" class=" p-3 gap-3 align-center   d-flex justify-content-center flex-wrap" style="background: var(--main-background);">
+   
+     
     </div>
+
     
       
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       
     
       <!-- Load the JavaScript that defines the custom element -->
       <script type="module">
         import '../components/my-card.js';
         import '../components/navbar.js';
+      </script>
+      <script>
+         function loadBooks() {
+            const main=document.getElementsByClassName('main-container')[0]
+            $.get('../../api/home.php', function(data) {
+                
+                const books=JSON.parse(data)
+               
+               
+                books.forEach(book => {
+               console.log(book)
+                const card = $('<my-card></my-card>');
+
+                card.append(`<img slot="image" src="${book['Image_URL_L']}" alt="Great Gatsby" style="height: 10rem;">`);
+                card.append(`<span slot="title">${book['Book_Title']}</span>`);
+                card.append(`<span slot="author">${book['Book_Author']}</span>`);
+                card.append(`<span slot="price">${book['PRICE']}</span>`);
+                card.append(`<button slot="button" class={btn} style="background-color:white;border:black bold" onclick={addToCart(event,${book['ISBN']})}>Add to Cart</button>`)
+                
+                $('#main').append(card);
+                // Example: print book title
+            
+                
+    });
+        });
+    }
+
+    function addToCart(event,bookID){
+        let books=[]
+        if(localStorage.getItem('books')){
+            books=JSON.parse(localStorage.getItem('books'))
+        }
+        console.log(books)
+        books.push(bookID)
+        localStorage.setItem('books',JSON.stringify(books))
+    }
+
+    loadBooks()
       </script>
     
 </body>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <script src="../assets/bootstrap.bundle.min.js.js"></script>
+    <style>
+        body{
+            padding: 0;
+            margin: 0;
+            border: 0;
+            /* background-color: rebeccapurple; */
+            background-color: var(--tertiary-color);
+
+
+        }
+    </style>
+</head>
+<body>
+    <body>
+        <my-navbar></my-navbar>
+        
+        <div id="main" class=" p-3 gap-3 align-center   d-flex justify-content-center flex-wrap" style="background: var(--main-background);">
+       
+         
+        </div>
+    
+        
+          
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+          
+        
+          <!-- Load the JavaScript that defines the custom element -->
+          <script type="module">
+            import '../components/my-card.js';
+            import '../components/navbar.js';
+          </script>
+          <script>
+             function loadCart() {
+                console.log('cart loading')
+                if(localStorage.getItem('books')){
+                    
+                    let books=JSON.parse(localStorage.getItem('books'))
+                    $.ajax({
+                        url: 'http://localhost/Project/api/cart.php',  // adjust the path as needed
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ isbns: books }),
+                        success: function(response) {
+                            console.log("Books received:", response);
+                            let books=JSON.parse(response)
+                            books.forEach(book => {
+                            console.log(book)
+                                const card = $('<my-card></my-card>');
+
+                                card.append(`<img slot="image" src="${book['Image_URL_L']}" alt="Great Gatsby" style="height: 10rem;">`);
+                                card.append(`<span slot="title">${book['Book_Title']}</span>`);
+                                card.append(`<span slot="author">${book['Book_Author']}</span>`);
+                                card.append(`<span slot="price">${book['PRICE']}</span>`);
+                                card.append(`<button slot="button" class={btn} style="background-color:white;border:black bold" onclick={addToCart(event,${book['ISBN']})}>Remove from Cart</button>`)
+                                
+                                $('#main').append(card);
+                                // Example: print book title
+                            
+                                
+                    });
+},
+                        error: function(xhr, status, error) {
+                            console.error("Error loading books:", xhr.responseText);
+                        }
+                    });
+                }
+                
+            }
+    
+        
+    
+        loadCart()
+          </script>
+        
+</body>
+</html>

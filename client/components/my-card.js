@@ -20,6 +20,7 @@ export class MyCard extends HTMLElement {
         const clone = template.content.cloneNode(true);
         this.shadowRoot.appendChild(clone);
       }
+      console.log('working')
     }
   }
   
