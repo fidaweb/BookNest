@@ -1,80 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="../assets/bootstrap.min.css">
-    <link rel="stylesheet" href="../style.css">
-    <script src="../assets/bootstrap.bundle.min.js.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <script src="bootstrap.bundle.min.js.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
-        body{
-            padding: 0;
-            margin: 0;
-            border: 0;
-            /* background-color: rebeccapurple; */
-            background-color: var(--tertiary-color);
+      body {
+        padding: 0;
+        margin: 0;
+        border: 0;
+       
+        background-color: var(--tertiary-color);
+      }
 
+      .card.flip {
+        transform: rotateY(360deg);
+        transition: transform 0.8s;
+      }
 
-        }
+      .card {
+        transition: transform 0.8s;
+        background: var(--main-background)
+       
+      }
+
+      h2 {
+        width: 20rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .card.author.hid,
+      .card.price.hid {
+        display: none;
+      }
+      .desc {
+        display: none;
+      }
+      a {
+      text-decoration: none;
+      color: black;
+    }
+
+      .modal-header {
+        background: linear-gradient(
+          0deg,
+          rgba(34, 193, 195, 1) 0%,
+          rgba(253, 187, 45, 1) 100%
+        );
+      }
+
+      #main{
+        background: black
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <my-navbar></my-navbar>
-    
-    <div id="main" class=" p-3 gap-3 align-center   d-flex justify-content-center flex-wrap" style="background: var(--main-background);">
-   
-     
+
+    <div class="container">
+      <div
+        aria-labelledby="modtitle"
+        aria-hidden="true"
+        tabindex="-1"
+        class="modal fade"
+        id="mymodal"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header rounded border p-">
+              <h1 id="modtitle" class="modal-title">Book Added To Cart!</h1>
+              <button
+                data-bs-dismiss="modal"
+                type="button"
+                class="btn-close"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    
-      
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      
-    
-      <!-- Load the JavaScript that defines the custom element -->
-      <script type="module">
-        import '../components/my-card.js';
-        import '../components/navbar.js';
-      </script>
-      <script>
-         function loadBooks() {
-            const main=document.getElementsByClassName('main-container')[0]
-            $.get('../../api/home.php', function(data) {
-                
-                const books=JSON.parse(data)
-               
-               
-                books.forEach(book => {
-               console.log(book)
-                const card = $('<my-card></my-card>');
 
-                card.append(`<img slot="image" src="${book['Image_URL_L']}" alt="Great Gatsby" style="height: 10rem;">`);
-                card.append(`<span slot="title">${book['Book_Title']}</span>`);
-                card.append(`<span slot="author">${book['Book_Author']}</span>`);
-                card.append(`<span slot="price">${book['PRICE']}</span>`);
-                card.append(`<button slot="button" class={btn} style="background-color:white;border:black bold" onclick={addToCart(event,${book['ISBN']})}>Add to Cart</button>`)
-                
-                $('#main').append(card);
-                // Example: print book title
+    <div
+        aria-labelledby="modtitle"
+        aria-hidden="true"
+        tabindex="-1"
+        class="modal fade"
+        id="categorymodal"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header rounded border p-">
+             <div class="gap-3 d-flex flex-wrap">
+              <a class="navbar-link" href="fiction.html">Fiction</a>
+              <a class="navbar-link" href="history_politics.html">History & Politics</a>
+              <a class="navbar-link" href="educational.html">Educational</a>
+              <a class="navbar-link" href="kids.html">Kids</a>
+             </div>
+              <button
+                data-bs-dismiss="modal"
+                type="button"
+                class="btn-close"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="d-flex p-3 align-center justify-content-between flex-wrap gap-3" 
+      
+    >
+      <div class="search align-center ">
+        <input  class="rounded-3" style="height: 100%"  type="text" />
+        <button class="btn btn-outline-light ">Search</button>
+      </div>
+      <div>
+        <button class="category btn btn-secondary">Category</button>
+        <button class="mybooks btn btn-secondary">My Books</button>
+        <button class="mycommunities btn btn-secondary">My Communities</button>
+      </div>
+      
+    </div>
+
+    <div
+      id="main"
+      class="p-3 gap-3 align-center d-flex justify-content-center flex-wrap"
+     
+    ></div>
+    <nav
+      style="
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        padding: 0.5rem;
+      "
+      aria-label="..."
+    >
+      <ul class="pagination">
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item active">
+          <a class="page-link" href="#"
+            >2 <span class="sr-only">(current)</span></a
+          >
+        </li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#">Next</a>
+        </li>
+      </ul>
+    </nav>
+
+    <footer>
+
+      <div class="container-fluid d-flex justify-content-center py-2" style="background-color: black;">
+    
+        <div style="text-align: center;width: 100px;">
             
-                
-    });
+            <img class="img-circle" style="height: 20px;width: 20px;" src="../assets/gmail.png" alt="">
+            <span href="#" data-bs-toggle="tooltip" data-bs-placement="top" style="text-align: center; color: white;" title="fida.ullah@northsouth.edu">Gmail</span>
+        </div>
+        <div style="text-align: center;width: 100px;">
+            
+            <img class="img-circle" style="height: 20px;width: 20px;" src="../assets/linkedin.png" alt="">
+            <span href="#" data-bs-toggle="tooltip" data-bs-placement="top" style="text-align: center; color: white;" title="linked in">Linked In</span>
+        </div>
+        <div style="text-align: center;width: 100px;">
+            
+            <img class="img-circle" style="height: 20px;width: 20px;" src="../assets/contact.png" alt="">
+            <span href="#" data-bs-toggle="tooltip" data-bs-placement="top" style="text-align: center; color: white;" title="contact">Contact</span>
+        </div>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Load the JavaScript that defines the custom element -->
+    <script type="module">
+      import "../components/my-card.js";
+      import "../components/navbar.js";
+    </script>
+    <script>
+      function loadBooks() {
+        return $.get("../../api/home.php", function (data) {
+          const books = JSON.parse(data);
+
+          books.forEach((book) => {
+            // console.log(book);
+            const card = $("<my-card></my-card>");
+            card.addClass("card");
+
+            card.append(
+              `<img slot="image" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+            );
+
+            card.append(
+              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
+            );
+
+            card.append(
+              `<p  class='author' slot="author">${book["Book_Author"]}</p>`
+            );
+            card.append(
+              `<p class='desc' slot="desc">kkk aaaaaaaa aaaaaaaaa aaaaaaaaaa aaaaaa</p>`
+            );
+            card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
+            card.append(
+              `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["ISBN"]})}>Add to Cart</button>`
+            );
+
+            $("#main").append(card);
+          });
+        }).then(function () {
+          $("#main .card").click(function () {
+            $(this).toggleClass("flip");
+            if ($(this).hasClass("flip")) {
+              $(this).find(".author").css({ display: "none" });
+              $(this).find(".price").css({ display: "none" });
+              $(this).find(".btn").css({ display: "none" });
+              $(this).find(".desc").css({ display: "block" });
+            } else {
+              $(this).find(".author").css({ display: "block" });
+              $(this).find(".price").css({ display: "block" });
+              $(this).find(".btn").css({ display: "block" });
+              $(this).find(".desc").css({ display: "none" });
+            }
+          });
+
+          $(".category").click(function(){
+            new bootstrap.Modal($("#categorymodal")).show();
+          });
+
+          $(".mycommunities").click(function(){
+            window.location.href='mycommunities.html'
+          });
+
+          $(".mybooks").click(function(){
+            window.location.href='mybooks.html'
+          });
+
+          var tooltipTriggerList =
+        [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
         });
-    }
+      }
 
-    function addToCart(event,bookID){
-        let books=[]
-        if(localStorage.getItem('books')){
-            books=JSON.parse(localStorage.getItem('books'))
+      function addToCart(event, bookID) {
+        let books = [];
+        if (localStorage.getItem("books")) {
+          books = JSON.parse(localStorage.getItem("books"));
         }
-        console.log(books)
-        books.push(bookID)
-        localStorage.setItem('books',JSON.stringify(books))
-    }
 
-    loadBooks()
-      </script>
-    
-</body>
+        books.push(bookID);
+        localStorage.setItem("books", JSON.stringify(books));
+        new bootstrap.Modal($("#mymodal")).show();
+      }
+
+      $(document).ready(function () {
+        loadBooks();
+      });
+    </script>
+  </body>
 </html>

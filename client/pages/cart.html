@@ -8,16 +8,55 @@
     <link rel="stylesheet" href="../style.css">
     <script src="../assets/bootstrap.bundle.min.js.js"></script>
     <style>
-        body{
-            padding: 0;
-            margin: 0;
-            border: 0;
-            /* background-color: rebeccapurple; */
-            background-color: var(--tertiary-color);
-
-
+        body {
+          padding: 0;
+          margin: 0;
+          border: 0;
+         
+          background-color: var(--tertiary-color);
         }
-    </style>
+  
+        .card.flip {
+          transform: rotateY(360deg);
+          transition: transform 0.8s;
+        }
+  
+        .card {
+          transition: transform 0.8s;
+          background: var(--main-background)
+         
+        }
+  
+        h2 {
+          width: 20rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .card.author.hid,
+        .card.price.hid {
+          display: none;
+        }
+        .desc {
+          display: none;
+        }
+        a {
+        text-decoration: none;
+        color: black;
+      }
+  
+        .modal-header {
+          background: linear-gradient(
+            0deg,
+            rgba(34, 193, 195, 1) 0%,
+            rgba(253, 187, 45, 1) 100%
+          );
+        }
+  
+        #main{
+          background: black
+        }
+      </style>
 </head>
 <body>
     <body>

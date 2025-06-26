@@ -1,39 +1,51 @@
 <!-- my-card.html -->
 <template id="my-card-template">
-    
-    <style>
-      .card {
-        border: 1px solid #ccc;
-        padding: 16px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        font-family: Arial, sans-serif;
-        background-color: var(--primary-color);
-        width: 20rem;
-        height: 25rem;
-      }
-      h2 {
-        margin: 0 0 9px;
-      }
-      .up{
-        background-color: orangered;
-        padding: 1rem;
-        gap: 0.5rem;
-        display: flex;
-        flex-direction: column;
-      }
-     
-    </style>
-    <div class="card">
-      <div class="up">
-        <slot name="image"><img src="" alt="default image"></slot>
-        <h2><slot name="title">Default Title</slot></h2>
-      </div>
-      
-      
-      <p><slot name="author">Default Content</slot></p>
-      <p><slot name="price">Default Content</slot></p>
-     <slot name="button"><button>Click</button></slot>
+  <style>
+    .card {
+      border: 1px solid #ccc;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-family: Arial, sans-serif;
+      background-color: var(--main-background);
+      width: 20rem;
+      height: 25rem;
+    }
+    h2 {
+      width: 20rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .up {
+      background-color: black;
+      padding: 1rem;
+      gap: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      height: 10rem;
+      border-radius: 10px;
+    }
+
+    /* .hid {
+      display: none;
+    } */
+  </style>
+  <div class="card">
+    <div class="up">
+      <slot name="image"><img src="" alt="default image" /></slot>
     </div>
-  </template>
-  
+    <div class="sinfo">
+      <h2> <slot name="title">Default Content</slot></h2>
+      <slot name="author"><p>Default Content</p></slot>
+      <slot name="price"><p>Default Content</p></slot>
+      <slot name="button"><button>Click</button></slot>
+      <slot name="desc"><p>Default Content</p></slot>
+    </div>
+   
+
+   
+    </slot>
+  </div>
+</template>
