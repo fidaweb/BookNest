@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register - BookNest</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: 
+                        url('../assets/images/background.jpg') center/cover no-repeat;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+        }
+        
+        /* Background overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:url('../assets/images/background.jpg') ;
+            filter: blur(5px);
+            z-index: -1;
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        
+        .auth-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 100%;
+            max-width: 450px;
+            margin: 2rem;
+        }
+        
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .auth-title i {
+            color: #007bff;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+            background: #f8f9fa;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: #6c757d;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .tab-button:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+        }
+        
+        .tab-button.active {
+            background: #007bff !important;
+            color: white !important;
+        }
+        
+        .tab-content {
+            display: none !important;
+        }
+        
+        .tab-content.active {
+            display: block !important;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        
+        .password-field {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        
+        .password-toggle:hover {
+            color: #007bff;
+        }
+        
+        .btn-auth {
+            width: 100%;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        }
+        
+        .btn-auth:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .forgot-password a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .forgot-password a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+            color: #6c757d;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #dee2e6;
+            z-index: 1;
+        }
+        
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            background: white;
+            color: #495057;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .social-btn:hover {
+            border-color: #007bff;
+            color: #007bff;
+            transform: translateY(-1px);
+        }
+        
+        .footer {
+            background: rgba(215, 128, 40, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 3rem 0 1rem 0;
+            margin-top: auto;
+        }
+        
+        .footer h5, .footer h6 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        
+        .footer ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer ul li a {
+            color: #fff;
+        }
+        
+        .footer ul li a:hover {
+            color: #fff;
+        }
+        
+        
+        .payment-logo {
+            height: 30px;
+            margin-left: 0.5rem;
+            opacity: 1;
+        }
+        
+        
+        /* Success message */
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+            text-align: center;
+        }
+        
+        .success-message.show {
+            display: block;
+            animation: slideDown 0.3s ease-in;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-box {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .auth-tabs {
+                flex-direction: column;
+            }
+            
+            .social-login {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <my-navbar></my-navbar>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="auth-box">
+            <h2 class="auth-title">
+                <i class="fas fa-book"></i>
+                Welcome to BookNest
+            </h2>
+            
+            <!-- Auth Tabs -->
+            <div class="auth-tabs">
+                <button class="tab-button active" id="loginTabBtn" data-tab="login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </button>
+                <button class="tab-button" id="registerTabBtn" data-tab="register">
+                    <i class="fas fa-user-plus"></i>
+                    Register
+                </button>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                <span id="successText"></span>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-tab" class="tab-content active">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail" class="form-label">Email Address *</label>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword" class="form-label">Password *</label>
+                        <div class="password-field">
+                            <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                                <i class="fas fa-eye" id="loginPasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-auth" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login to Account</span>
+                    </button>
+                    
+                    <div class="forgot-password">
+                        <a href="#" onclick="forgotPassword()">Forgot your password?</a>
+                    </div>
+                </form>
+                
+                
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-tab" class="tab-content">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="registerName" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registerEmail" class="form-label">Email Address *</label>
+                        <input type="email" class="form-control" id="registerEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registerPhone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" id="registerPhone" placeholder="01XXXXXXXXX" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registerPassword" class="form-label">Password *</label>
+                        <div class="password-field">
+                            <input type="password" class="form-control" id="registerPassword" placeholder="Create a password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">
+                                <i class="fas fa-eye" id="registerPasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                        <div class="password-field">
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                <i class="fas fa-eye" id="confirmPasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-auth" id="registerBtn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Create Account</span>
+                    </button>
+                </form>
+            
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5><i class="fas fa-book"></i> BookNest</h5>
+                    <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
+                        <a href="https://x.com/?lang=en"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-1 col-md-6 mb-4">
+                    <h6>Quick Links</h6>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Books</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="#">Authors</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6>Contact Us</h6>
+                    <p><span>&#9993</span>Email:booknest@gmail.com</p>
+                    <p><span>&#9743</span>Phone: 01824673890</p>
+                    <p><span>&#8962</span> Address: Block A Dhaka,Bangladesh</p>
+                    
+                </div>
+                
+                
+            </div>
+            <hr style="border-color: #495057;">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
+                    <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
+                    <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
+                    <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
+                    <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            const loginTabBtn = document.getElementById('loginTabBtn');
+            const registerTabBtn = document.getElementById('registerTabBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            
+            // Set up event listeners
+            if (loginTabBtn) {
+                loginTabBtn.addEventListener('click', () => switchTab('login'));
+            }
+            if (registerTabBtn) {
+                registerTabBtn.addEventListener('click', () => switchTab('register'));
+            }
+            if (loginBtn) {
+                loginBtn.addEventListener('click', processLogin);
+            }
+            if (registerBtn) {
+                registerBtn.addEventListener('click', processRegister);
+            }
+            
+            // Initialize with login tab
+            switchTab('login');
+            
+            // Set up form formatting
+            setupFormFormatting();
+        });
+        
+        function switchTab(tabName) {
+            // Get elements
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+            const loginBtn = document.getElementById('loginTabBtn');
+            const registerBtn = document.getElementById('registerTabBtn');
+            
+            if (!loginTab || !registerTab || !loginBtn || !registerBtn) return;
+            
+            // Hide success message
+            hideSuccessMessage();
+            
+            // Hide all tabs and remove active classes
+            loginTab.style.display = 'none';
+            registerTab.style.display = 'none';
+            loginTab.classList.remove('active');
+            registerTab.classList.remove('active');
+            loginBtn.classList.remove('active');
+            registerBtn.classList.remove('active');
+            
+            // Show selected tab
+            if (tabName === 'login') {
+                loginTab.style.display = 'block';
+                loginTab.classList.add('active');
+                loginBtn.classList.add('active');
+            } else if (tabName === 'register') {
+                registerTab.style.display = 'block';
+                registerTab.classList.add('active');
+                registerBtn.classList.add('active');
+            }
+        }
+        
+        function setupFormFormatting() {
+            // Phone number formatting
+            const registerPhone = document.getElementById('registerPhone');
+            if (registerPhone) {
+                registerPhone.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '');
+                });
+            }
+        }
+        
+        // VALIDATION FUNCTIONS
+        function validateEmail(email) {
+            if (!email || email.trim().length === 0) {
+                alert('Error: Email address is required!');
+                return false;
+            }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Error: Please enter a valid email address!');
+                return false;
+            }
+            return true;
+        }
+        
+        function validatePassword(password, isLogin = false) {
+            if (!password || password.length === 0) {
+                alert('Error: Password is required!');
+                return false;
+            }
+            if (!isLogin && password.length < 8) {
+                alert('Error: Password must be at least 8 characters long!');
+                return false;
+            }
+            if (!isLogin && !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+                alert('Error: Password must contain at least one uppercase letter, one lowercase letter, and one number!');
+                return false;
+            }
+            return true;
+        }
+        
+        function validateName(name) {
+            if (!name || name.trim().length === 0) {
+                alert('Error: Full name is required!');
+                return false;
+            }
+            if (name.trim().length < 2) {
+                alert('Error: Name must be at least 2 characters long!');
+                return false;
+            }
+            if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+                alert('Error: Name can only contain letters and spaces!');
+                return false;
+            }
+            return true;
+        }
+        
+        function validatePhone(phone) {
+            if (!phone || phone.length === 0) {
+                alert('Error: Phone number is required!');
+                return false;
+            }
+            if (!/^\d+$/.test(phone)) {
+                alert('Error: Phone number can only contain digits!');
+                return false;
+            }
+            if (phone.length !== 11) {
+                alert('Error: Phone number must be exactly 11 digits!');
+                return false;
+            }
+            if (!phone.startsWith('01')) {
+                alert('Error: Phone number must start with 01!');
+                return false;
+            }
+            
+            // Check for valid operator prefixes (Bangladesh)
+            const validPrefixes = ['013', '014', '015', '016', '017', '018', '019'];
+            const prefix = phone.substring(0, 3);
+            if (!validPrefixes.includes(prefix)) {
+                alert('Error: Invalid phone number! Please enter a valid Bangladesh mobile number.');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function validateConfirmPassword(password, confirmPassword) {
+            if (!confirmPassword || confirmPassword.length === 0) {
+                alert('Error: Please confirm your password!');
+                return false;
+            }
+            if (password !== confirmPassword) {
+                alert('Error: Passwords do not match!');
+                return false;
+            }
+            return true;
+        }
+        
+        // LOGIN PROCESS
+        function processLogin() {
+            console.log('Processing login...');
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Validate login form
+            if (!validateEmail(email)) {
+                document.getElementById('loginEmail').focus();
+                return;
+            }
+            if (!validatePassword(password, true)) {
+                document.getElementById('loginPassword').focus();
+                return;
+            }
+            
+            const button = document.getElementById('loginBtn');
+            
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            
+            // Simulate login process
+            setTimeout(() => {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-sign-in-alt"></i> <span>Login to Account</span>';
+                
+                // Show success and redirect
+                alert(' Login successful! Redirecting to dashboard...');
+                
+                // Simulate redirect to dashboard
+                setTimeout(() => {
+                    alert(' Welcome to your personal dashboard!\n\n(Dashboard page would load here)');
+                    // window.location.href = 'dashboard.html';
+                }, 1000);
+                
+            }, 2000);
+        }
+        
+        // REGISTER PROCESS
+        function processRegister() {
+            console.log('Processing registration...');
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const phone = document.getElementById('registerPhone').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validate registration form
+            if (!validateName(name)) {
+                document.getElementById('registerName').focus();
+                return;
+            }
+            if (!validateEmail(email)) {
+                document.getElementById('registerEmail').focus();
+                return;
+            }
+            if (!validatePhone(phone)) {
+                document.getElementById('registerPhone').focus();
+                return;
+            }
+            if (!validatePassword(password)) {
+                document.getElementById('registerPassword').focus();
+                return;
+            }
+            if (!validateConfirmPassword(password, confirmPassword)) {
+                document.getElementById('confirmPassword').focus();
+                return;
+            }
+            
+            const button = document.getElementById('registerBtn');
+            
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            
+            // Simulate registration process
+            setTimeout(() => {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-user-plus"></i> <span>Create Account</span>';
+                
+                // Show success message
+                showSuccessMessage(' Account created successfully! Please login with your credentials.');
+                
+                // Clear registration form
+                document.getElementById('registerForm').reset();
+                
+                // Switch to login tab after 2 seconds
+                setTimeout(() => {
+                    switchTab('login');
+                }, 2000);
+                
+            }, 2000);
+        }
+        
+        // UTILITY FUNCTIONS
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + 'Icon');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
+        function showSuccessMessage(message) {
+            const successDiv = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            
+            successText.textContent = message;
+            successDiv.classList.add('show');
+        }
+        
+        function hideSuccessMessage() {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.classList.remove('show');
+        }
+        
+        function forgotPassword() {
+            const email = prompt('Please enter your email address:');
+            if (email && validateEmail(email)) {
+                alert(' Password reset link has been sent to your email!');
+            }
+        }
+        
+        function socialLogin(provider) {
+            alert(` Redirecting to ${provider.charAt(0).toUpperCase() + provider.slice(1)} login...\n\n(Social login integration would happen here)`);
+        }
+    </script>
+
+    <script type="module">
+        import '../components/navbar.js';
+    </script>
+</body>
+</html>

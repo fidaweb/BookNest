@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - BookNest</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .payment-method-box {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+        
+        .payment-box-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+        }
+        
+        .payment-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .tab-button:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .tab-button.active {
+            background: #007bff !important;
+            color: white !important;
+        }
+        
+        .tab-content {
+            display: none !important;
+        }
+        
+        .tab-content.active {
+            display: block !important;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-title i {
+            color: #007bff;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        
+        .form-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1976d2;
+            margin-top: 1rem;
+        }
+        
+        .btn-pay {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        }
+        
+        .btn-pay:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .order-summary-box {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .summary-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .summary-title i {
+            color: #007bff;
+        }
+        
+        .book-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .book-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .book-image {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 1rem;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .book-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 0.25rem 0;
+        }
+        
+        .book-author {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .book-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #007bff;
+        }
+        
+        .price-breakdown {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .price-row.discount {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .price-row.total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0;
+            padding-top: 0.5rem;
+            border-top: 2px solid #007bff;
+        }
+        
+        .footer {
+            background: rgba(215, 128, 40, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 3rem 0 1rem 0;
+            margin-top: auto;
+        }
+        
+        .footer h5, .footer h6 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        
+        .footer ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer ul li a {
+            color: #fff;
+        }
+        
+        .footer ul li a:hover {
+            color: #fff;
+        }
+        
+        
+        .payment-logo {
+            height: 30px;
+            margin-left: 0.5rem;
+            opacity: 1;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 991px) {
+            .order-summary-box {
+                position: static;
+                margin-top: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .payment-method-box, .order-summary-box {
+                padding: 1.5rem;
+            }
+            
+            .payment-tabs {
+                flex-direction: column;
+            }
+            
+            .book-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem;
+            }
+            
+            .book-image {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .btn-pay {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <my-navbar></my-navbar>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row">
+            <!-- Payment Method Box - Left Side -->
+            <div class="col-lg-7">
+                <div class="payment-method-box">
+                    <h3 class="payment-box-title">Choose Your Payment Method</h3>
+                    
+                    <!-- Payment Tabs -->
+                    <div class="payment-tabs">
+                        <button class="tab-button active" id="bankTabBtn" data-tab="bank">
+                            <i class="fas fa-university"></i>
+                            Bank Payment
+                        </button>
+                        <button class="tab-button" id="mobileTabBtn" data-tab="mobile">
+                            <i class="fas fa-mobile-alt"></i>
+                            Mobile Banking
+                        </button>
+                    </div>
+
+                    <!-- Bank Payment Form -->
+                    <div id="bank-tab" class="tab-content active">
+                        <div class="form-section">
+                            <h5 class="form-title">
+                                <i class="fas fa-credit-card"></i>
+                                Enter Your Card Details
+                            </h5>
+                            <form id="bankPaymentForm">
+                                <div class="form-group">
+                                    <label for="cardholderName" class="form-label">Cardholder Name *</label>
+                                    <input type="text" class="form-control" id="cardholderName" placeholder="John Doe" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="cardNumber" class="form-label">Card Number *</label>
+                                    <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="expiryDate" class="form-label">Expiry Date *</label>
+                                    <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Banking Form -->
+                    <div id="mobile-tab" class="tab-content">
+                        <div class="form-section">
+                            <h5 class="form-title">
+                                <i class="fas fa-mobile-alt"></i>
+                                Select Mobile Banking Service
+                            </h5>
+                            <form id="mobilePaymentForm">
+                                <div class="form-group">
+                                    <label for="mobileService" class="form-label">Banking Service *</label>
+                                    <select class="form-select" id="mobileService" required>
+                                        <option value="">Choose your service</option>
+                                        <option value="bkash">bKash</option>
+                                        <option value="nagad">Nagad</option>
+                                        <option value="rocket">Rocket</option>
+                                        <option value="upay">Upay</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="mobileNumber" class="form-label">Mobile Number *</label>
+                                    <input type="tel" class="form-control" id="mobileNumber" placeholder="01XXXXXXXXX" required>
+                                </div>
+                                
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Payment Button -->
+                    <div class="text-center mt-4">
+                        <button type="button" class="btn-pay" id="proceedPayment">
+                            <i class="fas fa-lock"></i>
+                            <span>Proceed to Pay</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary - Right Side -->
+            <div class="col-lg-5">
+                <div class="order-summary-box">
+                    <h4 class="summary-title">
+                        <i class="fas fa-receipt"></i>
+                        Order Summary
+                    </h4>
+                    
+                    <div class="book-item">
+                        <img src="/placeholder.svg?height=80&width=60" alt="Book" class="book-image">
+                        <div>
+                            <h6 class="book-title">The Great Gatsby</h6>
+                            <p class="book-author">by F. Scott Fitzgerald</p>
+                            <span class="book-price">$12.99</span>
+                        </div>
+                    </div>
+                    
+                    <div class="book-item">
+                        <img src="/placeholder.svg?height=80&width=60" alt="Book" class="book-image">
+                        <div>
+                            <h6 class="book-title">To Kill a Mockingbird</h6>
+                            <p class="book-author">by Harper Lee</p>
+                            <span class="book-price">$14.99</span>
+                        </div>
+                    </div>
+
+                    <div class="price-breakdown">
+                        <div class="price-row">
+                            <span>Subtotal</span>
+                            <span>$27.98</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Delivery</span>
+                            <span>$2.99</span>
+                        </div>
+                        <div class="price-row discount">
+                            <span>Discount (10%)</span>
+                            <span>-$2.80</span>
+                        </div>
+                        <div class="price-row total">
+                            <span>Total Amount</span>
+                            <span>$28.17</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5><i class="fas fa-book"></i> BookNest</h5>
+                    <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
+                        <a href="https://x.com/?lang=en"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-1 col-md-6 mb-4">
+                    <h6>Quick Links</h6>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Books</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="#">Authors</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6>Contact Us</h6>
+                    <p><span>&#9993</span>Email:booknest@gmail.com</p>
+                    <p><span>&#9743</span>Phone: 01824673890</p>
+                    <p><span>&#8962</span> Address: Block A Dhaka,Bangladesh</p>
+                    
+                </div>
+                
+                
+            </div>
+            <hr style="border-color: #495057;">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
+                    <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
+                    <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
+                    <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
+                    <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3">Payment Successful!</h4>
+                    <p>Your order has been placed successfully.</p>
+                    <p><strong>Invoice #:</strong> <span id="invoiceNumber"></span></p>
+                    <p><strong>Amount Paid:</strong> $28.17</p>
+                    <p><strong>Date:</strong> <span id="paymentDate"></span></p>
+                    <div class="mt-4">
+                        <button type="button" class="btn btn-primary me-2" onclick="downloadReceipt()">
+                            <i class="fas fa-download"></i> Download Receipt
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="goHome()">
+                            <i class="fas fa-home"></i> Back to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize
+        const bankBtn = document.getElementById('bankTabBtn');
+        const mobileBtn = document.getElementById('mobileTabBtn');
+        const proceedBtn = document.getElementById('proceedPayment');
+        
+        // Set up event listeners
+        if (bankBtn) {
+            bankBtn.addEventListener('click', () => switchTab('bank'));
+        }
+        if (mobileBtn) {
+            mobileBtn.addEventListener('click', () => switchTab('mobile'));
+        }
+        if (proceedBtn) {
+            proceedBtn.addEventListener('click', processPayment);
+        }
+        
+        // Initialize with bank tab
+        switchTab('bank');
+        
+        // Set up form formatting
+        setupFormFormatting();
+        
+        // Set dates
+        const dateElement = document.getElementById('paymentDate');
+        const invoiceElement = document.getElementById('invoiceNumber');
+        if (dateElement) dateElement.textContent = new Date().toLocaleDateString();
+        if (invoiceElement) invoiceElement.textContent = 'INV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+    });
+    
+    function switchTab(tabName) {
+        // Get elements
+        const bankTab = document.getElementById('bank-tab');
+        const mobileTab = document.getElementById('mobile-tab');
+        const bankBtn = document.getElementById('bankTabBtn');
+        const mobileBtn = document.getElementById('mobileTabBtn');
+        
+        if (!bankTab || !mobileTab || !bankBtn || !mobileBtn) return;
+        
+        // Hide all tabs and remove active classes
+        bankTab.style.display = 'none';
+        mobileTab.style.display = 'none';
+        bankTab.classList.remove('active');
+        mobileTab.classList.remove('active');
+        bankBtn.classList.remove('active');
+        mobileBtn.classList.remove('active');
+        
+        // Show selected tab
+        if (tabName === 'bank') {
+            bankTab.style.display = 'block';
+            bankTab.classList.add('active');
+            bankBtn.classList.add('active');
+        } else if (tabName === 'mobile') {
+            mobileTab.style.display = 'block';
+            mobileTab.classList.add('active');
+            mobileBtn.classList.add('active');
+        }
+    }
+    
+    function setupFormFormatting() {
+        // Card number formatting
+        const cardNumber = document.getElementById('cardNumber');
+        if (cardNumber) {
+            cardNumber.addEventListener('input', function() {
+                const value = this.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+                const formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+                this.value = formattedValue;
+            });
+        }
+        
+        // Expiry date formatting
+        const expiryDate = document.getElementById('expiryDate');
+        if (expiryDate) {
+            expiryDate.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                this.value = value;
+            });
+        }
+        
+        // Mobile number formatting
+        const mobileNumber = document.getElementById('mobileNumber');
+        if (mobileNumber) {
+            mobileNumber.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+            });
+        }
+    }
+    
+    // COMPREHENSIVE FORM VALIDATION FUNCTIONS
+    function validateCardholderName(name) {
+        if (!name || name.trim().length === 0) {
+            alert('Error: Cardholder name is required!');
+            return false;
+        }
+        if (name.trim().length < 2) {
+            alert('Error: Cardholder name must be at least 2 characters long!');
+            return false;
+        }
+        if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+            alert('Error: Cardholder name can only contain letters and spaces!');
+            return false;
+        }
+        return true;
+    }
+    
+    function validateCardNumber(cardNumber) {
+        const cleanNumber = cardNumber.replace(/\s/g, '');
+        
+        if (!cleanNumber || cleanNumber.length === 0) {
+            alert(' Error: Card number is required!');
+            return false;
+        }
+        if (cleanNumber.length < 13 || cleanNumber.length > 19) {
+            alert('Error: Card number must be between 13-19 digits!');
+            return false;
+        }
+        if (!/^\d+$/.test(cleanNumber)) {
+            alert('Error: Card number can only contain digits!');
+            return false;
+        }
+        if (!luhnCheck(cleanNumber)) {
+            alert('Error: Invalid card number! Please check your card number.');
+            return false;
+        }
+        return true;
+    }
+    
+    function validateExpiryDate(expiry) {
+        if (!expiry || expiry.length === 0) {
+            alert('Error: Expiry date is required!');
+            return false;
+        }
+        if (expiry.length !== 5 || !expiry.includes('/')) {
+            alert(' Error: Please enter expiry date in MM/YY format!');
+            return false;
+        }
+        
+        const parts = expiry.split('/');
+        const month = parseInt(parts[0]);
+        const year = parseInt(parts[1]);
+        
+        if (isNaN(month) || isNaN(year)) {
+            alert(' Error: Invalid expiry date format!');
+            return false;
+        }
+        if (month < 1 || month > 12) {
+            alert(' Error: Invalid month! Month must be between 01-12.');
+            return false;
+        }
+        
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear() % 100;
+        const currentMonth = currentDate.getMonth() + 1;
+        
+        if (year < currentYear || (year === currentYear && month < currentMonth)) {
+            alert('Error: Card has expired! Please use a valid card.');
+            return false;
+        }
+        if (year > currentYear + 20) {
+            alert('Error: Invalid expiry year! Please check your card.');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    function validateMobileService(service) {
+        if (!service || service === '') {
+            alert('Error: Please select a mobile banking service!');
+            return false;
+        }
+        return true;
+    }
+    
+    function validateMobileNumber(number) {
+        if (!number || number.length === 0) {
+            alert(' Error: Mobile number is required!');
+            return false;
+        }
+        if (!/^\d+$/.test(number)) {
+            alert('Error: Mobile number can only contain digits!');
+            return false;
+        }
+        if (number.length !== 11) {
+            alert('Error: Mobile number must be exactly 11 digits!');
+            return false;
+        }
+        if (!number.startsWith('01')) {
+            alert('Error: Mobile number must start with 01!');
+            return false;
+        }
+        
+        // Check for valid operator prefixes (Bangladesh)
+        const validPrefixes = ['013', '014', '015', '016', '017', '018', '019'];
+        const prefix = number.substring(0, 3);
+        if (!validPrefixes.includes(prefix)) {
+            alert('Error: Invalid mobile number! Please enter a valid Bangladesh mobile number.');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Luhn algorithm for card validation
+    function luhnCheck(cardNumber) {
+        let sum = 0;
+        let isEven = false;
+        
+        for (let i = cardNumber.length - 1; i >= 0; i--) {
+            let digit = parseInt(cardNumber.charAt(i));
+            
+            if (isEven) {
+                digit *= 2;
+                if (digit > 9) {
+                    digit -= 9;
+                }
+            }
+            
+            sum += digit;
+            isEven = !isEven;
+        }
+        
+        return sum % 10 === 0;
+    }
+    
+    function validateCurrentForm() {
+        const activeButton = document.querySelector('.tab-button.active');
+        if (!activeButton) {
+            alert(' Error: No payment method selected!');
+            return false;
+        }
+        
+        const activeTab = activeButton.getAttribute('data-tab');
+        
+        if (activeTab === 'bank') {
+            // Validate bank form
+            const cardholderName = document.getElementById('cardholderName').value;
+            const cardNumber = document.getElementById('cardNumber').value;
+            const expiryDate = document.getElementById('expiryDate').value;
+            
+            // Validate each field in order
+            if (!validateCardholderName(cardholderName)) {
+                document.getElementById('cardholderName').focus();
+                return false;
+            }
+            if (!validateCardNumber(cardNumber)) {
+                document.getElementById('cardNumber').focus();
+                return false;
+            }
+            if (!validateExpiryDate(expiryDate)) {
+                document.getElementById('expiryDate').focus();
+                return false;
+            }
+            
+        } else if (activeTab === 'mobile') {
+            // Validate mobile form
+            const mobileService = document.getElementById('mobileService').value;
+            const mobileNumber = document.getElementById('mobileNumber').value;
+            
+            // Validate each field in order
+            if (!validateMobileService(mobileService)) {
+                document.getElementById('mobileService').focus();
+                return false;
+            }
+            if (!validateMobileNumber(mobileNumber)) {
+                document.getElementById('mobileNumber').focus();
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    function processPayment() {
+        console.log('Processing payment...');
+        
+        // Validate form before processing
+        if (!validateCurrentForm()) {
+            return; // Stop if validation fails
+        }
+        
+        const button = document.getElementById('proceedPayment');
+        
+        // Show success message for valid form
+        alert(' Form validation successful! Processing payment...');
+        
+        // Show loading state
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        
+        // Simulate payment processing
+        setTimeout(() => {
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-lock"></i> <span>Proceed to Pay</span>';
+            
+            // Show success modal or alert
+            if (window.bootstrap && document.getElementById('successModal')) {
+                const modal = new bootstrap.Modal(document.getElementById('successModal'));
+                modal.show();
+            } else {
+                alert('payment successful! Your order has been placed.');
+            }
+        }, 2000);
+    }
+    
+    function downloadReceipt() {
+        alert('Receipt download started!');
+    }
+    
+    function goHome() {
+        window.location.href = '/';
+    }
+</script>
+<script type="module">
+        import '../components/navbar.js';
+</script>
+</body>
+</html>

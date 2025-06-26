@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communities - BookNest</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: url('../assets/images/background.jpg') center/cover no-repeat;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Background with blur effect only */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: url('../assets/images/background.jpg') center/cover no-repeat;
+            filter: blur(5px);
+            z-index: -1;
+        }
+        
+        .main-content {
+            position: relative;
+            z-index: 1;
+            padding: 2rem 0;
+            background: rgba(255, 255, 255, 0.9);
+            min-height: 100vh;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .communities-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .community-card {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+            margin-bottom: 2rem;
+        }
+        
+        .community-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .community-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .community-content {
+            padding: 1.5rem;
+        }
+        
+        .community-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .community-icon {
+            color: #007bff;
+            font-size: 1.2rem;
+        }
+        
+        .community-description {
+            color: #6c757d;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            height: 60px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .community-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 0;
+            border-top: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #007bff;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .join-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .search-filter-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            background: white;
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: #007bff;
+            background: #007bff;
+            color: white;
+        }
+        
+       .footer {
+            background: rgba(215, 128, 40, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 3rem 0 1rem 0;
+            margin-top: auto;
+        }
+        
+        .footer h5, .footer h6 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        
+        .footer ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer ul li a {
+            color: #fff;
+        }
+        
+        .footer ul li a:hover {
+            color: #fff;
+        }
+        
+        
+        .payment-logo {
+            height: 30px;
+            margin-left: 0.5rem;
+            opacity: 1;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1rem;
+            }
+            
+            .search-filter-section {
+                padding: 1.5rem;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            .community-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .stat-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <my-navbar></my-navbar>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-users"></i>
+                Join Our Communities
+            </h1>
+            <p class="page-subtitle">
+                Connect with fellow book lovers, share your thoughts, and discover new perspectives in our vibrant reading communities.
+            </p>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="communities-container">
+            <div class="search-filter-section">
+                
+                
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All Communities</button>
+                    <button class="filter-btn" data-filter="fiction">Fiction</button>
+                    <button class="filter-btn" data-filter="non-fiction">Non-Fiction</button>
+                    <button class="filter-btn" data-filter="mystery">Mystery</button>
+                    <button class="filter-btn" data-filter="romance">Romance</button>
+                    <button class="filter-btn" data-filter="sci-fi">Sci-Fi</button>
+                    <button class="filter-btn" data-filter="biography">Biography</button>
+                    <button class="filter-btn" data-filter="fantasy">Fantasy</button>
+                    <button class="filter-btn" data-filter="history">History</button>
+                    <button class="filter-btn" data-filter="poetry">Poetry</button>
+                </div>
+            </div>
+
+            <!-- Communities Grid -->
+            <div class="row" id="communitiesGrid">
+                <!-- Community Card 1 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="fiction">
+                    <div class="community-card">
+                        <img src="../assets/images/lit.jpg" alt="Classic Literature Club" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-book-open community-icon"></i>
+                                Classic Literature Club
+                            </h3>
+                            <p class="community-description">
+                                 Join discussions about the greatest works of literature that have shaped our world.
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">2,847</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Classic Literature Club')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 2 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="mystery">
+                    <div class="community-card">
+                        <img src="../assets/images/mysteries.jpg" alt="Mystery & Thriller Readers" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-search community-icon"></i>
+                                Mystery & Thriller Readers
+                            </h3>
+                            <p class="community-description">
+                                Unravel mysteries and discuss plot twists with fellow thriller enthusiasts.
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">1,923</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                               
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Mystery & Thriller Readers')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 3 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="romance">
+                    <div class="community-card">
+                        <img src="../assets/images/romance.jpg" alt="Romance Book Club" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-heart community-icon"></i>
+                                Romance Book Club
+                            </h3>
+                            <p class="community-description">
+                                Share your favorite love stories and discover new romantic reads. 
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">3,456</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Romance Book Club')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 4 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="sci-fi">
+                    <div class="community-card">
+                        <img src="../assets/images/scifi.jpg" alt="Sci-Fi Universe" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-rocket community-icon"></i>
+                                Sci-Fi Universe
+                            </h3>
+                            <p class="community-description">
+                                Explore futuristic worlds and discuss science fiction masterpieces. 
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">2,134</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Sci-Fi Universe')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 5 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="non-fiction">
+                    <div class="community-card">
+                        <img src="../assets/images/selfdeve.jpg" alt="Self-Development Readers" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-chart-line community-icon"></i>
+                                Self-Development Readers
+                            </h3>
+                            <p class="community-description">
+                                Grow together through personal development books. 
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">4,567</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Self-Development Readers')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 6 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="biography">
+                    <div class="community-card">
+                        <img src="../assets/images/bio.jpg" alt="Biography Enthusiasts" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-user-circle community-icon"></i>
+                                Biography Enthusiasts
+                            </h3>
+                            <p class="community-description">
+                                Learn from the lives of extraordinary people. 
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">1,789</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Biography Enthusiasts')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 7 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="fantasy">
+                    <div class="community-card">
+                        <img src="../assets/images/fant.jpg" alt="Fantasy Realm" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-dragon community-icon"></i>
+                                Fantasy Realm
+                            </h3>
+                            <p class="community-description">
+                                Discuss fantasy novels from Tolkien to modern urban fantasy and everything in between.
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">3,892</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Fantasy Realm')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 8 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="history">
+                    <div class="community-card">
+                        <img src="../assets/images/hist.jpg" alt="History Buffs" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-landmark community-icon"></i>
+                                History Buffs
+                            </h3>
+                            <p class="community-description">
+                                Explore the past through historical books and documentaries.
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">2,156</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('History Buffs')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 9 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="poetry">
+                    <div class="community-card">
+                        <img src="../assets/images/poet.jpg" alt="Poetry Corner" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-feather-alt community-icon"></i>
+                                Poetry Corner
+                            </h3>
+                            <p class="community-description">
+                                Share and discuss beautiful poetry from classic poets to contemporary voices. 
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">1,234</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                               
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Poetry Corner')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 10 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="non-fiction">
+                    <div class="community-card">
+                        <img src="../assets/images/scu.jpg" alt="Science & Technology" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-flask community-icon"></i>
+                                Science & Technology
+                            </h3>
+                            <p class="community-description">
+                                Explore the wonders of science and technology through books.
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">2,678</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Science & Technology')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 11 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="fiction">
+                    <div class="community-card">
+                        <img src="../assets/images/ya.jpg" alt="Young Adult Fiction" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-star community-icon"></i>
+                                Young Adult Fiction
+                            </h3>
+                            <p class="community-description">
+                                Discover amazing YA novels and connect with readers who love coming-of-age stories, dystopian worlds, and teen adventures.
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">4,123</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Young Adult Fiction')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Card 12 -->
+                <div class="col-lg-4 col-md-6 community-item" data-category="non-fiction">
+                    <div class="community-card">
+                        <img src="../assets\images\business.jpg" alt="Business & Finance" class="community-image">
+                        <div class="community-content">
+                            <h3 class="community-name">
+                                <i class="fas fa-chart-bar community-icon"></i>
+                                Business & Finance
+                            </h3>
+                            <p class="community-description">
+                                Learn about business strategies, financial planning, and entrepreneurship through books from industry leaders and experts.
+                            </p>
+                            <div class="community-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">3,567</span>
+                                    <span class="stat-label">Members</span>
+                                </div>
+                               
+                                <div class="stat-item">
+                                    <span class="stat-number">Active</span>
+                                    <span class="stat-label">Status</span>
+                                </div>
+                            </div>
+                            <button class="join-btn" onclick="joinCommunity('Business & Finance')">
+                                <i class="fas fa-plus"></i>
+                                Join Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5><i class="fas fa-book"></i> BookNest</h5>
+                    <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
+                        <a href="https://x.com/?lang=en"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-1 col-md-6 mb-4">
+                    <h6>Quick Links</h6>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Books</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="#">Authors</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6>Contact Us</h6>
+                    <p><span>&#9993</span>Email:booknest@gmail.com</p>
+                    <p><span>&#9743</span>Phone: 01824673890</p>
+                    <p><span>&#8962</span> Address: Block A Dhaka,Bangladesh</p>
+                    
+                </div>
+                
+                
+            </div>
+            <hr style="border-color: #495057;">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
+                    <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
+                    <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
+                    <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
+                    <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', handleSearch);
+            }
+            
+            // Filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    handleFilter(this.getAttribute('data-filter'));
+                    
+                    // Update active state
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+        
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const communityItems = document.querySelectorAll('.community-item');
+            
+            communityItems.forEach(item => {
+                const communityName = item.querySelector('.community-name').textContent.toLowerCase();
+                const communityDescription = item.querySelector('.community-description').textContent.toLowerCase();
+                
+                if (communityName.includes(searchTerm) || communityDescription.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        function handleFilter(category) {
+            const communityItems = document.querySelectorAll('.community-item');
+            
+            communityItems.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        function joinCommunity(communityName) {
+            // Redirect to community page (you'll create this later)
+            window.location.href = `community-detail.html?name=${encodeURIComponent(communityName)}`;
+        }
+    </script>
+    <script type="module">
+        import '../components/navbar.js';
+    </script>
+</body>
+</html>
