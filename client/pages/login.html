@@ -17,7 +17,6 @@
             position: relative;
         }
         
-        /* Background overlay */
         body::before {
             content: '';
             position: fixed;
@@ -299,8 +298,6 @@
             opacity: 1;
         }
         
-        
-        /* Success message */
         .success-message {
             background: #d4edda;
             border: 1px solid #c3e6cb;
@@ -322,7 +319,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Responsive Design */
         @media (max-width: 768px) {
             .auth-box {
                 padding: 2rem;
@@ -343,7 +339,6 @@
     
     <my-navbar></my-navbar>
 
-    <!-- Main Content -->
     <div class="main-container">
         <div class="auth-box">
             <h2 class="auth-title">
@@ -351,7 +346,7 @@
                 Welcome to BookNest
             </h2>
             
-            <!-- Auth Tabs -->
+        
             <div class="auth-tabs">
                 <button class="tab-button active" id="loginTabBtn" data-tab="login">
                     <i class="fas fa-sign-in-alt"></i>
@@ -363,13 +358,13 @@
                 </button>
             </div>
 
-            <!-- Success Message -->
+            
             <div class="success-message" id="successMessage">
                 <i class="fas fa-check-circle"></i>
                 <span id="successText"></span>
             </div>
 
-            <!-- Login Form -->
+            <!---------------------------------------- Loginnnnn------------------------------------------->
             <div id="login-tab" class="tab-content active">
                 <form id="loginForm">
                     <div class="form-group">
@@ -400,7 +395,7 @@
                 
             </div>
 
-            <!-- Register Form -->
+            <!----------------------------------------------- Registerrrrrr ------------------------------------->
             <div id="register-tab" class="tab-content">
                 <form id="registerForm">
                     <div class="form-group">
@@ -448,7 +443,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!------------------------------------------------------------- Footer---------------------------------------------->
     <footer class="footer">
         <div class="container py-5">
             <div class="row">
@@ -496,17 +491,17 @@
             </div>
         </div>
     </footer>
-
+<!---------------------------------------------------------------------JS------------------------------------------------->
     <script src="../assets/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize
+            
             const loginTabBtn = document.getElementById('loginTabBtn');
             const registerTabBtn = document.getElementById('registerTabBtn');
             const loginBtn = document.getElementById('loginBtn');
             const registerBtn = document.getElementById('registerBtn');
             
-            // Set up event listeners
+            
             if (loginTabBtn) {
                 loginTabBtn.addEventListener('click', () => switchTab('login'));
             }
@@ -520,26 +515,21 @@
                 registerBtn.addEventListener('click', processRegister);
             }
             
-            // Initialize with login tab
-            switchTab('login');
             
-            // Set up form formatting
+            switchTab('login');
             setupFormFormatting();
         });
         
         function switchTab(tabName) {
-            // Get elements
             const loginTab = document.getElementById('login-tab');
             const registerTab = document.getElementById('register-tab');
             const loginBtn = document.getElementById('loginTabBtn');
             const registerBtn = document.getElementById('registerTabBtn');
             
             if (!loginTab || !registerTab || !loginBtn || !registerBtn) return;
-            
-            // Hide success message
+        
             hideSuccessMessage();
-            
-            // Hide all tabs and remove active classes
+        
             loginTab.style.display = 'none';
             registerTab.style.display = 'none';
             loginTab.classList.remove('active');
@@ -547,7 +537,6 @@
             loginBtn.classList.remove('active');
             registerBtn.classList.remove('active');
             
-            // Show selected tab
             if (tabName === 'login') {
                 loginTab.style.display = 'block';
                 loginTab.classList.add('active');
@@ -560,7 +549,7 @@
         }
         
         function setupFormFormatting() {
-            // Phone number formatting
+            //  number format checkkkkkkkk
             const registerPhone = document.getElementById('registerPhone');
             if (registerPhone) {
                 registerPhone.addEventListener('input', function() {
@@ -569,7 +558,7 @@
             }
         }
         
-        // VALIDATION FUNCTIONS
+        ////////////////////////////////////////// FORM VALIDATION (might check) ///////////////////////////////
         function validateEmail(email) {
             if (!email || email.trim().length === 0) {
                 alert('Error: Email address is required!');
@@ -633,7 +622,7 @@
                 return false;
             }
             
-            // Check for valid operator prefixes (Bangladesh)
+            //  sim id in BD
             const validPrefixes = ['013', '014', '015', '016', '017', '018', '019'];
             const prefix = phone.substring(0, 3);
             if (!validPrefixes.includes(prefix)) {
@@ -656,14 +645,14 @@
             return true;
         }
         
-        // LOGIN PROCESS
+    
         function processLogin() {
             console.log('Processing login...');
             
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            // Validate login form
+
             if (!validateEmail(email)) {
                 document.getElementById('loginEmail').focus();
                 return;
@@ -675,28 +664,28 @@
             
             const button = document.getElementById('loginBtn');
             
-            // Show loading state
+            
             button.disabled = true;
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
             
-            // Simulate login process
+            
             setTimeout(() => {
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-sign-in-alt"></i> <span>Login to Account</span>';
                 
-                // Show success and redirect
+                
                 alert(' Login successful! Redirecting to dashboard...');
                 
-                // Simulate redirect to dashboard
+                
                 setTimeout(() => {
-                    alert(' Welcome to your personal dashboard!\n\n(Dashboard page would load here)');
-                    // window.location.href = 'dashboard.html';
+                    alert(' Welcome');
+                    
                 }, 1000);
                 
             }, 2000);
         }
         
-        // REGISTER PROCESS
+        
         function processRegister() {
             console.log('Processing registration...');
             
@@ -706,7 +695,7 @@
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
-            // Validate registration form
+        
             if (!validateName(name)) {
                 document.getElementById('registerName').focus();
                 return;
@@ -730,22 +719,16 @@
             
             const button = document.getElementById('registerBtn');
             
-            // Show loading state
+            
             button.disabled = true;
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
             
-            // Simulate registration process
+            
             setTimeout(() => {
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-user-plus"></i> <span>Create Account</span>';
-                
-                // Show success message
                 showSuccessMessage(' Account created successfully! Please login with your credentials.');
-                
-                // Clear registration form
                 document.getElementById('registerForm').reset();
-                
-                // Switch to login tab after 2 seconds
                 setTimeout(() => {
                     switchTab('login');
                 }, 2000);
@@ -753,7 +736,6 @@
             }, 2000);
         }
         
-        // UTILITY FUNCTIONS
         function togglePassword(fieldId) {
             const field = document.getElementById(fieldId);
             const icon = document.getElementById(fieldId + 'Icon');
@@ -781,12 +763,8 @@
             const successDiv = document.getElementById('successMessage');
             successDiv.classList.remove('show');
         }
-        
+        //////////////////////////////////////  sure na.....will try leter ///////////////////////
         function forgotPassword() {
-            const email = prompt('Please enter your email address:');
-            if (email && validateEmail(email)) {
-                alert(' Password reset link has been sent to your email!');
-            }
         }
         
         function socialLogin(provider) {

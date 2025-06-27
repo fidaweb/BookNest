@@ -17,7 +17,6 @@
             overflow-x: hidden;
         }
         
-        /* Background with blur effect only */
         body::before {
             content: '';
             position: fixed;
@@ -269,7 +268,7 @@
             opacity: 1;
         }
         
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .page-title {
                 font-size: 2rem;
@@ -305,9 +304,9 @@
 <body>
     <my-navbar></my-navbar>
 
-    <!-- Main Content -->
+
     <div class="main-content">
-        <!-- Page Header -->
+        
         <div class="page-header">
             <h1 class="page-title">
                 <i class="fas fa-users"></i>
@@ -318,7 +317,6 @@
             </p>
         </div>
 
-        <!-- Search and Filter Section -->
         <div class="communities-container">
             <div class="search-filter-section">
                 
@@ -337,9 +335,9 @@
                 </div>
             </div>
 
-            <!-- Communities Grid -->
+            
             <div class="row" id="communitiesGrid">
-                <!-- Community Card 1 -->
+                
                 <div class="col-lg-4 col-md-6 community-item" data-category="fiction">
                     <div class="community-card">
                         <img src="../assets/images/lit.jpg" alt="Classic Literature Club" class="community-image">
@@ -370,7 +368,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 2 -->
+                
                 <div class="col-lg-4 col-md-6 community-item" data-category="mystery">
                     <div class="community-card">
                         <img src="../assets/images/mysteries.jpg" alt="Mystery & Thriller Readers" class="community-image">
@@ -401,7 +399,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 3 -->
+        
                 <div class="col-lg-4 col-md-6 community-item" data-category="romance">
                     <div class="community-card">
                         <img src="../assets/images/romance.jpg" alt="Romance Book Club" class="community-image">
@@ -432,7 +430,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 4 -->
+            
                 <div class="col-lg-4 col-md-6 community-item" data-category="sci-fi">
                     <div class="community-card">
                         <img src="../assets/images/scifi.jpg" alt="Sci-Fi Universe" class="community-image">
@@ -463,7 +461,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 5 -->
+            
                 <div class="col-lg-4 col-md-6 community-item" data-category="non-fiction">
                     <div class="community-card">
                         <img src="../assets/images/selfdeve.jpg" alt="Self-Development Readers" class="community-image">
@@ -493,7 +491,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 6 -->
+                
                 <div class="col-lg-4 col-md-6 community-item" data-category="biography">
                     <div class="community-card">
                         <img src="../assets/images/bio.jpg" alt="Biography Enthusiasts" class="community-image">
@@ -524,7 +522,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 7 -->
+            
                 <div class="col-lg-4 col-md-6 community-item" data-category="fantasy">
                     <div class="community-card">
                         <img src="../assets/images/fant.jpg" alt="Fantasy Realm" class="community-image">
@@ -555,7 +553,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 8 -->
+            
                 <div class="col-lg-4 col-md-6 community-item" data-category="history">
                     <div class="community-card">
                         <img src="../assets/images/hist.jpg" alt="History Buffs" class="community-image">
@@ -586,7 +584,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 9 -->
+                
                 <div class="col-lg-4 col-md-6 community-item" data-category="poetry">
                     <div class="community-card">
                         <img src="../assets/images/poet.jpg" alt="Poetry Corner" class="community-image">
@@ -617,7 +615,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 10 -->
+    
                 <div class="col-lg-4 col-md-6 community-item" data-category="non-fiction">
                     <div class="community-card">
                         <img src="../assets/images/scu.jpg" alt="Science & Technology" class="community-image">
@@ -648,7 +646,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 11 -->
+    
                 <div class="col-lg-4 col-md-6 community-item" data-category="fiction">
                     <div class="community-card">
                         <img src="../assets/images/ya.jpg" alt="Young Adult Fiction" class="community-image">
@@ -679,7 +677,7 @@
                     </div>
                 </div>
 
-                <!-- Community Card 12 -->
+            
                 <div class="col-lg-4 col-md-6 community-item" data-category="non-fiction">
                     <div class="community-card">
                         <img src="../assets\images\business.jpg" alt="Business & Finance" class="community-image">
@@ -713,7 +711,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-------------------------------------------------------- Footer--------------------------------------->
     <footer class="footer">
         <div class="container py-5">
             <div class="row">
@@ -761,7 +759,7 @@
             </div>
         </div>
     </footer>
-
+<!-------------------------------------------------------JS------------------------------------------------->
     <script src="../assets/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -769,40 +767,17 @@
         });
         
         function setupEventListeners() {
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', handleSearch);
-            }
-            
-            // Filter buttons
+
             const filterButtons = document.querySelectorAll('.filter-btn');
             filterButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     handleFilter(this.getAttribute('data-filter'));
-                    
-                    // Update active state
                     filterButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
                 });
             });
         }
         
-        function handleSearch() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const communityItems = document.querySelectorAll('.community-item');
-            
-            communityItems.forEach(item => {
-                const communityName = item.querySelector('.community-name').textContent.toLowerCase();
-                const communityDescription = item.querySelector('.community-description').textContent.toLowerCase();
-                
-                if (communityName.includes(searchTerm) || communityDescription.includes(searchTerm)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
         
         function handleFilter(category) {
             const communityItems = document.querySelectorAll('.community-item');
@@ -817,8 +792,7 @@
         }
         
         function joinCommunity(communityName) {
-            // Redirect to community page (you'll create this later)
-            window.location.href = `community-detail.html?name=${encodeURIComponent(communityName)}`;
+            window.location.href = `../pages/mycommunities.html?name=${encodeURIComponent(communityName)}`;
         }
     </script>
     <script type="module">

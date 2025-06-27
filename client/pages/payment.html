@@ -127,6 +127,14 @@
             outline: none;
         }
         
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        
+        .form-control.is-valid {
+            border-color: #28a745;
+        }
+        
         .form-text {
             font-size: 0.875rem;
             color: #6c757d;
@@ -309,7 +317,6 @@
             opacity: 1;
         }
         
-        /* Responsive Design */
         @media (max-width: 991px) {
             .order-summary-box {
                 position: static;
@@ -345,18 +352,15 @@
     </style>
 </head>
 <body>
-
     <my-navbar></my-navbar>
 
-    <!-- Main Content -->
     <div class="container my-5">
         <div class="row">
-            <!-- Payment Method Box - Left Side -->
+            
             <div class="col-lg-7">
                 <div class="payment-method-box">
                     <h3 class="payment-box-title">Choose Your Payment Method</h3>
-                    
-                    <!-- Payment Tabs -->
+                
                     <div class="payment-tabs">
                         <button class="tab-button active" id="bankTabBtn" data-tab="bank">
                             <i class="fas fa-university"></i>
@@ -368,7 +372,6 @@
                         </button>
                     </div>
 
-                    <!-- Bank Payment Form -->
                     <div id="bank-tab" class="tab-content active">
                         <div class="form-section">
                             <h5 class="form-title">
@@ -390,11 +393,12 @@
                                     <label for="expiryDate" class="form-label">Expiry Date *</label>
                                     <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
                                 </div>
+                                
+                                
                             </form>
                         </div>
                     </div>
 
-                    <!-- Mobile Banking Form -->
                     <div id="mobile-tab" class="tab-content">
                         <div class="form-section">
                             <h5 class="form-title">
@@ -422,7 +426,6 @@
                         </div>
                     </div>
 
-                    <!-- Payment Button -->
                     <div class="text-center mt-4">
                         <button type="button" class="btn-pay" id="proceedPayment">
                             <i class="fas fa-lock"></i>
@@ -432,7 +435,6 @@
                 </div>
             </div>
 
-            <!-- Order Summary - Right Side -->
             <div class="col-lg-5">
                 <div class="order-summary-box">
                     <h4 class="summary-title">
@@ -441,7 +443,7 @@
                     </h4>
                     
                     <div class="book-item">
-                        <img src="/placeholder.svg?height=80&width=60" alt="Book" class="book-image">
+                        <img src="../assets/images/selfdeve.jpg" alt="Book" class="book-image">
                         <div>
                             <h6 class="book-title">The Great Gatsby</h6>
                             <p class="book-author">by F. Scott Fitzgerald</p>
@@ -450,7 +452,7 @@
                     </div>
                     
                     <div class="book-item">
-                        <img src="/placeholder.svg?height=80&width=60" alt="Book" class="book-image">
+                        <img src="../assets/images/scu.jpg" alt="Book" class="book-image">
                         <div>
                             <h6 class="book-title">To Kill a Mockingbird</h6>
                             <p class="book-author">by Harper Lee</p>
@@ -481,7 +483,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!------------------------------------------------------------------- Footer------------------------------------------->
     <footer class="footer">
         <div class="container py-5">
             <div class="row">
@@ -509,10 +511,7 @@
                     <p><span>&#9993</span>Email:booknest@gmail.com</p>
                     <p><span>&#9743</span>Phone: 01824673890</p>
                     <p><span>&#8962</span> Address: Block A Dhaka,Bangladesh</p>
-                    
                 </div>
-                
-                
             </div>
             <hr style="border-color: #495057;">
             <div class="row align-items-center">
@@ -530,7 +529,6 @@
         </div>
     </footer>
 
-    <!-- Success Modal -->
     <div class="modal fade" id="successModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -538,9 +536,9 @@
                     <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
                     <h4 class="mt-3">Payment Successful!</h4>
                     <p>Your order has been placed successfully.</p>
-                    <p><strong>Invoice #:</strong> <span id="invoiceNumber"></span></p>
+                    <p><strong>Invoice #:</strong> <span id="invoiceNumber">INV-DEMO123</span></p>
                     <p><strong>Amount Paid:</strong> $28.17</p>
-                    <p><strong>Date:</strong> <span id="paymentDate"></span></p>
+                    <p><strong>Date:</strong> <span id="paymentDate">Today</span></p>
                     <div class="mt-4">
                         <button type="button" class="btn btn-primary me-2" onclick="downloadReceipt()">
                             <i class="fas fa-download"></i> Download Receipt
@@ -553,327 +551,355 @@
             </div>
         </div>
     </div>
-
+<!-----------------------------------------------JS------------------------------------------------------------------>
     <script src="../assets/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-        // Initialize
-        const bankBtn = document.getElementById('bankTabBtn');
-        const mobileBtn = document.getElementById('mobileTabBtn');
-        const proceedBtn = document.getElementById('proceedPayment');
-        
-        // Set up event listeners
-        if (bankBtn) {
-            bankBtn.addEventListener('click', () => switchTab('bank'));
-        }
-        if (mobileBtn) {
-            mobileBtn.addEventListener('click', () => switchTab('mobile'));
-        }
-        if (proceedBtn) {
-            proceedBtn.addEventListener('click', processPayment);
-        }
-        
-        // Initialize with bank tab
-        switchTab('bank');
-        
-        // Set up form formatting
-        setupFormFormatting();
-        
-        // Set dates
-        const dateElement = document.getElementById('paymentDate');
-        const invoiceElement = document.getElementById('invoiceNumber');
-        if (dateElement) dateElement.textContent = new Date().toLocaleDateString();
-        if (invoiceElement) invoiceElement.textContent = 'INV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-    });
-    
-    function switchTab(tabName) {
-        // Get elements
-        const bankTab = document.getElementById('bank-tab');
-        const mobileTab = document.getElementById('mobile-tab');
-        const bankBtn = document.getElementById('bankTabBtn');
-        const mobileBtn = document.getElementById('mobileTabBtn');
-        
-        if (!bankTab || !mobileTab || !bankBtn || !mobileBtn) return;
-        
-        // Hide all tabs and remove active classes
-        bankTab.style.display = 'none';
-        mobileTab.style.display = 'none';
-        bankTab.classList.remove('active');
-        mobileTab.classList.remove('active');
-        bankBtn.classList.remove('active');
-        mobileBtn.classList.remove('active');
-        
-        // Show selected tab
-        if (tabName === 'bank') {
-            bankTab.style.display = 'block';
-            bankTab.classList.add('active');
-            bankBtn.classList.add('active');
-        } else if (tabName === 'mobile') {
-            mobileTab.style.display = 'block';
-            mobileTab.classList.add('active');
-            mobileBtn.classList.add('active');
-        }
-    }
-    
-    function setupFormFormatting() {
-        // Card number formatting
-        const cardNumber = document.getElementById('cardNumber');
-        if (cardNumber) {
-            cardNumber.addEventListener('input', function() {
-                const value = this.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
-                const formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-                this.value = formattedValue;
-            });
-        }
-        
-        // Expiry date formatting
-        const expiryDate = document.getElementById('expiryDate');
-        if (expiryDate) {
-            expiryDate.addEventListener('input', function() {
-                let value = this.value.replace(/\D/g, '');
-                if (value.length >= 2) {
-                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                }
-                this.value = value;
-            });
-        }
-        
-        // Mobile number formatting
-        const mobileNumber = document.getElementById('mobileNumber');
-        if (mobileNumber) {
-            mobileNumber.addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '');
-            });
-        }
-    }
-    
-    // COMPREHENSIVE FORM VALIDATION FUNCTIONS
-    function validateCardholderName(name) {
-        if (!name || name.trim().length === 0) {
-            alert('Error: Cardholder name is required!');
-            return false;
-        }
-        if (name.trim().length < 2) {
-            alert('Error: Cardholder name must be at least 2 characters long!');
-            return false;
-        }
-        if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
-            alert('Error: Cardholder name can only contain letters and spaces!');
-            return false;
-        }
-        return true;
-    }
-    
-    function validateCardNumber(cardNumber) {
-        const cleanNumber = cardNumber.replace(/\s/g, '');
-        
-        if (!cleanNumber || cleanNumber.length === 0) {
-            alert(' Error: Card number is required!');
-            return false;
-        }
-        if (cleanNumber.length < 13 || cleanNumber.length > 19) {
-            alert('Error: Card number must be between 13-19 digits!');
-            return false;
-        }
-        if (!/^\d+$/.test(cleanNumber)) {
-            alert('Error: Card number can only contain digits!');
-            return false;
-        }
-        if (!luhnCheck(cleanNumber)) {
-            alert('Error: Invalid card number! Please check your card number.');
-            return false;
-        }
-        return true;
-    }
-    
-    function validateExpiryDate(expiry) {
-        if (!expiry || expiry.length === 0) {
-            alert('Error: Expiry date is required!');
-            return false;
-        }
-        if (expiry.length !== 5 || !expiry.includes('/')) {
-            alert(' Error: Please enter expiry date in MM/YY format!');
-            return false;
-        }
-        
-        const parts = expiry.split('/');
-        const month = parseInt(parts[0]);
-        const year = parseInt(parts[1]);
-        
-        if (isNaN(month) || isNaN(year)) {
-            alert(' Error: Invalid expiry date format!');
-            return false;
-        }
-        if (month < 1 || month > 12) {
-            alert(' Error: Invalid month! Month must be between 01-12.');
-            return false;
-        }
-        
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear() % 100;
-        const currentMonth = currentDate.getMonth() + 1;
-        
-        if (year < currentYear || (year === currentYear && month < currentMonth)) {
-            alert('Error: Card has expired! Please use a valid card.');
-            return false;
-        }
-        if (year > currentYear + 20) {
-            alert('Error: Invalid expiry year! Please check your card.');
-            return false;
-        }
-        
-        return true;
-    }
-    
-    function validateMobileService(service) {
-        if (!service || service === '') {
-            alert('Error: Please select a mobile banking service!');
-            return false;
-        }
-        return true;
-    }
-    
-    function validateMobileNumber(number) {
-        if (!number || number.length === 0) {
-            alert(' Error: Mobile number is required!');
-            return false;
-        }
-        if (!/^\d+$/.test(number)) {
-            alert('Error: Mobile number can only contain digits!');
-            return false;
-        }
-        if (number.length !== 11) {
-            alert('Error: Mobile number must be exactly 11 digits!');
-            return false;
-        }
-        if (!number.startsWith('01')) {
-            alert('Error: Mobile number must start with 01!');
-            return false;
-        }
-        
-        // Check for valid operator prefixes (Bangladesh)
-        const validPrefixes = ['013', '014', '015', '016', '017', '018', '019'];
-        const prefix = number.substring(0, 3);
-        if (!validPrefixes.includes(prefix)) {
-            alert('Error: Invalid mobile number! Please enter a valid Bangladesh mobile number.');
-            return false;
-        }
-        
-        return true;
-    }
-    
-    // Luhn algorithm for card validation
-    function luhnCheck(cardNumber) {
-        let sum = 0;
-        let isEven = false;
-        
-        for (let i = cardNumber.length - 1; i >= 0; i--) {
-            let digit = parseInt(cardNumber.charAt(i));
+            const bankBtn = document.getElementById('bankTabBtn');
+            const mobileBtn = document.getElementById('mobileTabBtn');
+            const proceedBtn = document.getElementById('proceedPayment');
             
-            if (isEven) {
-                digit *= 2;
-                if (digit > 9) {
-                    digit -= 9;
-                }
+            if (bankBtn) {
+                bankBtn.addEventListener('click', () => switchTab('bank'));
+            }
+            if (mobileBtn) {
+                mobileBtn.addEventListener('click', () => switchTab('mobile'));
+            }
+            if (proceedBtn) {
+                proceedBtn.addEventListener('click', processPayment);
             }
             
-            sum += digit;
-            isEven = !isEven;
-        }
-        
-        return sum % 10 === 0;
-    }
-    
-    function validateCurrentForm() {
-        const activeButton = document.querySelector('.tab-button.active');
-        if (!activeButton) {
-            alert(' Error: No payment method selected!');
-            return false;
-        }
-        
-        const activeTab = activeButton.getAttribute('data-tab');
-        
-        if (activeTab === 'bank') {
-            // Validate bank form
-            const cardholderName = document.getElementById('cardholderName').value;
-            const cardNumber = document.getElementById('cardNumber').value;
-            const expiryDate = document.getElementById('expiryDate').value;
+            switchTab('bank');
             
-            // Validate each field in order
-            if (!validateCardholderName(cardholderName)) {
-                document.getElementById('cardholderName').focus();
+            setupFormFormatting();
+            setupFormValidation();
+            
+
+            const dateElement = document.getElementById('paymentDate');
+            const invoiceElement = document.getElementById('invoiceNumber');
+            if (dateElement) dateElement.textContent = new Date().toLocaleDateString();
+            if (invoiceElement) invoiceElement.textContent = 'INV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        });
+        
+        function switchTab(tabName) {
+    
+            const bankTab = document.getElementById('bank-tab');
+            const mobileTab = document.getElementById('mobile-tab');
+            const bankBtn = document.getElementById('bankTabBtn');
+            const mobileBtn = document.getElementById('mobileTabBtn');
+            
+            if (!bankTab || !mobileTab || !bankBtn || !mobileBtn) return;
+            
+            bankTab.style.display = 'none';
+            mobileTab.style.display = 'none';
+            bankTab.classList.remove('active');
+            mobileTab.classList.remove('active');
+            bankBtn.classList.remove('active');
+            mobileBtn.classList.remove('active');
+            
+    
+            if (tabName === 'bank') {
+                bankTab.style.display = 'block';
+                bankTab.classList.add('active');
+                bankBtn.classList.add('active');
+            } else if (tabName === 'mobile') {
+                mobileTab.style.display = 'block';
+                mobileTab.classList.add('active');
+                mobileBtn.classList.add('active');
+            }
+        }
+        //formatinggggggg
+        function setupFormFormatting() {
+        
+            const cardNumber = document.getElementById('cardNumber');
+            if (cardNumber) {
+                cardNumber.addEventListener('input', function() {
+                    const value = this.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+                    const formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+                    this.value = formattedValue;
+                    validateCardNumber(value);
+                });
+            }
+            const expiryDate = document.getElementById('expiryDate');
+            if (expiryDate) {
+                expiryDate.addEventListener('input', function() {
+                    let value = this.value.replace(/\D/g, '');
+                    if (value.length >= 2) {
+                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                    }
+                    this.value = value;
+                    validateExpiryDate(value);
+                });
+            }
+            
+
+            const mobileNumber = document.getElementById('mobileNumber');
+            if (mobileNumber) {
+                mobileNumber.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '');
+                    validateMobileNumber(this.value);
+                });
+            }
+        }
+        /////////////////////////////////////////////validation (check korbe)
+        function setupFormValidation() {
+
+            const cardholderName = document.getElementById('cardholderName');
+            if (cardholderName) {
+                cardholderName.addEventListener('blur', function() {
+                    validateCardholderName(this.value);
+                });
+            }
+            
+            const mobileService = document.getElementById('mobileService');
+            if (mobileService) {
+                mobileService.addEventListener('change', function() {
+                    validateMobileService(this.value);
+                });
+            }
+        }
+        
+        function validateCardholderName(name) {
+            const field = document.getElementById('cardholderName');
+            
+            if (!name || name.trim().length === 0) {
+                alert('Cardholder name is required!');
+                setFieldInvalid(field);
                 return false;
-            }
-            if (!validateCardNumber(cardNumber)) {
-                document.getElementById('cardNumber').focus();
+            } else if (name.trim().length < 2) {
+                alert('Name must be at least 2 characters long!');
+                setFieldInvalid(field);
                 return false;
-            }
-            if (!validateExpiryDate(expiryDate)) {
-                document.getElementById('expiryDate').focus();
+            } else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+                alert('Name can only contain letters and spaces!');
+                setFieldInvalid(field);
                 return false;
-            }
-            
-        } else if (activeTab === 'mobile') {
-            // Validate mobile form
-            const mobileService = document.getElementById('mobileService').value;
-            const mobileNumber = document.getElementById('mobileNumber').value;
-            
-            // Validate each field in order
-            if (!validateMobileService(mobileService)) {
-                document.getElementById('mobileService').focus();
-                return false;
-            }
-            if (!validateMobileNumber(mobileNumber)) {
-                document.getElementById('mobileNumber').focus();
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
-    function processPayment() {
-        console.log('Processing payment...');
-        
-        // Validate form before processing
-        if (!validateCurrentForm()) {
-            return; // Stop if validation fails
-        }
-        
-        const button = document.getElementById('proceedPayment');
-        
-        // Show success message for valid form
-        alert(' Form validation successful! Processing payment...');
-        
-        // Show loading state
-        button.disabled = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        
-        // Simulate payment processing
-        setTimeout(() => {
-            button.disabled = false;
-            button.innerHTML = '<i class="fas fa-lock"></i> <span>Proceed to Pay</span>';
-            
-            // Show success modal or alert
-            if (window.bootstrap && document.getElementById('successModal')) {
-                const modal = new bootstrap.Modal(document.getElementById('successModal'));
-                modal.show();
             } else {
-                alert('payment successful! Your order has been placed.');
+                setFieldValid(field);
+                return true;
             }
-        }, 2000);
-    }
+        }
+        
+        function validateCardNumber(cardNumber) {
+            const field = document.getElementById('cardNumber');
+            const cleanNumber = cardNumber.replace(/\s/g, '');
+            
+            if (!cleanNumber || cleanNumber.length === 0) {
+                alert('Card number is required!');
+                setFieldInvalid(field);
+                return false;
+            } else if (cleanNumber.length < 13 || cleanNumber.length > 19) {
+                alert('Card number must be between 13-19 digits!');
+                setFieldInvalid(field);
+                return false;
+            } else if (!luhnCheck(cleanNumber)) {
+                alert('Invalid card number!');
+                setFieldInvalid(field);
+                return false;
+            } else {
+                setFieldValid(field);
+                return true;
+            }
+        }
+        
+        function validateExpiryDate(expiry) {
+            const field = document.getElementById('expiryDate');
+            
+            if (!expiry || expiry.length === 0) {
+                alert('Expiry date is required!');
+                setFieldInvalid(field);
+                return false;
+            } else if (expiry.length !== 5 || !expiry.includes('/')) {
+                alert('Please enter date in MM/YY format!');
+                setFieldInvalid(field);
+                return false;
+            } else {
+                const parts = expiry.split('/');
+                const month = parseInt(parts[0]);
+                const year = parseInt(parts[1]);
+                const currentDate = new Date();
+                const currentYear = currentDate.getFullYear() % 100;
+                const currentMonth = currentDate.getMonth() + 1;
+                
+                if (month < 1 || month > 12) {
+                    alert('Invalid month!');
+                    setFieldInvalid(field);
+                    return false;
+                } else if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                    alert('Card has expired!');
+                    setFieldInvalid(field);
+                    return false;
+                } else {
+                    setFieldValid(field);
+                    return true;
+                }
+            }
+        }
+        
+        
+        function validateMobileService(service) {
+            const field = document.getElementById('mobileService');
+            
+            if (!service) {
+                alert('Please select a mobile banking service!');
+                setFieldInvalid(field);
+                return false;
+            } else {
+                setFieldValid(field);
+                return true;
+            }
+        }
+        
+        function validateMobileNumber(number) {
+            const field = document.getElementById('mobileNumber');
+            
+            if (!number || number.length === 0) {
+                alert('Mobile number is required!');
+                setFieldInvalid(field);
+                return false;
+            } else if (number.length !== 11 || !number.startsWith('01')) {
+                alert('Mobile number must be 11 digits starting with 01!');
+                setFieldInvalid(field);
+                return false;
+            } else {
+                // sim prefix in bd
+                const validPrefixes = ['013', '014', '015', '016', '017', '018', '019'];
+                const prefix = number.substring(0, 3);
+                if (!validPrefixes.includes(prefix)) {
+                    alert('Invalid mobile number! Please enter a valid Bangladesh mobile number.');
+                    setFieldInvalid(field);
+                    return false;
+                } else {
+                    setFieldValid(field);
+                    return true;
+                }
+            }
+        }
     
-    function downloadReceipt() {
-        alert('Receipt download started!');
-    }
+        function setFieldValid(field) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        }
+        
+        function setFieldInvalid(field) {
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+        }
+        
+        function clearValidation() {
+            const fields = document.querySelectorAll('.form-control, .form-select');
+            fields.forEach(field => {
+                field.classList.remove('is-valid', 'is-invalid');
+            });
+        }
+        
+        // Luhn algorithm for card validation (nettttt)
+        function luhnCheck(cardNumber) {
+            let sum = 0;
+            let isEven = false;
+            
+            for (let i = cardNumber.length - 1; i >= 0; i--) {
+                let digit = parseInt(cardNumber.charAt(i));
+                
+                if (isEven) {
+                    digit *= 2;
+                    if (digit > 9) {
+                        digit -= 9;
+                    }
+                }
+                
+                sum += digit;
+                isEven = !isEven;
+            }
+            
+            return sum % 10 === 0;
+        }
+        
+        function validateCurrentForm() {
+            const activeButton = document.querySelector('.tab-button.active');
+            if (!activeButton) {
+                alert('Please select a payment method!');
+                return false;
+            }
+            
+            const activeTab = activeButton.getAttribute('data-tab');
+            let isValid = true;
+            
+            if (activeTab === 'bank') {
+                const cardholderName = document.getElementById('cardholderName').value;
+                const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+                const expiryDate = document.getElementById('expiryDate').value;
+                const cvv = document.getElementById('cvv').value;
+                
+                if (!validateCardholderName(cardholderName)) {
+                    document.getElementById('cardholderName').focus();
+                    return false;
+                }
+                if (!validateCardNumber(cardNumber)) {
+                    document.getElementById('cardNumber').focus();
+                    return false;
+                }
+                if (!validateExpiryDate(expiryDate)) {
+                    document.getElementById('expiryDate').focus();
+                    return false;
+                }
+                if (!validateCVV(cvv)) {
+                    document.getElementById('cvv').focus();
+                    return false;
+                }
+                
+            } else if (activeTab === 'mobile') {
+                const mobileService = document.getElementById('mobileService').value;
+                const mobileNumber = document.getElementById('mobileNumber').value;
+                
+                if (!validateMobileService(mobileService)) {
+                    document.getElementById('mobileService').focus();
+                    return false;
+                }
+                if (!validateMobileNumber(mobileNumber)) {
+                    document.getElementById('mobileNumber').focus();
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        function processPayment() {
+            console.log('Processing payment...');
+            
+            if (!validateCurrentForm()) {
+                return;
+            }
+            
+            const button = document.getElementById('proceedPayment');
+            
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            setTimeout(() => {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-lock"></i> <span>Proceed to Pay</span>';
     
-    function goHome() {
-        window.location.href = '/';
-    }
-</script>
-<script type="module">
+                if (window.bootstrap && document.getElementById('successModal')) {
+                    const modal = new bootstrap.Modal(document.getElementById('successModal'));
+                    modal.show();
+                } else {
+                    alert('Payment successful! Your order has been placed.');
+                }
+            }, 2000);
+        }
+        
+        function downloadReceipt() {
+            alert('Receipt download started! (Demo functionality)');
+        }
+        
+        function goHome() {
+            window.location.href = '../pages/home.html';
+        }
+    </script>
+    <script type="module">
         import '../components/navbar.js';
-</script>
+    </script>
 </body>
 </html>
