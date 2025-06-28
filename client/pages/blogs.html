@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Blogs</title>
-  <link rel="stylesheet" href="bootstrap.min.css" />
-  <link rel="stylesheet" href="style.css" />
-  <script type="module" src="components/navbar.js"></script>
-</head>
-<body>
-  <my-navbar></my-navbar>
-  <div class="container py-4">
-    <h2 class="mb-4">Latest Blogs</h2>
-    <div class="row" id="blog-container"></div>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blogs</title>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="../style.css" />
 
-  <script>
-    const blogs = [
-      {
-        title: "How to Read More Books",
-        author: "Ayesha Khan",
-        desc: "Reading can transform your life. Here's how to start..."
-      },
-      {
-        title: "Book Review: 1984",
-        author: "Hasan Ali",
-        desc: "A powerful dystopian novel that warns about totalitarianism."
-      }
-    ];
+    <script type="module" src="components/navbar.js"></script>
+  </head>
+  <body>
+    <my-navbar></my-navbar>
+    <div class="container py-4">
+      <h2 class="mb-4">Latest Blogs</h2>
+      <div class="row" id="blog-container"></div>
+    </div>
+    <script type="module">
+      import "../components/my-card.js";
+      import "../components/navbar.js";
+    </script>
 
-    const container = document.getElementById("blog-container");
-    blogs.forEach(blog => {
-      container.innerHTML += `
+    <script>
+      const blogs = [
+        {
+          title: "How to Read More Books",
+          author: "Ayesha Khan",
+          desc: "Reading can transform your life. Here's how to start...",
+        },
+        {
+          title: "Book Review: 1984",
+          author: "Hasan Ali",
+          desc: "A powerful dystopian novel that warns about totalitarianism.",
+        },
+      ];
+
+      const container = document.getElementById("blog-container");
+      blogs.forEach((blog) => {
+        container.innerHTML += `
         <div class="col-md-6 mb-4">
           <div class="card shadow-sm h-100">
             <div class="card-body">
@@ -42,7 +47,7 @@
             </div>
           </div>
         </div>`;
-    });
-  </script>
-</body>
+      });
+    </script>
+  </body>
 </html>
