@@ -15,12 +15,33 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
-      body {
+      /* body {
         padding: 0;
         margin: 0;
         border: 0;
 
         background-color: var(--tertiary-color);
+      } */
+      body {
+        background: url("../assets/images/background.jpg") center/cover
+          no-repeat;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: url("../assets/images/background.jpg") center/cover
+          no-repeat;
+        filter: blur(5px);
+        z-index: -1;
       }
 
       .card.flip {
@@ -29,8 +50,14 @@
       }
 
       .card {
+        /* transition: transform 0.8s;
+        background: var(--main-background); */
         transition: transform 0.8s;
-        background: var(--main-background);
+        background: transparent;
+
+        color: black;
+
+        background-color: rgba(255, 255, 255, 0.3);
       }
 
       h2 {
@@ -52,15 +79,15 @@
       }
 
       .modal-header {
-        background: linear-gradient(
+        /* background: linear-gradient(
           0deg,
           rgba(34, 193, 195, 1) 0%,
           rgba(253, 187, 45, 1) 100%
-        );
+        ); */
       }
 
       #main {
-        background: black;
+        /* background: black; */
       }
     </style>
   </head>
@@ -103,12 +130,15 @@
     >
       <div
         class="container rounded-3 p-3"
-        style="background: var(--main-background)"
+        style="
+          background: transparent;
+          background-color: rgba(255, 255, 255, 0.5);
+        "
       >
         <h1 style="color: var(--black)" class="display-4">Fictional</h1>
         <p style="color: var(--black)" class="lead">
-          This is the place where you will find all things fictional from aliens
-          to Harry Potter.
+          This is the place where you will find all things fictional from Harry
+          Potter to Aliens.
         </p>
       </div>
     </div>
@@ -145,56 +175,76 @@
 
     <footer>
       <div
-        class="container-fluid d-flex justify-content-center py-2"
-        style="background-color: black"
+        class="container-fluid d-flex align-center flex-column justify-content-center py-2"
+        style="background-color: black; gap: 0.5rem; padding: 1rem"
       >
-        <div style="text-align: center; width: 100px">
-          <img
-            class="img-circle"
-            style="height: 20px; width: 20px"
-            src="../assets/gmail.png"
-            alt=""
-          />
-          <span
-            href="#"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            style="text-align: center; color: white"
-            title="fida.ullah@northsouth.edu"
-            >Gmail</span
-          >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--orange);
+            gap: 3rem;
+          "
+        >
+          <div style="text-align: center">
+            <img
+              class="img-circle"
+              style="height: 20px; width: 20px"
+              src="../assets/gmail.png"
+              alt=""
+            />
+            <span
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              style="text-align: center; color: white"
+              title="fida.ullah@northsouth.edu"
+              >Gmail</span
+            >
+          </div>
+          <div style="text-align: center">
+            <img
+              class="img-circle"
+              style="height: 20px; width: 20px"
+              src="../assets/linkedin.png"
+              alt=""
+            />
+            <span
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              style="text-align: center; color: white"
+              title="linked in"
+              >Linked In</span
+            >
+          </div>
+          <div style="text-align: center">
+            <img
+              class="img-circle"
+              style="height: 20px; width: 20px"
+              src="../assets/contact.png"
+              alt=""
+            />
+            <span
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              style="text-align: center; color: white"
+              title="contact"
+              >Contact Us</span
+            >
+          </div>
         </div>
-        <div style="text-align: center; width: 100px">
-          <img
-            class="img-circle"
-            style="height: 20px; width: 20px"
-            src="../assets/linkedin.png"
-            alt=""
-          />
-          <span
-            href="#"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            style="text-align: center; color: white"
-            title="linked in"
-            >Linked In</span
-          >
-        </div>
-        <div style="text-align: center; width: 100px">
-          <img
-            class="img-circle"
-            style="height: 20px; width: 20px"
-            src="../assets/contact.png"
-            alt=""
-          />
-          <span
-            href="#"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            style="text-align: center; color: white"
-            title="contact"
-            >Contact</span
-          >
+        <div
+          style="
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: aliceblue;
+          "
+        >
+          BookNest
         </div>
       </div>
     </footer>
@@ -216,7 +266,9 @@
             card.addClass("card");
 
             card.append(
-              `<img slot="image" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+              `<img slot="image" <img slot="image"style="width: 100%;
+            height: 200px;
+            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
             );
 
             card.append(
@@ -227,7 +279,7 @@
               `<p  class='author' slot="author">${book["Book_Author"]}</p>`
             );
             card.append(
-              `<p class='desc' slot="desc">kkk aaaaaaaa aaaaaaaaa aaaaaaaaaa aaaaaa</p>`
+              `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ..</p>`
             );
             card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
             card.append(

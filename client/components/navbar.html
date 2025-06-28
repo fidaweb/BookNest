@@ -1,5 +1,7 @@
 <!-- my-card.html -->
 <template id="navbar-template">
+  <link rel="stylesheet" href="../assets/bootstrap.min.css" />
+  <script src="../assets/bootstrap.bundle.min.js.js"></script>
   <style>
     .navbar {
       display: flex;
@@ -7,37 +9,49 @@
       justify-content: space-between;
       background-color: var(--orange);
       padding: 0.5rem;
+      flex-wrap: wrap;
     }
     .menu {
-      /* width: 20rem; */
       display: flex;
       gap: 3rem;
     }
+
+    @media only screen and (max-width: 760px) {
+      .navbar {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+      }
+      .menu {
+        display: flex;
+
+        gap: 1;
+      }
+    }
+
     a {
       text-decoration: none;
       color: black;
     }
-    h2 {
+    /* h2 {
       margin: 0 0 9px;
-    }
+    } */
   </style>
   <div class="navbar">
     <div class="logo-holder">
       <h2>Book Nest</h2>
     </div>
+
     <div class="menu">
-      <div>
+      <div class="wrap">
         <a href="http://localhost/Project/client/pages/home.html">Home</a>
       </div>
-      <div>
-        <a href="http://localhost/Project/client/pages/cart.html">Cart</a>
+
+      <div class="wrap">
+        <a href="http://localhost/Project/client/pages/blogs.html">Blogs</a>
       </div>
-      <div>
-        <a href="http://localhost/Project/client/pages/mybooks.html"
-          >My Books</a
-        >
-      </div>
-      <div>
+      <div class="wrap">
         <a href="http://localhost/Project/client/pages/communities.html"
           >Communities</a
         >

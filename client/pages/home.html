@@ -15,13 +15,32 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
-      body {
+      /* body {
         padding: 0;
         margin: 0;
         border: 0;
        
         background-color: var(--tertiary-color);
-      }
+      } */
+      body {
+            background: url('../assets/images/background.jpg') center/cover no-repeat;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: url('../assets/images/background.jpg') center/cover no-repeat;
+            filter: blur(5px);
+            z-index: -1;
+        }
 
       .card.flip {
         transform: rotateY(360deg);
@@ -30,7 +49,11 @@
 
       .card {
         transition: transform 0.8s;
-        background: var(--main-background)
+        background: transparent;
+       
+        color: black;
+        /* background: var(--main-background) */
+        background-color: rgba(255, 255, 255, 0.3);
        
       }
 
@@ -53,16 +76,57 @@
     }
 
       .modal-header {
-        background: linear-gradient(
-          0deg,
-          rgba(34, 193, 195, 1) 0%,
-          rgba(253, 187, 45, 1) 100%
-        );
+        background: transparent;
+        /* background-color: rgba(255, 255, 255, 0.3); */
+        /* background-color: white; */
       }
 
       #main{
-        background: black
+        /* background: rgba(255, 255, 255, 0.9); */
+        /* background: linear-gradient(
+          0deg,
+          rgba(34, 193, 195, 1) 0%,
+          rgba(253, 187, 45, 1) 100%
+        ); */
+      
       }
+
+      .footer {
+            background: rgba(215, 128, 40, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 3rem 0 1rem 0;
+            margin-top: auto;
+        }
+        
+        .footer h5, .footer h6 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        
+        .footer ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer ul li a {
+            color: #fff;
+        }
+        
+        .footer ul li a:hover {
+            color: #fff;
+        }
+        
+        
+        .payment-logo {
+            height: 30px;
+            margin-left: 0.5rem;
+            opacity: 1;
+        }
     </style>
   </head>
   <body>
@@ -129,6 +193,7 @@
       </div>
       <div>
         <button class="category btn btn-secondary">Category</button>
+        <button class="cart btn btn-secondary">Cart</button>
         <button class="mybooks btn btn-secondary">My Books</button>
         <button class="mycommunities btn btn-secondary">My Communities</button>
       </div>
@@ -137,7 +202,7 @@
 
     <div
       id="main"
-      class="p-3 gap-3 align-center d-flex justify-content-center flex-wrap"
+      class="p-3 gap-5 align-center d-flex justify-content-center flex-wrap"
      
     ></div>
     <nav
@@ -166,7 +231,7 @@
       </ul>
     </nav>
 
-    <footer>
+    <!-- <footer>
 
       <div class="container-fluid d-flex justify-content-center py-2" style="background-color: black;">
     
@@ -186,7 +251,58 @@
             <span href="#" data-bs-toggle="tooltip" data-bs-placement="top" style="text-align: center; color: white;" title="contact">Contact</span>
         </div>
         </div>
-    </footer>
+    </footer> -->
+    <footer class="footer">
+      <div class="container py-5">
+          <div class="row">
+              <div class="col-lg-4 mb-4">
+                  <h5><i class="fas fa-book"></i> BookNest</h5>
+                  <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
+                  <div class="social-links">
+                      <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
+                      <a href="https://x.com/?lang=en"><i class="fab fa-twitter"></i></a>
+                      <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                      <a href="https://www.linkedin.com/"><i class="fab fa-linkedin"></i></a>
+                  </div>
+              </div>
+              <div class="col-lg-1 col-md-6 mb-4">
+                  <h6>Quick Links</h6>
+                  <ul>
+                      <li><a href="#">Home</a></li>
+                      <li><a href="#">Books</a></li>
+                      <li><a href="#">Categories</a></li>
+                      <li><a href="#">Authors</a></li>
+                  </ul>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-4">
+                  <h6>Contact Us</h6>
+                  <p><span>&#9993</span>Email:booknest@gmail.com</p>
+                  <p><span>&#9743</span>Phone: 01824673890</p>
+                  <p><span>&#8962</span> Address: Block A Dhaka,Bangladesh</p>
+                  
+              </div>
+              
+              
+          </div>
+          <hr style="border-color: #495057;">
+          <div class="row align-items-center">
+              <div class="col-md-6">
+                  <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
+              </div>
+              <div class="col-md-6 text-md-end">
+                  <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
+                  <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
+                  <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
+                  <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
+                  <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
+              </div>
+          </div>
+      </div>
+  </footer>
+
+
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Load the JavaScript that defines the custom element -->
@@ -205,7 +321,9 @@
             card.addClass("card");
 
             card.append(
-              `<img slot="image" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+              `<img slot="image"style="width: 100%;
+            height: 200px;
+            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
             );
 
             card.append(
@@ -216,7 +334,7 @@
               `<p  class='author' slot="author">${book["Book_Author"]}</p>`
             );
             card.append(
-              `<p class='desc' slot="desc">kkk aaaaaaaa aaaaaaaaa aaaaaaaaaa aaaaaa</p>`
+              `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
             );
             card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
             card.append(
@@ -253,6 +371,11 @@
             window.location.href='mybooks.html'
           });
 
+          $(".cart").click(function(){
+            window.location.href='cart.html'
+          });
+         
+
           var tooltipTriggerList =
         [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -274,6 +397,7 @@
       }
 
       $(document).ready(function () {
+
         loadBooks();
       });
     </script>

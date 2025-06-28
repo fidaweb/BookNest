@@ -8,14 +8,37 @@
     <link rel="stylesheet" href="../style.css">
     <script src="../assets/bootstrap.bundle.min.js.js"></script>
     <style>
-        body {
+        /* body {
           padding: 0;
           margin: 0;
           border: 0;
          
           background-color: var(--tertiary-color);
         }
-  
+   */
+
+   body {
+        background: url("../assets/images/background.jpg") center/cover
+          no-repeat;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+        
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: url("../assets/images/background.jpg") center/cover
+          no-repeat;
+        filter: blur(5px);
+        z-index: -1;
+      }
         .card.flip {
           transform: rotateY(360deg);
           transition: transform 0.8s;
@@ -23,7 +46,11 @@
   
         .card {
           transition: transform 0.8s;
-          background: var(--main-background)
+        background: transparent;
+       
+        color: black;
+        /* background: var(--main-background) */
+        background-color: rgba(255, 255, 255, 0.3);
          
         }
   
@@ -46,27 +73,231 @@
       }
   
         .modal-header {
-          background: linear-gradient(
+          /* background: linear-gradient(
             0deg,
             rgba(34, 193, 195, 1) 0%,
             rgba(253, 187, 45, 1) 100%
-          );
+          ); */
         }
   
-        #main{
-          background: black
-        }
+        .order-summary{
+        
+        background: transparent;
+        color: black;
+        background-color: rgba(255, 255, 255, 0.3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        gap: 1rem;
+        width: 50rem;
+        border-radius: 20px;
+       }
+       .summary{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* background-color: aqua; */
+        text-align: center;
+       }
+       .book-item-list{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem;
+        width: 30rem;
+        gap: 1rem;
+        
+       
+       }
+       .book-item{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+       
+        gap: 3rem;
+        border-bottom: 1px solid black; /* Adds the black line */
+        
+       }
+       .break-down{
+        /* background-color: orange; */
+        width: 50%;
+       }
+       .content{
+        /* background-color: green; */
+
+       }
+       
+       .cost{
+        display: flex;
+        
+        align-items: center;
+        justify-content: space-between;
+       }
+       .pay-img{
+        width: 5rem;
+        height: 5rem;
+       }
+       .disc{
+        border-bottom: 1px solid black; /* Adds the black line */
+       }
+       .display{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        min-height: 100vh;
+       }
+
       </style>
 </head>
 <body>
     <body>
         <my-navbar></my-navbar>
-        
-        <div id="main" class=" p-3 gap-3 align-center   d-flex justify-content-center flex-wrap" style="background: var(--main-background);">
-       
-         
+
+        <div class="display">
+
+          
+
+          <div id="main" class=" p-3 gap-3 align-center   d-flex justify-content-center flex-wrap" ></div>
+          <div class="order-summary">
+           <div class="summary">
+              <h2>
+                Order Summary
+              </h2>
+            </div>
+            <div class="book-item-list">
+                <!-- <div class="book-item">
+                  <img class="pay-img" src="http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg" alt="">
+                  <div class="content">
+                      <h4>Book Title</h4>
+                      <h5>Author</h5>
+                  </div>
+                  <h4>$78</h4>
+                </div>
+                <div class="book-item">
+                  <img class="pay-img" src="http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg" alt="">
+                  <div class="content">
+                      <h4>Book Title</h4>
+                      <h5>Author</h5>
+                  </div>
+                  <h4>$56</h4>
+                </div>
+                <div class="book-item">
+                  <img class="pay-img" src="http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg" alt="">
+                  <div class="content">
+                      <h4>Book Title</h4>
+                      <h5>Author</h5>
+                  </div>
+                  <h4>$45</h4>
+                </div> -->
+            </div>
+            <div class="break-down">
+              <div class="cost">
+                <h3 >Subtotal</h3>
+                <h3 class="break">$45</h3>
+              </div>
+              <div class="cost">
+                <h3 >Delivery</h3>
+                <h3 class="break">$45</h3>
+              </div>
+              <div class="cost">
+                <h3 >Discount</h3>
+                <h3 class="break disc">$45</h3>
+              </div>
+              <div class="cost">
+                <h3 >Total</h3>
+                <h3 class="break">$45</h3>
+              </div>
+              <div class="cost">
+                <button class="payments btn btn-outline-dark">Proceed to Payments</button>
+              </div>
+            </div>
+         </div>
+
+      
+
+
         </div>
-    
+        <footer>
+          <div
+            class="container-fluid d-flex align-center flex-column justify-content-center py-2"
+            style="background-color: black; gap: 0.5rem; padding: 1rem"
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: var(--orange);
+                gap: 3rem;
+              "
+            >
+              <div style="text-align: center">
+                <img
+                  class="img-circle"
+                  style="height: 20px; width: 20px"
+                  src="../assets/gmail.png"
+                  alt=""
+                />
+                <span
+                  href="#"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  style="text-align: center; color: white"
+                  title="fida.ullah@northsouth.edu"
+                  >Gmail</span
+                >
+              </div>
+              <div style="text-align: center">
+                <img
+                  class="img-circle"
+                  style="height: 20px; width: 20px"
+                  src="../assets/linkedin.png"
+                  alt=""
+                />
+                <span
+                  href="#"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  style="text-align: center; color: white"
+                  title="linked in"
+                  >Linked In</span
+                >
+              </div>
+              <div style="text-align: center">
+                <img
+                  class="img-circle"
+                  style="height: 20px; width: 20px"
+                  src="../assets/contact.png"
+                  alt=""
+                />
+                <span
+                  href="#"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  style="text-align: center; color: white"
+                  title="contact"
+                  >Contact Us</span
+                >
+              </div>
+            </div>
+            <div
+              style="
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                color: aliceblue;
+              "
+            >
+              BookNest
+            </div>
+          </div>
+        </footer>
+        
         
           
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -83,6 +314,7 @@
                 if(localStorage.getItem('books')){
                     
                     let books=JSON.parse(localStorage.getItem('books'))
+                    console.log(books.length)
                     $.ajax({
                         url: 'http://localhost/Project/api/cart.php',  // adjust the path as needed
                         method: 'POST',
@@ -91,18 +323,57 @@
                         success: function(response) {
                             console.log("Books received:", response);
                             let books=JSON.parse(response)
+                            console.log(books.length)
                             books.forEach(book => {
-                            console.log(book)
-                                const card = $('<my-card></my-card>');
+                            // console.log(book)
+                            //     const card = $('<my-card></my-card>');
 
-                                card.append(`<img slot="image" src="${book['Image_URL_L']}" alt="Great Gatsby" style="height: 10rem;">`);
-                                card.append(`<span slot="title">${book['Book_Title']}</span>`);
-                                card.append(`<span slot="author">${book['Book_Author']}</span>`);
-                                card.append(`<span slot="price">${book['PRICE']}</span>`);
-                                card.append(`<button slot="button" class={btn} style="background-color:white;border:black bold" onclick={addToCart(event,${book['ISBN']})}>Remove from Cart</button>`)
+                            //     card.append(`<img slot="image" src="${book['Image_URL_L']}" alt="Great Gatsby" style="height: 10rem;">`);
+                            //     card.append(`<span slot="title">${book['Book_Title']}</span>`);
+                            //     card.append(`<span slot="author">${book['Book_Author']}</span>`);
+                            //     card.append(`<span slot="price">${book['PRICE']}</span>`);
+                            //     card.append(`<button slot="button" class={btn} style="background-color:white;border:black bold" onclick={addToCart(event,${book['ISBN']})}>Remove from Cart</button>`)
                                 
-                                $('#main').append(card);
-                                // Example: print book title
+                            //     $('#main').append(card);
+                            //     // Example: print book title
+
+                            const card = $("<my-card></my-card>");
+                            card.addClass("card");
+
+                            card.append(
+                              `<img slot="image"style="width: 100%;
+                            height: 200px;
+                            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+                            );
+
+                            card.append(
+                              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
+                            );
+
+                            card.append(
+                              `<p  class='author' slot="author">${book["Book_Author"]}</p>`
+                            );
+                            card.append(
+                              `<p class='desc' slot="desc">This book is a bestseller with a very interesting story to tell ...</p>`
+                            );
+                            card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
+                            card.append(
+                              `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book["ISBN"]})}>Remove From Cart</button>`
+                            );
+
+                            const item=`
+                            <div class="book-item">
+                              <img class="pay-img" src="${book["Image_URL_L"]}" alt="">
+                              <div class="content">
+                                  <h4>${book["Book_Title"]}</h4>
+                                  <h5>${book["Book_Author"]}</h5>
+                              </div>
+                              <h4>${book["PRICE"]}</h4>
+                            </div>
+                            `
+                            $('.order-summary .book-item-list').append(item)
+
+                            $("#main").append(card);
                             
                                 
                     });
@@ -110,14 +381,81 @@
                         error: function(xhr, status, error) {
                             console.error("Error loading books:", xhr.responseText);
                         }
-                    });
-                }
-                
+                    }).then(function () {
+                      console.log('then')
+          $("#main .card").click(function () {
+            $(this).toggleClass("flip");
+            if ($(this).hasClass("flip")) {
+              $(this).find(".author").css({ display: "none" });
+              $(this).find(".price").css({ display: "none" });
+              $(this).find(".btn").css({ display: "none" });
+              $(this).find(".desc").css({ display: "block" });
+            } else {
+              $(this).find(".author").css({ display: "block" });
+              $(this).find(".price").css({ display: "block" });
+              $(this).find(".btn").css({ display: "block" });
+              $(this).find(".desc").css({ display: "none" });
             }
+
+            // $(this).find(".btn").click(function(){
+            //   new bootstrap.Modal($("#cartmodal")).show();
+            // })
+          });
+
+          // $(".category").click(function(){
+          //   new bootstrap.Modal($("#categorymodal")).show();
+          // });
+
+          // $(".mycommunities").click(function(){
+          //   window.location.href='mycommunities.html'
+          // });
+
+          // $(".mybooks").click(function(){
+          //   window.location.href='mybooks.html'
+          // });
+          console.log($('.order-summary'))
+          console.log($('.order-summary .break-down .cost button'))
+          $('.order-summary .break-down .cost button').click(function(){
+            window.location.href='payment.html'
+          });
+         
+
+          var tooltipTriggerList =
+        [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        });
+                }}
+
+
+    function removeFromCart(event, bookID) {
+        let books = [];
+        if (localStorage.getItem("books")) {
+          books = JSON.parse(localStorage.getItem("books"));
+        }
+        console.log(books)
+        books=books.filter(id=>{
+          return id!=bookID
+        })
+        console.log(books)
+        console.log('removed-----------')
+        
+        // books.push(bookID);
+        localStorage.setItem("books", JSON.stringify(books));
+
+       
+        location.reload();
+
+      }
+    
+  $(document).ready(function () {
+
+              loadCart();
+});
     
         
-    
-        loadCart()
           </script>
         
 </body>
