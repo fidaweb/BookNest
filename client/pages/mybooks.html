@@ -1,68 +1,283 @@
-<!-- <!DOCTYPE html>
+admin page-    <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Books</title>
-    <link rel="stylesheet" href="bootstrap.min.css" />
-    <link rel="stylesheet" href="../style.css" /> -->
-    <!-- <script type="module" src="components/navbar.js"></script>
-  <script type="module" src="components/my-card.js"></script>
-  </head>
-  <body>
-    <my-navbar></my-navbar>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Nest - Admin Panel</title>
+  <style>
+    :root {
+      --primary: #f4b400;
+      --dark-bg: #121212;
+      --sidebar-bg: #1e1e1e;
+      --card-bg: #222;
+      --text-light: #ccc;
+      --accent: #00bcd4;
+    }
 
-    <div class="container py-4">
-      <h2 class="mb-4">My Books</h2>
-      <div
-        id="main"
-        class="p-3 gap-3 align-center d-flex justify-content-center flex-wrap"
-        style="background: var(--main-background)"
-      ></div>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header h1 {
+      color: black;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: black;
+      margin-left: 1rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.3s;
+    }
+
+    nav a:hover {
+      opacity: 0.7;
+    }
+
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      background-color: var(--sidebar-bg);
+      position: fixed;
+      top: 0;
+      left: -220px;
+      padding-top: 80px;
+      border-right: 1px solid #333;
+      transition: left 0.3s ease;
+      z-index: 999;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 1rem;
+      color: var(--text-light);
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #333;
+      color: white;
+    }
+
+    .menu-toggle {
+      font-size: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: black;
+    }
+
+    .main {
+      margin-left: 0;
+      padding: 2rem;
+      flex-grow: 1;
+      transition: margin-left 0.3s ease;
+    }
+
+    .sidebar.active ~ .main {
+      margin-left: 220px;
+    }
+
+    .card {
+      background: #1a1a1a;
+      border-left: 5px solid var(--primary);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      border-bottom: 1px solid #444;
+      padding-bottom: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+      color: #eee;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #444;
+      border-radius: 6px;
+      background-color: #2a2a2a;
+      color: white;
+    }
+
+    .form-group button {
+      padding: 0.7rem 1.2rem;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .form-group button:hover {
+      background-color: #008c9e;
+    }
+
+    footer {
+      background: rgba(215, 128, 40, 0.95);
+      color: white;
+      padding: 3rem 1rem 1rem 1rem;
+    }
+
+    footer h5, footer h6 {
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    footer ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    footer ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    footer ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    footer .payment-logo {
+      height: 30px;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Book Nest Admin</h1>
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+    <nav>
+      <a href="#">Dashboard</a>
+      <a href="#">Logout</a>
+    </nav>
+  </header>
+
+  <div class="sidebar">
+    <a href="#">Dashboard</a>
+    <a href="#">Add New Book</a>
+    <a href="#">Manage Books</a>
+    <a href="#">Orders</a>
+    <a href="#">Users</a>
+    <a href="#">Reports</a>
+  </div>
+
+  <div class="main">
+    <div class="card">
+      <h2>Add New Book</h2>
+      <div class="form-group">
+        <label>Book Title</label>
+        <input type="text" placeholder="Enter book title" />
+      </div>
+      <div class="form-group">
+        <label>Author</label>
+        <input type="text" placeholder="Enter author name" />
+      </div>
+      <div class="form-group">
+        <label>Price ($)</label>
+        <input type="number" placeholder="Enter price" />
+      </div>
+      <div class="form-group">
+        <label>Cover Image URL</label>
+        <input type="text" placeholder="Enter image URL" />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea rows="4" placeholder="Enter book description"></textarea>
+      </div>
+      <div class="form-group">
+        <button>Add Book</button>
+      </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      const books = [
-        {
-          title: "Atomic Habits",
-          author: "James Clear",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          title: "Deep Work",
-          author: "Cal Newport",
-          image: "https://via.placeholder.com/150",
-        },
-      ];
+    <div class="card">
+      <h2>Latest Orders</h2>
+      <p>No orders yet.</p>
+    </div>
+  </div>
 
-      const container = document.getElementById("main");
-      books.forEach((book) => {
-        const card = document.createElement("my-card");
-        card.innerHTML = `
-        <img slot="image" src="${book.image}" alt="${book.title}" style="height: 10rem;">
-        <span slot="title">${book.title}</span>
-        <span slot="author">${book.author}</span>
-        <button slot="button" class="btn btn-light">Download Book</button>
-      `;
-        container.appendChild(card);
-      });
-    </script>
-  </body> -->
+  <footer>
+    <div class="footer-container">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+        <div style="max-width: 300px;">
+          <h5>BookNest</h5>
+          <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
+        </div>
+        <div>
+          <h6>Quick Links</h6>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Books</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="#">Authors</a></li>
+          </ul>
+        </div>
+        <div>
+          <h6>Contact Us</h6>
+          <p>&#9993; Email: booknest@gmail.com</p>
+          <p>&#9743; Phone: 01824673890</p>
+          <p>&#8962; Address: Block A Dhaka, Bangladesh</p>
+        </div>
+      </div>
+      <hr style="margin: 2rem 0; border-color: #495057;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+        <p>&copy; 2025 BookNest. All rights reserved.</p>
+        <div>
+          <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
+          <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
+          <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
+          <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
+          <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
 </html>
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>My Books</title>
-    <link rel="stylesheet" href="bootstrap.min.css" />
-    <script src="../assets/bootstrap.bundle.min.js.js"></script>
-    <link rel="stylesheet" href="../style.css" /> 
-  </head>
-  <body>
-    <my-navbar></my-navbar>
-    <div class='container py-4'><h2>My Books</h2><div id='main' class='p-3 gap-3 align-center d-flex justify-content-center flex-wrap' style='background: var(--main-background);'>
-
-    </div><script src='https://code.jquery.com/jquery-3.6.0.min.js'>
-
-    </script><script type='module'>import '../components/my-card.js';import '../components/navbar.js';function loadMyBooks(){const container=document.getElementById('main');const dummyBooks=[{title:'Book 1',author:'Author 1',price:'Free'},{title:'Book 2',author:'Author 2',price:'Free'}];dummyBooks.forEach(book=>{const card=document.createElement('my-card');card.innerHTML=`<span slot='title'>${book.title}</span><span slot='author'>${book.author}</span><span slot='price'>${book.price}</span><button slot='button' class='btn btn-success'>Download Book</button>`;container.appendChild(card);});}loadMyBooks();</script>
-    </body></html>
