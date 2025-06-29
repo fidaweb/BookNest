@@ -1,31 +1,23 @@
-admin page-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book Nest - Admin Panel</title>
+  <title>Book Nest</title>
   <style>
     :root {
       --primary: #f4b400;
       --dark-bg: #121212;
-      --sidebar-bg: #1e1e1e;
-      --card-bg: #222;
-      --text-light: #ccc;
       --accent: #00bcd4;
-    }
-
-    * {
-      box-sizing: border-box;
+      --light: #f9f9f9;
+      --book-bg: #222;
     }
 
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background-color: var(--dark-bg);
-      color: var(--text-light);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      color: white;
     }
 
     header {
@@ -34,131 +26,99 @@ admin page-    <!DOCTYPE html>
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
     }
 
     header h1 {
-      color: black;
       margin: 0;
-      font-weight: bold;
+      color: black;
     }
 
     nav a {
+      margin-left: 1.5rem;
       color: black;
-      margin-left: 1rem;
       text-decoration: none;
       font-weight: 600;
-      transition: opacity 0.3s;
     }
 
-    nav a:hover {
-      opacity: 0.7;
-    }
-
-    .sidebar {
-      width: 220px;
-      height: 100vh;
-      background-color: var(--sidebar-bg);
-      position: fixed;
-      top: 0;
-      left: -220px;
-      padding-top: 80px;
-      border-right: 1px solid #333;
-      transition: left 0.3s ease;
-      z-index: 999;
-    }
-
-    .sidebar.active {
-      left: 0;
-    }
-
-    .sidebar a {
-      display: block;
+    .search-bar {
+      display: flex;
+      justify-content: center;
       padding: 1rem;
-      color: var(--text-light);
-      text-decoration: none;
-      font-weight: 500;
-      transition: background 0.3s;
     }
 
-    .sidebar a:hover {
-      background-color: #333;
-      color: white;
-    }
-
-    .menu-toggle {
-      font-size: 24px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: black;
-    }
-
-    .main {
-      margin-left: 0;
-      padding: 2rem;
-      flex-grow: 1;
-      transition: margin-left 0.3s ease;
-    }
-
-    .sidebar.active ~ .main {
-      margin-left: 220px;
-    }
-
-    .card {
-      background: #1a1a1a;
-      border-left: 5px solid var(--primary);
-      color: white;
-      padding: 1.5rem;
-      border-radius: 10px;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    .card h2 {
-      margin-top: 0;
-      border-bottom: 1px solid #444;
-      padding-bottom: 0.5rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.2rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.3rem;
-      font-weight: 600;
-      color: #eee;
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
+    .search-bar input {
       padding: 0.6rem;
-      border: 1px solid #444;
-      border-radius: 6px;
-      background-color: #2a2a2a;
-      color: white;
-    }
-
-    .form-group button {
-      padding: 0.7rem 1.2rem;
-      background-color: var(--accent);
-      color: white;
+      width: 300px;
+      border-radius: 6px 0 0 6px;
       border: none;
-      border-radius: 4px;
-      font-weight: bold;
+    }
+
+    .search-bar button {
+      padding: 0.6rem 1rem;
+      background-color: var(--accent);
+      border: none;
+      color: white;
+      border-radius: 0 6px 6px 0;
       cursor: pointer;
-      transition: background 0.3s;
     }
 
-    .form-group button:hover {
-      background-color: #008c9e;
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 0.5rem 1rem;
     }
 
+    .filters button {
+      background-color: var(--accent);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .book-card {
+      background-color: var(--book-bg);
+      border: 3px solid var(--primary);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .book-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .book-card h3 {
+      margin: 0.8rem 0 0.2rem;
+    }
+
+    .book-card p {
+      margin: 0.3rem 0;
+    }
+
+    .book-card button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background-color: var(--accent);
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
     footer {
       background: rgba(215, 128, 40, 0.95);
       color: white;
@@ -192,58 +152,44 @@ admin page-    <!DOCTYPE html>
 </head>
 <body>
   <header>
-    <h1>Book Nest Admin</h1>
-    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+    <h1>Book Nest</h1>
     <nav>
-      <a href="#">Dashboard</a>
-      <a href="#">Logout</a>
+      <a href="#">Home</a>
+      <a href="#">Cart</a>
+      <a href="#">My Books</a>
     </nav>
   </header>
 
-  <div class="sidebar">
-    <a href="#">Dashboard</a>
-    <a href="#">Add New Book</a>
-    <a href="#">Manage Books</a>
-    <a href="#">Orders</a>
-    <a href="#">Users</a>
-    <a href="#">Reports</a>
+  <div class="search-bar">
+    <input type="text" placeholder="Search books...">
+    <button>Search</button>
   </div>
 
-  <div class="main">
-    <div class="card">
-      <h2>Add New Book</h2>
-      <div class="form-group">
-        <label>Book Title</label>
-        <input type="text" placeholder="Enter book title" />
-      </div>
-      <div class="form-group">
-        <label>Author</label>
-        <input type="text" placeholder="Enter author name" />
-      </div>
-      <div class="form-group">
-        <label>Price ($)</label>
-        <input type="number" placeholder="Enter price" />
-      </div>
-      <div class="form-group">
-        <label>Cover Image URL</label>
-        <input type="text" placeholder="Enter image URL" />
-      </div>
-      <div class="form-group">
-        <label>Description</label>
-        <textarea rows="4" placeholder="Enter book description"></textarea>
-      </div>
-      <div class="form-group">
-        <button>Add Book</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Latest Orders</h2>
-      <p>No orders yet.</p>
-    </div>
+  <div class="filters">
+    <button>Category</button>
+    <button>My Books</button>
+    <button>My Communities</button>
   </div>
 
-  <footer>
+  <div class="book-grid">
+    <div class="book-card">
+      <img src="https://images-na.ssl-images-amazon.com/images/I/51xwGfW4UdL.SX342_SY445_QL70_ML2.jpg" alt="Classical Mythology">
+      <h3>Classical Mythology</h3>
+      <p>Mark P. O. Morford</p>
+      <p>$110</p>
+      <button>Add to Cart</button>
+    </div>
+    <div class="book-card">
+      <img src="https://images-na.ssl-images-amazon.com/images/I/51YTRd+nYkL.SX322_BO1,204,203,200.jpg" alt="Clara Callan">
+      <h3>Clara Callan</h3>
+      <p>Richard Bruce Wright</p>
+      <p>$80</p>
+      <button>Add to Cart</button>
+    </div>
+    <!-- Add more books below if needed -->
+  </div>
+
+<footer>
     <div class="footer-container">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
         <div style="max-width: 300px;">
@@ -279,5 +225,6 @@ admin page-    <!DOCTYPE html>
       </div>
     </div>
   </footer>
+
 </body>
 </html>
