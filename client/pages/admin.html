@@ -1,158 +1,283 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="bootstrap.min.css"/>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Nest - Admin Panel</title>
   <style>
-    .admin-card {
-      transition: all 0.3s;
-      border-left: 4px solid #0d6efd;
+    :root {
+      --primary: #f4b400;
+      --dark-bg: #121212;
+      --sidebar-bg: #1e1e1e;
+      --card-bg: #222;
+      --text-light: #ccc;
+      --accent: #00bcd4;
     }
-    .admin-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+
+    * {
+      box-sizing: border-box;
     }
-    .stat-number {
-      font-size: 2rem;
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header h1 {
+      color: black;
+      margin: 0;
       font-weight: bold;
     }
-    
-    .admin-table th {
-      background-color: #f8f9fa;
+
+    nav a {
+      color: black;
+      margin-left: 1rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.3s;
     }
-    .footer {
-            background: rgba(215, 128, 40, 0.95);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 3rem 0 1rem 0;
-            margin-top: auto;
-        }
-        
-        .footer h5, .footer h6 {
-            color: #fff;
-            margin-bottom: 1rem;
-        }
-        
-        .footer ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .footer ul li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .footer ul li a {
-            color: #fff;
-        }
-        
-        .footer ul li a:hover {
-            color: #fff;
-        }
-        .payment-logo {
-            height: 30px;
-            margin-left: 0.5rem;
-            opacity: 1;
-        }
-  
+
+    nav a:hover {
+      opacity: 0.7;
+    }
+
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      background-color: var(--sidebar-bg);
+      position: fixed;
+      top: 0;
+      left: -220px;
+      padding-top: 80px;
+      border-right: 1px solid #333;
+      transition: left 0.3s ease;
+      z-index: 999;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 1rem;
+      color: var(--text-light);
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #333;
+      color: white;
+    }
+
+    .menu-toggle {
+      font-size: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: black;
+    }
+
+    .main {
+      margin-left: 0;
+      padding: 2rem;
+      flex-grow: 1;
+      transition: margin-left 0.3s ease;
+    }
+
+    .sidebar.active ~ .main {
+      margin-left: 220px;
+    }
+
+    .card {
+      background: #1a1a1a;
+      border-left: 5px solid var(--primary);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      border-bottom: 1px solid #444;
+      padding-bottom: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+      color: #eee;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #444;
+      border-radius: 6px;
+      background-color: #2a2a2a;
+      color: white;
+    }
+
+    .form-group button {
+      padding: 0.7rem 1.2rem;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .form-group button:hover {
+      background-color: #008c9e;
+    }
+
+    footer {
+      background: rgba(215, 128, 40, 0.95);
+      color: white;
+      padding: 3rem 1rem 1rem 1rem;
+    }
+
+    footer h5, footer h6 {
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    footer ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    footer ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    footer ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    footer .payment-logo {
+      height: 30px;
+      margin-left: 0.5rem;
+    }
   </style>
 </head>
 <body>
-  <my-navbar ></my-navbar>
+  <header>
+    <h1>Book Nest Admin</h1>
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+    <nav>
+      <a href="#">Dashboard</a>
+      <a href="#">Logout</a>
+    </nav>
+  </header>
 
-  <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>Admin Dashboard</h2>
-      <div>
-        <button class="btn btn-outline-secondary">Export Data</button>
-        <button class="btn btn-outline-primary">Add New Book</button>
+  <div class="sidebar">
+    <a href="#">Dashboard</a>
+    <a href="#">Add New Book</a>
+    <a href="#">Manage Books</a>
+    <a href="#">Orders</a>
+    <a href="#">Users</a>
+    <a href="#">Reports</a>
+  </div>
+
+  <div class="main">
+    <div class="card">
+      <h2>Add New Book</h2>
+      <div class="form-group">
+        <label>Book Title</label>
+        <input type="text" placeholder="Enter book title" />
+      </div>
+      <div class="form-group">
+        <label>Author</label>
+        <input type="text" placeholder="Enter author name" />
+      </div>
+      <div class="form-group">
+        <label>Price ($)</label>
+        <input type="number" placeholder="Enter price" />
+      </div>
+      <div class="form-group">
+        <label>Cover Image URL</label>
+        <input type="text" placeholder="Enter image URL" />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea rows="4" placeholder="Enter book description"></textarea>
+      </div>
+      <div class="form-group">
+        <button>Add Book</button>
       </div>
     </div>
 
-    <div class="row mb-4">
-      <div class="col-md-3">
-        <div class="card admin-card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Total Books</h5>
-            <p class="stat-number text-primary">1,245</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mb-4">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Recent Transactions</h5>
-      </div>
-      <div class="card-body">
-        <table class="table admin-table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Book</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Data dynamically inserted -->
-          </tbody>
-        </table>
-      </div>
+    <div class="card">
+      <h2>Latest Orders</h2>
+      <p>No orders yet.</p>
     </div>
   </div>
-  <!------------------------------------------------------------------- Footer------------------------------------------->
-    <footer class="footer">
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <h5><i class="fas fa-book"></i> BookNest</h5>
-                    <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
-                    <div class="social-links">
-                        <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
-                        <a href="https://x.com/?lang=en"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.linkedin.com/"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-1 col-md-6 mb-4">
-                    <h6>Quick Links</h6>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Books</a></li>
-                        <li><a href="#">Categories</a></li>
-                        <li><a href="#">Authors</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h6>Contact Us</h6>
-                    <p><span>&#9993</span>Email:booknest@gmail.com</p>
-                    <p><span>&#9743</span>Phone: 01824673890</p>
-                    <p><span>&#8962</span> Address: Block A Dhaka,Bangladesh</p>
-                </div>
-            </div>
-            <hr style="border-color: #495057;">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
-                    <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
-                    <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
-                    <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
-                    <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
-                </div>
-            </div>
+
+  <footer>
+    <div class="footer-container">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+        <div style="max-width: 300px;">
+          <h5>BookNest</h5>
+          <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
         </div>
-    </footer>
-    <script type="module">
-        import '../components/navbar.js';
-    </script>
+        <div>
+          <h6>Quick Links</h6>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Books</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="#">Authors</a></li>
+          </ul>
+        </div>
+        <div>
+          <h6>Contact Us</h6>
+          <p>&#9993; Email: booknest@gmail.com</p>
+          <p>&#9743; Phone: 01824673890</p>
+          <p>&#8962; Address: Block A Dhaka, Bangladesh</p>
+        </div>
+      </div>
+      <hr style="margin: 2rem 0; border-color: #495057;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+        <p>&copy; 2025 BookNest. All rights reserved.</p>
+        <div>
+          <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
+          <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
+          <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
+          <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
+          <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
