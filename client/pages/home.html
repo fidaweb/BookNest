@@ -88,6 +88,7 @@
           rgba(34, 193, 195, 1) 0%,
           rgba(253, 187, 45, 1) 100%
         ); */
+        min-height: 100vh;
       
       }
 
@@ -313,8 +314,233 @@
     <script>
       function loadBooks() {
         return $.get("../../api/home.php", function (data) {
+          console.log(data)
+          var data=`
+[
+  {
+    "ISBN": "0002005018",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005019",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005020",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005021",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005022",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005023",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005024",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005025",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005026",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005027",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005028",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005029",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005030",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005031",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005032",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005033",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005034",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005035",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005036",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  },
+  {
+    "ISBN": "0002005037",
+    "Book_Title": "Clara Callan",
+    "Book_Author": "Richard Bruce Wright",
+    "Year_Of_Publication": "2001",
+    "Publisher": "HarperFlamingo Canada",
+    "Image_URL_S": "http://images.amazon.com/images/P/0002005018.01.THUMBZZZ.jpg",
+    "Image_URL_M": "http://images.amazon.com/images/P/0002005018.01.MZZZZZZZ.jpg",
+    "Image_URL_L": "http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg",
+    "PRICE": "80"
+  }
+]
+ `
           const books = JSON.parse(data);
-
+          
           books.forEach((book) => {
             // console.log(book);
             const card = $("<my-card></my-card>");

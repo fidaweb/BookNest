@@ -314,74 +314,104 @@
                 if(localStorage.getItem('books')){
                     
                     let books=JSON.parse(localStorage.getItem('books'))
-                    console.log(books.length)
-                    $.ajax({
-                        url: 'http://localhost/Project/api/cart.php',  // adjust the path as needed
-                        method: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify({ isbns: books }),
-                        success: function(response) {
-                            console.log("Books received:", response);
-                            let books=JSON.parse(response)
-                            console.log(books.length)
-                            books.forEach(book => {
-                            // console.log(book)
-                            //     const card = $('<my-card></my-card>');
+                    
+//                     $.ajax({
+//                         url: 'http://localhost/Project/api/cart.php',  // adjust the path as needed
+//                         method: 'POST',
+//                         contentType: 'application/json',
+//                         data: JSON.stringify({ isbns: books }),
+                        
+//                         success: function(response) {
+//                           console.log('error')
+                         
+//                             console.log("Books received:", response);
+                            
+//                             let books=JSON.parse(response)
+//                             console.log(books.length)
+//                             books.forEach(book => {
+                           
 
-                            //     card.append(`<img slot="image" src="${book['Image_URL_L']}" alt="Great Gatsby" style="height: 10rem;">`);
-                            //     card.append(`<span slot="title">${book['Book_Title']}</span>`);
-                            //     card.append(`<span slot="author">${book['Book_Author']}</span>`);
-                            //     card.append(`<span slot="price">${book['PRICE']}</span>`);
-                            //     card.append(`<button slot="button" class={btn} style="background-color:white;border:black bold" onclick={addToCart(event,${book['ISBN']})}>Remove from Cart</button>`)
-                                
-                            //     $('#main').append(card);
-                            //     // Example: print book title
+//                             const card = $("<my-card></my-card>");
+//                             card.addClass("card");
 
-                            const card = $("<my-card></my-card>");
-                            card.addClass("card");
+//                             card.append(
+//                               `<img slot="image"style="width: 100%;
+//                             height: 200px;
+//                             object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+//                             );
 
-                            card.append(
-                              `<img slot="image"style="width: 100%;
-                            height: 200px;
-                            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
-                            );
+//                             card.append(
+//                               `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
+//                             );
 
-                            card.append(
-                              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
-                            );
+//                             card.append(
+//                               `<p  class='author' slot="author">${book["Book_Author"]}</p>`
+//                             );
+//                             card.append(
+//                               `<p class='desc' slot="desc">This book is a bestseller with a very interesting story to tell ...</p>`
+//                             );
+//                             card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
+//                             card.append(
+//                               `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book["ISBN"]})}>Remove From Cart</button>`
+//                             );
 
-                            card.append(
-                              `<p  class='author' slot="author">${book["Book_Author"]}</p>`
-                            );
-                            card.append(
-                              `<p class='desc' slot="desc">This book is a bestseller with a very interesting story to tell ...</p>`
-                            );
-                            card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
-                            card.append(
-                              `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book["ISBN"]})}>Remove From Cart</button>`
-                            );
+//                             const item=`
+//                             <div class="book-item">
+//                               <img class="pay-img" src="${book["Image_URL_L"]}" alt="">
+//                               <div class="content">
+//                                   <h4>${book["Book_Title"]}</h4>
+//                                   <h5>${book["Book_Author"]}</h5>
+//                               </div>
+//                               <h4>${book["PRICE"]}</h4>
+//                             </div>
+//                             `
+//                             $('.order-summary .book-item-list').append(item)
 
-                            const item=`
-                            <div class="book-item">
-                              <img class="pay-img" src="${book["Image_URL_L"]}" alt="">
-                              <div class="content">
-                                  <h4>${book["Book_Title"]}</h4>
-                                  <h5>${book["Book_Author"]}</h5>
-                              </div>
-                              <h4>${book["PRICE"]}</h4>
-                            </div>
-                            `
-                            $('.order-summary .book-item-list').append(item)
-
-                            $("#main").append(card);
+//                             $("#main").append(card);
                             
                                 
-                    });
-},
-                        error: function(xhr, status, error) {
-                            console.error("Error loading books:", xhr.responseText);
-                        }
-                    }).then(function () {
+//                     });
+// },
+//                         error: function(xhr, status, error) {
+//                             console.error("Error loading books:", xhr.responseText);
+//                         }
+//                     })
+                      
+$.get("../../api/home.php", function (data) {
+
+ 
+  let books=JSON.parse(localStorage.getItem('books'))
+          books.forEach((book) => {
+            // console.log(book);
+            const card = $("<my-card></my-card>");
+            card.addClass("card");
+
+            card.append(
+              `<img slot="image"style="width: 100%;
+            height: 200px;
+            object-fit: cover;" src="${'http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg'}" alt="Great Gatsby" style="height: 10rem;">`
+            );
+
+            card.append(
+              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${'Book Title'}"  slot="title">${'Book Title'}</h2>`
+            );
+
+            card.append(
+              `<p  class='author' slot="author">${"Book_Author"}</p>`
+            );
+            card.append(
+              `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
+            );
+            card.append(`<p class='price' slot="price">$${'80'}</p>`);
+            card.append(
+              `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book})}>Remove From Cart</button>`
+            );
+
+            $("#main").append(card);
+          });
+
+
+}).then(function () {
                       console.log('then')
           $("#main .card").click(function () {
             $(this).toggleClass("flip");
