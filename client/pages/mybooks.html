@@ -1,230 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book Nest</title>
-  <style>
-    :root {
-      --primary: #f4b400;
-      --dark-bg: #121212;
-      --accent: #00bcd4;
-      --light: #f9f9f9;
-      --book-bg: #222;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Nest</title>
+    <style>
+      :root {
+        --primary: #f4b400;
+        --dark-bg: #121212;
+        --accent: #00bcd4;
+        --light: #f9f9f9;
+        --book-bg: #222;
+      }
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--dark-bg);
-      color: white;
-    }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background-color: var(--dark-bg);
+        color: white;
+      }
 
-    header {
-      background-color: var(--primary);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-    }
+      header {
+        background-color: var(--primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+      }
 
-    header h1 {
-      margin: 0;
-      color: black;
-    }
+      header h1 {
+        margin: 0;
+        color: black;
+      }
 
-    nav a {
-      margin-left: 1.5rem;
-      color: black;
-      text-decoration: none;
-      font-weight: 600;
-    }
+      nav a {
+        margin-left: 1.5rem;
+        color: black;
+        text-decoration: none;
+        font-weight: 600;
+      }
 
-    .search-bar {
-      display: flex;
-      justify-content: center;
-      padding: 1rem;
-    }
+      .search-bar {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+      }
 
-    .search-bar input {
-      padding: 0.6rem;
-      width: 300px;
-      border-radius: 6px 0 0 6px;
-      border: none;
-    }
+      .search-bar input {
+        padding: 0.6rem;
+        width: 300px;
+        border-radius: 6px 0 0 6px;
+        border: none;
+      }
 
-    .search-bar button {
-      padding: 0.6rem 1rem;
-      background-color: var(--accent);
-      border: none;
-      color: white;
-      border-radius: 0 6px 6px 0;
-      cursor: pointer;
-    }
+      .search-bar button {
+        padding: 0.6rem 1rem;
+        background-color: var(--accent);
+        border: none;
+        color: white;
+        border-radius: 0 6px 6px 0;
+        cursor: pointer;
+      }
 
-    .filters {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      padding: 0.5rem 1rem;
-    }
+      .filters {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+      }
 
-    .filters button {
-      background-color: var(--accent);
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-    }
+      .filters button {
+        background-color: var(--accent);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+      }
 
-    .book-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem;
-    }
+      .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+      }
 
-    .book-card {
-      background-color: var(--book-bg);
-      border: 3px solid var(--primary);
-      border-radius: 10px;
-      padding: 1rem;
-      text-align: center;
-      color: white;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
+      .book-card {
+        background-color: var(--book-bg);
+        border: 3px solid var(--primary);
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
 
-    .book-card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
+      .book-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 6px;
+      }
 
-    .book-card h3 {
-      margin: 0.8rem 0 0.2rem;
-    }
+      .book-card h3 {
+        margin: 0.8rem 0 0.2rem;
+      }
 
-    .book-card p {
-      margin: 0.3rem 0;
-    }
+      .book-card p {
+        margin: 0.3rem 0;
+      }
 
-    .book-card button {
-      margin-top: 0.5rem;
-      padding: 0.5rem 1rem;
-      background-color: var(--accent);
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    footer {
-      background: rgba(215, 128, 40, 0.95);
-      color: white;
-      padding: 3rem 1rem 1rem 1rem;
-    }
+      .book-card button {
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: var(--accent);
+        border: none;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      footer {
+        background: rgba(215, 128, 40, 0.95);
+        color: white;
+        padding: 3rem 1rem 1rem 1rem;
+      }
 
-    footer h5, footer h6 {
-      color: #fff;
-      margin-bottom: 1rem;
-    }
+      footer h5,
+      footer h6 {
+        color: #fff;
+        margin-bottom: 1rem;
+      }
 
-    footer ul {
-      list-style: none;
-      padding: 0;
-    }
+      footer ul {
+        list-style: none;
+        padding: 0;
+      }
 
-    footer ul li {
-      margin-bottom: 0.5rem;
-    }
+      footer ul li {
+        margin-bottom: 0.5rem;
+      }
 
-    footer ul li a {
-      color: #fff;
-      text-decoration: none;
-    }
+      footer ul li a {
+        color: #fff;
+        text-decoration: none;
+      }
 
-    footer .payment-logo {
-      height: 30px;
-      margin-left: 0.5rem;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Book Nest</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Cart</a>
-      <a href="#">My Books</a>
-    </nav>
-  </header>
+      footer .payment-logo {
+        height: 30px;
+        margin-left: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Book Nest</h1>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="blogs.html">Blogs</a>
+        <a href="communities.html">Communities</a>
+      </nav>
+    </header>
 
-  <div class="search-bar">
-    <input type="text" placeholder="Search books...">
-    <button>Search</button>
-  </div>
-
-  <div class="filters">
-    <button>Category</button>
-    <button>My Books</button>
-    <button>My Communities</button>
-  </div>
-
-  <div class="book-grid">
-    <div class="book-card">
-      <img src="https://images-na.ssl-images-amazon.com/images/I/51xwGfW4UdL.SX342_SY445_QL70_ML2.jpg" alt="Classical Mythology">
-      <h3>Classical Mythology</h3>
-      <p>Mark P. O. Morford</p>
-      <p>$110</p>
-      <button>Add to Cart</button>
+    <div class="search-bar">
+      <input type="text" placeholder="Search books..." />
+      <button>Search</button>
     </div>
-    <div class="book-card">
-      <img src="https://images-na.ssl-images-amazon.com/images/I/51YTRd+nYkL.SX322_BO1,204,203,200.jpg" alt="Clara Callan">
-      <h3>Clara Callan</h3>
-      <p>Richard Bruce Wright</p>
-      <p>$80</p>
-      <button>Add to Cart</button>
-    </div>
-    <!-- Add more books below if needed -->
-  </div>
 
-<footer>
-    <div class="footer-container">
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-        <div style="max-width: 300px;">
-          <h5>BookNest</h5>
-          <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
+    <div class="filters">
+      <button>Category</button>
+      <button>My Books</button>
+      <button>My Communities</button>
+    </div>
+
+    <div class="book-grid">
+      <div class="book-card">
+        <img
+          src="https://images-na.ssl-images-amazon.com/images/I/51xwGfW4UdL.SX342_SY445_QL70_ML2.jpg"
+          alt="Classical Mythology"
+        />
+        <h3>Classical Mythology</h3>
+        <p>Mark P. O. Morford</p>
+        <p>$110</p>
+        <button>Add to Cart</button>
+      </div>
+      <div class="book-card">
+        <img
+          src="https://images-na.ssl-images-amazon.com/images/I/51YTRd+nYkL.SX322_BO1,204,203,200.jpg"
+          alt="Clara Callan"
+        />
+        <h3>Clara Callan</h3>
+        <p>Richard Bruce Wright</p>
+        <p>$80</p>
+        <button>Add to Cart</button>
+      </div>
+      <!-- Add more books below if needed -->
+    </div>
+
+    <footer>
+      <div class="footer-container">
+        <div
+          style="display: flex; flex-wrap: wrap; justify-content: space-around"
+        >
+          <div style="max-width: 300px">
+            <h5>BookNest</h5>
+            <p>
+              Your trusted online bookstore for all genres. Discover, read, and
+              grow with our vast collection of books.
+            </p>
+          </div>
+          <div>
+            <h6>Quick Links</h6>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Books</a></li>
+              <li><a href="#">Categories</a></li>
+              <li><a href="#">Authors</a></li>
+            </ul>
+          </div>
+          <div>
+            <h6>Contact Us</h6>
+            <p>&#9993; Email: booknest@gmail.com</p>
+            <p>&#9743; Phone: 01824673890</p>
+            <p>&#8962; Address: Block A Dhaka, Bangladesh</p>
+          </div>
         </div>
-        <div>
-          <h6>Quick Links</h6>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Books</a></li>
-            <li><a href="#">Categories</a></li>
-            <li><a href="#">Authors</a></li>
-          </ul>
-        </div>
-        <div>
-          <h6>Contact Us</h6>
-          <p>&#9993; Email: booknest@gmail.com</p>
-          <p>&#9743; Phone: 01824673890</p>
-          <p>&#8962; Address: Block A Dhaka, Bangladesh</p>
+        <hr style="margin: 2rem 0; border-color: #495057" />
+        <div
+          style="
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <p>&copy; 2025 BookNest. All rights reserved.</p>
+          <div>
+            <img
+              src="../assets/images/visa.jpg"
+              alt="Visa"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/mastercard.png"
+              alt="Mastercard"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/bkash.jpg"
+              alt="Bkash"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/nagad.png"
+              alt="Nagad"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/upay.png"
+              alt="Upay"
+              class="payment-logo"
+            />
+          </div>
         </div>
       </div>
-      <hr style="margin: 2rem 0; border-color: #495057;">
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
-        <p>&copy; 2025 BookNest. All rights reserved.</p>
-        <div>
-          <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
-          <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
-          <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
-          <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
-          <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
-        </div>
-      </div>
-    </div>
-  </footer>
-
-</body>
+    </footer>
+  </body>
 </html>

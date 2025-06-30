@@ -407,6 +407,18 @@ $.get("../../api/home.php", function (data) {
               `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book})}>Remove From Cart</button>`
             );
 
+            const item=`
+                            <div class="book-item">
+                              <img class="pay-img" src="${'http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg'}" alt="">
+                              <div class="content">
+                                  <h4>${'Book Title'}</h4>
+                                  <h5>${'Book Author'}</h5>
+                              </div>
+                              <h4>${'50'}</h4>
+                            </div>
+                            `
+                            $('.order-summary .book-item-list').append(item)
+
             $("#main").append(card);
           });
 
