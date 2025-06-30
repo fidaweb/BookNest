@@ -15,13 +15,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
-      /* body {
-        padding: 0;
-        margin: 0;
-        border: 0;
-       
-        background-color: var(--tertiary-color);
-      } */
+      
       body {
             background: url('../assets/images/background.jpg') center/cover no-repeat;
             min-height: 100vh;
@@ -131,7 +125,14 @@
     </style>
   </head>
   <body>
+
+<!-- Most of the logic of home.html is the same as the other category pages -->
+ 
     <my-navbar></my-navbar>
+
+    <!--This is the modal for add to cart notification which is almost the same modal as done in class for bootstrap
+the addtocart button is attached to function on click event that renders a bootstrap element based on this modal defined below
+-->
 
     <div class="container">
       <div
@@ -157,6 +158,10 @@
     </div>
 
 
+
+<!--This is the modal for category which is almost the same modal as done in class for bootstrap
+the category button is attached to function on click event that renders a bootstrap element based on this modal defined below
+-->
     <div
         aria-labelledby="modtitle"
         aria-hidden="true"
@@ -184,6 +189,9 @@
       </div>
     </div>
 
+
+
+    <!-- This is the bar that shows the search compnent and buttons to navigate to different pages except the catagory button -->
     <div
       class="d-flex p-3 align-center justify-content-between flex-wrap gap-3" 
       
@@ -200,12 +208,16 @@
       </div>
       
     </div>
-
+<!-- This is the main container that is initially empty and then populated by cards using javascript below -->
     <div
       id="main"
       class="p-3 gap-5 align-center d-flex justify-content-center flex-wrap"
      
     ></div>
+
+
+<!-- This is the pagination boostrap element taken from the lab manual from boostrap -->
+
     <nav
       style="
         align-items: center;
@@ -232,27 +244,7 @@
       </ul>
     </nav>
 
-    <!-- <footer>
-
-      <div class="container-fluid d-flex justify-content-center py-2" style="background-color: black;">
-    
-        <div style="text-align: center;width: 100px;">
-            
-            <img class="img-circle" style="height: 20px;width: 20px;" src="../assets/gmail.png" alt="">
-            <span href="#" data-bs-toggle="tooltip" data-bs-placement="top" style="text-align: center; color: white;" title="fida.ullah@northsouth.edu">Gmail</span>
-        </div>
-        <div style="text-align: center;width: 100px;">
-            
-            <img class="img-circle" style="height: 20px;width: 20px;" src="../assets/linkedin.png" alt="">
-            <span href="#" data-bs-toggle="tooltip" data-bs-placement="top" style="text-align: center; color: white;" title="linked in">Linked In</span>
-        </div>
-        <div style="text-align: center;width: 100px;">
-            
-            <img class="img-circle" style="height: 20px;width: 20px;" src="../assets/contact.png" alt="">
-            <span href="#" data-bs-toggle="tooltip" data-bs-placement="top" style="text-align: center; color: white;" title="contact">Contact</span>
-        </div>
-        </div>
-    </footer> -->
+  <!-- This is the footer done by Adline -->
     <footer class="footer">
       <div class="container py-5">
           <div class="row">
@@ -306,15 +298,20 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    
+    <!-- This is the javascript imported from my-card.js and navbar.js needed to create a template shadow element that is cloned each time the component is
+     used in the project and then append as child element of  the shadow root -->
     <script type="module">
       import "../components/my-card.js";
       import "../components/navbar.js";
     </script>
+
+
+<!-- this is the load books functions that will fetch from database but currently using a static array for the fetched data -->
+
     <script>
       function loadBooks() {
         return $.get("../../api/home.php", function (data) {
-          console.log(data)
+        //   this is data array representing what will be fetched from database
           var data=`
 [
   {
@@ -539,13 +536,23 @@
   }
 ]
  `
+
+ //since database echos an array of JSON format objects as string  and send it as data
+//JSON.parse parses the string into an array of JSON objects
           const books = JSON.parse(data);
           
+          //iterate over the array and for each object get data from object create a card
+          //embed the data[url,name,ISBN,Book Title,Author] in the card html element 
+          //append or populate the main element with the newly embedded card
           books.forEach((book) => {
-            // console.log(book);
+            //create my card
             const card = $("<my-card></my-card>");
-            card.addClass("card");
 
+            // add class card to enforce page specific styling
+            card.addClass("card");
+            
+
+            //append child elements to card embedded with data fetched from database
             card.append(
               `<img slot="image"style="width: 100%;
             height: 200px;
@@ -566,37 +573,51 @@
             card.append(
               `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["ISBN"]})}>Add to Cart</button>`
             );
-
+            //append or populate main element with newly embedded card
             $("#main").append(card);
           });
         }).then(function () {
+          //.then is used to make sure below code executes only after populating main elements with card
+
+
+          
+          //attach a flip function to cards
           $("#main .card").click(function () {
+            //on click, first add flip class if without flip class and remove flip class if flip class present
             $(this).toggleClass("flip");
+            
+
+            //after toggling flip class conditionally add styles based on flip state
             if ($(this).hasClass("flip")) {
+              //a card with flip class do not display author,price,button  but description
               $(this).find(".author").css({ display: "none" });
               $(this).find(".price").css({ display: "none" });
               $(this).find(".btn").css({ display: "none" });
               $(this).find(".desc").css({ display: "block" });
             } else {
+               //a card without flip class do not display description but displays author and price and button
               $(this).find(".author").css({ display: "block" });
               $(this).find(".price").css({ display: "block" });
               $(this).find(".btn").css({ display: "block" });
               $(this).find(".desc").css({ display: "none" });
             }
           });
-
+          //this is where the category button is attached to the function that creates a bootstrap modal element based on the modal styled above
+          //then shows the modal
           $(".category").click(function(){
             new bootstrap.Modal($("#categorymodal")).show();
           });
 
+
+          //this is the mycommunities button when clicked sets the current window location to mycommunities.html
           $(".mycommunities").click(function(){
             window.location.href='mycommunities.html'
           });
-
+          //this is the mybooks button when clicked sets the current window location to mybooks.html
           $(".mybooks").click(function(){
             window.location.href='mybooks.html'
           });
-
+          //this is the cart button when clicked sets the current window location to cart.html'
           $(".cart").click(function(){
             window.location.href='cart.html'
           });
@@ -610,18 +631,24 @@
 
         });
       }
-
+//this is the add cart function attached to each card during the  loop for populating the main element with cards after fetching data from database
       function addToCart(event, bookID) {
+        //initalize an empty array
         let books = [];
+        //check localstorage for array of books
         if (localStorage.getItem("books")) {
+          //if found parse the array as it is currently a string into real array
           books = JSON.parse(localStorage.getItem("books"));
         }
-
+        //push the bookid passed as argument into books array
         books.push(bookID);
+        //set the mdified array into locla storage again as string
         localStorage.setItem("books", JSON.stringify(books));
+
+        //create new modal based on styled modal above and then show it
         new bootstrap.Modal($("#mymodal")).show();
       }
-
+      //this is like the entry point of script the main function- loadBooks is called only after document reloads
       $(document).ready(function () {
 
         loadBooks();

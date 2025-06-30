@@ -8,14 +8,7 @@
     <link rel="stylesheet" href="../style.css">
     <script src="../assets/bootstrap.bundle.min.js.js"></script>
     <style>
-        /* body {
-          padding: 0;
-          margin: 0;
-          border: 0;
-         
-          background-color: var(--tertiary-color);
-        }
-   */
+ 
 
    body {
         background: url("../assets/images/background.jpg") center/cover
@@ -156,11 +149,13 @@
 </head>
 <body>
     <body>
+
+    <!-- navbar component using navbar.html and navbar.js -->
         <my-navbar></my-navbar>
 
         <div class="display">
 
-          
+          <!-- this is the order summary component-->
 
           <div id="main" class=" p-3 gap-3 align-center   d-flex justify-content-center flex-wrap" ></div>
           <div class="order-summary">
@@ -170,30 +165,7 @@
               </h2>
             </div>
             <div class="book-item-list">
-                <!-- <div class="book-item">
-                  <img class="pay-img" src="http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg" alt="">
-                  <div class="content">
-                      <h4>Book Title</h4>
-                      <h5>Author</h5>
-                  </div>
-                  <h4>$78</h4>
-                </div>
-                <div class="book-item">
-                  <img class="pay-img" src="http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg" alt="">
-                  <div class="content">
-                      <h4>Book Title</h4>
-                      <h5>Author</h5>
-                  </div>
-                  <h4>$56</h4>
-                </div>
-                <div class="book-item">
-                  <img class="pay-img" src="http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg" alt="">
-                  <div class="content">
-                      <h4>Book Title</h4>
-                      <h5>Author</h5>
-                  </div>
-                  <h4>$45</h4>
-                </div> -->
+               <!-- this where the cart book items are populated -->
             </div>
             <div class="break-down">
               <div class="cost">
@@ -304,6 +276,8 @@
           
         
           <!-- Load the JavaScript that defines the custom element -->
+           <!-- This is the javascript imported from my-card.js and navbar.js needed to create a template shadow element that is cloned each time the component is
+     used in the project and then append as child element of  the shadow root -->
           <script type="module">
             import '../components/my-card.js';
             import '../components/navbar.js';
@@ -312,9 +286,9 @@
              function loadCart() {
                 console.log('cart loading')
                 if(localStorage.getItem('books')){
-                    
-                    let books=JSON.parse(localStorage.getItem('books'))
-                    
+                   
+                    // let books=JSON.parse(localStorage.getItem('books'))
+//Database Connection                
 //                     $.ajax({
 //                         url: 'http://localhost/Project/api/cart.php',  // adjust the path as needed
 //                         method: 'POST',
@@ -379,8 +353,10 @@
                       
 $.get("../../api/home.php", function (data) {
 
- 
+  //get books array as string populated from home and categories pages then get real array from string by parsing it
   let books=JSON.parse(localStorage.getItem('books'))
+
+  //iterate over the array embedding the id as argument to the removefromcart function for each id
           books.forEach((book) => {
             // console.log(book);
             const card = $("<my-card></my-card>");
@@ -406,7 +382,7 @@ $.get("../../api/home.php", function (data) {
             card.append(
               `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book})}>Remove From Cart</button>`
             );
-
+//also populate the book item list for each book id present in local storage
             const item=`
                             <div class="book-item">
                               <img class="pay-img" src="${'http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg'}" alt="">
@@ -424,7 +400,7 @@ $.get("../../api/home.php", function (data) {
 
 
 }).then(function () {
-                      console.log('then')
+                      //
           $("#main .card").click(function () {
             $(this).toggleClass("flip");
             if ($(this).hasClass("flip")) {
@@ -439,31 +415,19 @@ $.get("../../api/home.php", function (data) {
               $(this).find(".desc").css({ display: "none" });
             }
 
-            // $(this).find(".btn").click(function(){
-            //   new bootstrap.Modal($("#cartmodal")).show();
-            // })
+            
           });
 
-          // $(".category").click(function(){
-          //   new bootstrap.Modal($("#categorymodal")).show();
-          // });
-
-          // $(".mycommunities").click(function(){
-          //   window.location.href='mycommunities.html'
-          // });
-
-          // $(".mybooks").click(function(){
-          //   window.location.href='mybooks.html'
-          // });
-          console.log($('.order-summary'))
-          console.log($('.order-summary .break-down .cost button'))
+        
+          
           $('.order-summary .break-down .cost button').click(function(){
             window.location.href='payment.html'
           });
          
-
+            //get array of elements with data-bs-toggle="tooltip"
           var tooltipTriggerList =
         [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+         //map each element in array to function that creates new bootstrap tootltip
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
         })
@@ -474,24 +438,26 @@ $.get("../../api/home.php", function (data) {
 
     function removeFromCart(event, bookID) {
         let books = [];
+        //get books array stored as string from local storage
         if (localStorage.getItem("books")) {
+          //string array to real array
           books = JSON.parse(localStorage.getItem("books"));
         }
         console.log(books)
+        //for each id in books array return id if id!=bookID creating an array that does not contain the bookID but other ids
         books=books.filter(id=>{
           return id!=bookID
         })
-        console.log(books)
-        console.log('removed-----------')
+       
         
-        // books.push(bookID);
+      //set array now without book id into local storage
         localStorage.setItem("books", JSON.stringify(books));
 
        
         location.reload();
 
       }
-    
+    //main entry point of code loadcart executes only after document ready
   $(document).ready(function () {
 
               loadCart();
