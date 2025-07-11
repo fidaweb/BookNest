@@ -1,169 +1,155 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-header('Access-Control-Allow-Headers: Content-Type');
-
-// Database configuration (adjust according to your setup)
-$host = 'localhost';
-$dbname = 'booknest';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die(json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]));
-}
-
-// Get the action from POST data
-$action = $_POST['action'] ?? $_GET['action'] ?? '';
-$userId = $_POST['user_id'] ?? $_GET['user_id'] ?? 1; // Default user ID for demo
-
-switch($action) {
-    case 'get_communities':
-        getUserCommunities($pdo, $userId);
-        break;
-        
-    case 'join_community':
-        joinCommunity($pdo, $userId);
-        break;
-        
-    case 'leave_community':
-        leaveCommunity($pdo, $userId);
-        break;
-        
-    default:
-        echo json_encode(['error' => 'Invalid action']);
-        break;
-}
-
-function getUserCommunities($pdo, $userId) {
+// Handle leave community functionality
+if (isset($_POST['action']) && $_POST['action'] === 'leave_community') {
+    header('Content-Type: text/xml');
+    echo '<?xml version="1.0" encoding="UTF-8"?>';
+    echo '<response>';
+    
     try {
-        $stmt = $pdo->prepare("
-            SELECT uc.*, c.name, c.description, c.category, c.icon, c.image, c.total_members, c.total_posts
-            FROM user_communities uc 
-            JOIN communities c ON uc.community_id = c.id 
-            WHERE uc.user_id = ? AND uc.status = 'active'
-            ORDER BY uc.joined_date DESC
-        ");
-        $stmt->execute([$userId]);
-        $communities = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        echo json_encode(['success' => true, 'communities' => $communities]);
-    } catch(PDOException $e) {
-        echo json_encode(['error' => 'Failed to fetch communities: ' . $e->getMessage()]);
-    }
-}
-
-function joinCommunity($pdo, $userId) {
-    try {
-        $communityData = json_decode($_POST['community'], true);
-        
-        // First, insert or update the community
-        $stmt = $pdo->prepare("
-            INSERT INTO communities (name, description, category, icon, image, total_members, total_posts) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE 
-            total_members = VALUES(total_members),
-            total_posts = VALUES(total_posts)
-        ");
-        $stmt->execute([
-            $communityData['name'],
-            $communityData['description'],
-            $communityData['category'],
-            $communityData['icon'],
-            $communityData['image'],
-            $communityData['members'],
-            $communityData['posts']
-        ]);
-        
-        $communityId = $pdo->lastInsertId() ?: getCommunityIdByName($pdo, $communityData['name']);
-        
-        // Then, add user to community
-        $stmt = $pdo->prepare("
-            INSERT INTO user_communities (user_id, community_id, joined_date, status) 
-            VALUES (?, ?, NOW(), 'active')
-            ON DUPLICATE KEY UPDATE status = 'active', joined_date = NOW()
-        ");
-        $stmt->execute([
-            $userId,
-            $communityId
-        ]);
-        
-        echo json_encode(['success' => true, 'message' => 'Successfully joined community']);
-    } catch(PDOException $e) {
-        echo json_encode(['error' => 'Failed to join community: ' . $e->getMessage()]);
-    }
-}
-
-function leaveCommunity($pdo, $userId) {
-    try {
-        $communityId = $_POST['community_id'];
-        
-        // Update user_communities status to 'left'
-        $stmt = $pdo->prepare("
-            UPDATE user_communities 
-            SET status = 'left', left_date = NOW() 
-            WHERE user_id = ? AND community_id = ?
-        ");
-        $stmt->execute([$userId, $communityId]);
-        
-        if ($stmt->rowCount() > 0) {
-            echo json_encode(['success' => true, 'message' => 'Successfully left community']);
-        } else {
-            echo json_encode(['error' => 'Community not found or already left']);
+        if (!isset($_POST['user_id']) || empty($_POST['user_id'])) {
+            throw new Exception("User ID is required");
         }
-    } catch(PDOException $e) {
-        echo json_encode(['error' => 'Failed to leave community: ' . $e->getMessage()]);
+        
+        if (!isset($_POST['community_id']) || empty($_POST['community_id'])) {
+            throw new Exception("Community ID is required");
+        }
+        
+        $user_id = intval($_POST['user_id']);
+        $community_id = intval($_POST['community_id']);
+        
+        include("../config/connection.php");
+        
+        if (!isset($conn)) {
+            throw new Exception("Connection variable not found in connection file");
+        }
+        
+        if ($conn->connect_error) {
+            throw new Exception("Connection failed: " . $conn->connect_error);
+        }
+        
+        // Check if the user is actually a member of this community
+        $check_sql = "SELECT cm.id, c.name FROM community_member cm 
+                      INNER JOIN communities c ON cm.community_id = c.community_id 
+                      WHERE cm.user_id = ? AND cm.community_id = ?";
+        $check_stmt = mysqli_prepare($conn, $check_sql);
+        mysqli_stmt_bind_param($check_stmt, "ii", $user_id, $community_id);
+        mysqli_stmt_execute($check_stmt);
+        $check_result = mysqli_stmt_get_result($check_stmt);
+        
+        if (mysqli_num_rows($check_result) === 0) {
+            throw new Exception("You are not a member of this community");
+        }
+        
+        $membership_data = mysqli_fetch_assoc($check_result);
+        $community_name = $membership_data['name'];
+        
+        // Remove the user from the community
+        $delete_sql = "DELETE FROM community_member WHERE user_id = ? AND community_id = ?";
+        $delete_stmt = mysqli_prepare($conn, $delete_sql);
+        mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $community_id);
+        
+        if (mysqli_stmt_execute($delete_stmt)) {
+            $affected_rows = mysqli_stmt_affected_rows($delete_stmt);
+            
+            if ($affected_rows > 0) {
+                echo '<success>true</success>';
+                echo '<message>You have successfully left "' . htmlspecialchars($community_name) . '"</message>';
+                echo '<community_id>' . $community_id . '</community_id>';
+            } else {
+                throw new Exception("Failed to leave community");
+            }
+        } else {
+            throw new Exception("Database error: " . mysqli_error($conn));
+        }
+        
+        mysqli_stmt_close($delete_stmt);
+        mysqli_stmt_close($check_stmt);
+        
+    } catch (Exception $e) {
+        echo '<success>false</success>';
+        echo '<error>' . htmlspecialchars($e->getMessage()) . '</error>';
+    }
+    
+    echo '</response>';
+    
+    if (isset($conn)) {
+        mysqli_close($conn);
+    }
+    exit;
+}
+
+// Handle regular user communities fetch
+if (!isset($_POST['action'])) {
+    header('Content-Type: text/xml');
+    echo '<?xml version="1.0" encoding="UTF-8"?>';
+    echo '<response>';
+    
+    try {
+        if (!isset($_GET['user_id']) || empty($_GET['user_id'])) {
+            throw new Exception("User ID is required");
+        }
+        
+        $user_id = intval($_GET['user_id']);
+        
+        include("../config/connection.php");
+        
+        if (!isset($conn)) {
+            throw new Exception("Connection variable not found in connection file");
+        }
+        
+        if ($conn->connect_error) {
+            throw new Exception("Connection failed: " . $conn->connect_error);
+        }
+        
+        // Join community_member with communities table to get user's communities
+        $sql = "SELECT 
+                    c.community_id, 
+                    c.name, 
+                    c.description, 
+                    c.image_url, 
+                    c.category
+                FROM community_member cm 
+                INNER JOIN communities c ON cm.community_id = c.community_id 
+                WHERE cm.user_id = ? 
+                ORDER BY c.community_id DESC";
+        
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        if (!$result) {
+            throw new Exception("Query failed: " . mysqli_error($conn));
+        }
+        
+        echo '<success>true</success>';
+        echo '<communities>';
+        
+        if (mysqli_num_rows($result) > 0) {
+            while($row = mysqli_fetch_assoc($result)) {
+                echo '<community>';
+                echo '<community_id>' . htmlspecialchars($row['community_id']) . '</community_id>';
+                echo '<name>' . htmlspecialchars($row['name']) . '</name>';
+                echo '<description>' . htmlspecialchars($row['description']) . '</description>';
+                echo '<image_url>' . htmlspecialchars($row['image_url']) . '</image_url>';
+                echo '<category>' . htmlspecialchars($row['category']) . '</category>';
+                echo '</community>';
+            }
+        }
+        
+        echo '</communities>';
+        
+        mysqli_stmt_close($stmt);
+        
+    } catch (Exception $e) {
+        echo '<success>false</success>';
+        echo '<error>' . htmlspecialchars($e->getMessage()) . '</error>';
+    }
+    
+    echo '</response>';
+    
+    if (isset($conn)) {
+        mysqli_close($conn);
     }
 }
-
-function getCommunityIdByName($pdo, $name) {
-    $stmt = $pdo->prepare("SELECT id FROM communities WHERE name = ?");
-    $stmt->execute([$name]);
-    return $stmt->fetchColumn();
-}
-
-/*
-SQL to create required tables (run this once in your database):
-
-CREATE DATABASE IF NOT EXISTS booknest;
-USE booknest;
-
-CREATE TABLE IF NOT EXISTS communities (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL,
-    description TEXT,
-    category VARCHAR(100),
-    icon VARCHAR(100),
-    image VARCHAR(255),
-    total_members INT DEFAULT 0,
-    total_posts INT DEFAULT 0,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS user_communities (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    community_id INT NOT NULL,
-    joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    left_date TIMESTAMP NULL,
-    status ENUM('active', 'left') DEFAULT 'active',
-    UNIQUE KEY unique_user_community (user_id, community_id)
-);
-
--- Sample data for testing
-INSERT INTO communities (name, description, category, icon, image, total_members, total_posts) VALUES
-('Classic Literature Club', 'Dive deep into timeless classics from Shakespeare to Dickens.', 'fiction', 'fas fa-book-open', '/placeholder.svg?height=200&width=400', 2847, 156),
-('Mystery & Thriller Readers', 'Unravel mysteries and discuss plot twists with fellow thriller enthusiasts.', 'mystery', 'fas fa-search', '/placeholder.svg?height=200&width=400', 1923, 89),
-('Sci-Fi Universe', 'Explore futuristic worlds and discuss science fiction masterpieces.', 'sci-fi', 'fas fa-rocket', '/placeholder.svg?height=200&width=400', 2134, 178);
-
--- Sample user communities (assuming user_id = 1)
-INSERT INTO user_communities (user_id, community_id, status) VALUES
-(1, 1, 'active'),
-(1, 2, 'active'),
-(1, 3, 'active');
-*/
 ?>
