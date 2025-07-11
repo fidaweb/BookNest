@@ -1,5 +1,5 @@
 <?php
-require '../config/db.php';
+require '../config/connection.php';
 
 
 function checkSession(){
@@ -24,4 +24,7 @@ function checkSession(){
 
 
 
-?>
+
+
+
+

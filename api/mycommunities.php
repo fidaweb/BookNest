@@ -1,37 +1,101 @@
 <?php
-// Handle leave community functionality
-if (isset($_POST['action']) && $_POST['action'] === 'leave_community') {
-    header('Content-Type: text/xml');
-    echo '<?xml version="1.0" encoding="UTF-8"?>';
-    echo '<response>';
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Set proper headers
+header('Content-Type: application/xml; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+// Start output
+echo '<?xml version="1.0" encoding="UTF-8"?>';
+echo '<response>';
+
+try {
+    // Include database connection first
+    $connectionFile = __DIR__ . '/../config/connection.php';
+    if (!file_exists($connectionFile)) {
+        throw new Exception("Database connection file not found at: " . $connectionFile);
+    }
     
-    try {
-        if (!isset($_POST['user_id']) || empty($_POST['user_id'])) {
-            throw new Exception("User ID is required");
+    require_once($connectionFile);
+    
+    if (!isset($conn)) {
+        throw new Exception("Database connection not established");
+    }
+    
+    if ($conn->connect_error) {
+        throw new Exception("Database connection failed: " . $conn->connect_error);
+    }
+
+    // Include session checking - CORRECTED PATH (same folder)
+    $sessionFile = __DIR__ . '/session.php';
+    if (file_exists($sessionFile)) {
+        require_once($sessionFile);
+    } else {
+        // Simple fallback session check (should not be needed if session.php exists)
+        function checkSession() {
+            return isset($_COOKIE["session_id"]) && isset($_COOKIE["user_id"]);
         }
+    }
+
+    // Handle different actions
+    if (isset($_POST['action']) && $_POST['action'] === 'leave_community') {
+        handleLeaveCommunity($conn);
+    } else {
+        // Handle get communities
+        handleGetCommunities($conn);
+    }
+
+} catch (Exception $e) {
+    echo '<success>false</success>';
+    echo '<error>' . htmlspecialchars($e->getMessage()) . '</error>';
+    error_log("MyCommunitiesAPI Error: " . $e->getMessage());
+}
+
+echo '</response>';
+
+if (isset($conn)) {
+    mysqli_close($conn);
+}
+
+function handleLeaveCommunity($conn) {
+    try {
+        // Check session
+        if (!function_exists('checkSession') || !checkSession()) {
+            throw new Exception("Please log in to continue");
+        }
+        
+        // Get user_id from session cookie
+        if (!isset($_COOKIE["user_id"])) {
+            throw new Exception("Session expired. Please log in again.");
+        }
+        
+        $user_id = (int)$_COOKIE["user_id"];
         
         if (!isset($_POST['community_id']) || empty($_POST['community_id'])) {
             throw new Exception("Community ID is required");
         }
         
-        $user_id = intval($_POST['user_id']);
         $community_id = intval($_POST['community_id']);
         
-        include("../config/connection.php");
-        
-        if (!isset($conn)) {
-            throw new Exception("Connection variable not found in connection file");
-        }
-        
-        if ($conn->connect_error) {
-            throw new Exception("Connection failed: " . $conn->connect_error);
-        }
-        
-        // Check if the user is actually a member of this community
+        // Check if user is member of this community
         $check_sql = "SELECT cm.id, c.name FROM community_member cm 
                       INNER JOIN communities c ON cm.community_id = c.community_id 
                       WHERE cm.user_id = ? AND cm.community_id = ?";
+        
         $check_stmt = mysqli_prepare($conn, $check_sql);
+        if (!$check_stmt) {
+            throw new Exception("Database prepare error: " . mysqli_error($conn));
+        }
+        
         mysqli_stmt_bind_param($check_stmt, "ii", $user_id, $community_id);
         mysqli_stmt_execute($check_stmt);
         $check_result = mysqli_stmt_get_result($check_stmt);
@@ -43,9 +107,14 @@ if (isset($_POST['action']) && $_POST['action'] === 'leave_community') {
         $membership_data = mysqli_fetch_assoc($check_result);
         $community_name = $membership_data['name'];
         
-        // Remove the user from the community
+        // Remove user from community
         $delete_sql = "DELETE FROM community_member WHERE user_id = ? AND community_id = ?";
         $delete_stmt = mysqli_prepare($conn, $delete_sql);
+        
+        if (!$delete_stmt) {
+            throw new Exception("Database prepare error: " . mysqli_error($conn));
+        }
+        
         mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $community_id);
         
         if (mysqli_stmt_execute($delete_stmt)) {
@@ -56,7 +125,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'leave_community') {
                 echo '<message>You have successfully left "' . htmlspecialchars($community_name) . '"</message>';
                 echo '<community_id>' . $community_id . '</community_id>';
             } else {
-                throw new Exception("Failed to leave community");
+                throw new Exception("Failed to leave community - no rows affected");
             }
         } else {
             throw new Exception("Database error: " . mysqli_error($conn));
@@ -69,51 +138,45 @@ if (isset($_POST['action']) && $_POST['action'] === 'leave_community') {
         echo '<success>false</success>';
         echo '<error>' . htmlspecialchars($e->getMessage()) . '</error>';
     }
-    
-    echo '</response>';
-    
-    if (isset($conn)) {
-        mysqli_close($conn);
-    }
-    exit;
 }
 
-// Handle regular user communities fetch
-if (!isset($_POST['action'])) {
-    header('Content-Type: text/xml');
-    echo '<?xml version="1.0" encoding="UTF-8"?>';
-    echo '<response>';
-    
+function handleGetCommunities($conn) {
     try {
-        if (!isset($_GET['user_id']) || empty($_GET['user_id'])) {
-            throw new Exception("User ID is required");
+        $user_id = null;
+        
+        // Try to get user_id from session first
+        if (function_exists('checkSession') && checkSession() && isset($_COOKIE["user_id"])) {
+            $user_id = (int)$_COOKIE["user_id"];
+        } 
+        // Fallback to GET parameter for testing - REMOVED FOR PRODUCTION
+        // else if (isset($_GET['user_id']) && !empty($_GET['user_id'])) {
+        //     $user_id = intval($_GET['user_id']);
+        // }
+        
+        if (!$user_id) {
+            throw new Exception("Please log in to view your communities");
         }
         
-        $user_id = intval($_GET['user_id']);
-        
-        include("../config/connection.php");
-        
-        if (!isset($conn)) {
-            throw new Exception("Connection variable not found in connection file");
-        }
-        
-        if ($conn->connect_error) {
-            throw new Exception("Connection failed: " . $conn->connect_error);
-        }
-        
-        // Join community_member with communities table to get user's communities
+        // Get user's communities with member count
         $sql = "SELECT 
                     c.community_id, 
                     c.name, 
                     c.description, 
                     c.image_url, 
-                    c.category
+                    c.category,
+                    COUNT(cm2.user_id) as member_count
                 FROM community_member cm 
                 INNER JOIN communities c ON cm.community_id = c.community_id 
+                LEFT JOIN community_member cm2 ON c.community_id = cm2.community_id
                 WHERE cm.user_id = ? 
-                ORDER BY c.community_id DESC";
+                GROUP BY c.community_id, c.name, c.description, c.image_url, c.category
+                ORDER BY c.name ASC";
         
         $stmt = mysqli_prepare($conn, $sql);
+        if (!$stmt) {
+            throw new Exception("Database prepare error: " . mysqli_error($conn));
+        }
+        
         mysqli_stmt_bind_param($stmt, "i", $user_id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
@@ -123,6 +186,7 @@ if (!isset($_POST['action'])) {
         }
         
         echo '<success>true</success>';
+        echo '<user_id>' . $user_id . '</user_id>';
         echo '<communities>';
         
         if (mysqli_num_rows($result) > 0) {
@@ -130,9 +194,10 @@ if (!isset($_POST['action'])) {
                 echo '<community>';
                 echo '<community_id>' . htmlspecialchars($row['community_id']) . '</community_id>';
                 echo '<name>' . htmlspecialchars($row['name']) . '</name>';
-                echo '<description>' . htmlspecialchars($row['description']) . '</description>';
-                echo '<image_url>' . htmlspecialchars($row['image_url']) . '</image_url>';
-                echo '<category>' . htmlspecialchars($row['category']) . '</category>';
+                echo '<description>' . htmlspecialchars($row['description'] ?? '') . '</description>';
+                echo '<image_url>' . htmlspecialchars($row['image_url'] ?? '') . '</image_url>';
+                echo '<category>' . htmlspecialchars($row['category'] ?? '') . '</category>';
+                echo '<member_count>' . htmlspecialchars($row['member_count']) . '</member_count>';
                 echo '</community>';
             }
         }
@@ -144,12 +209,6 @@ if (!isset($_POST['action'])) {
     } catch (Exception $e) {
         echo '<success>false</success>';
         echo '<error>' . htmlspecialchars($e->getMessage()) . '</error>';
-    }
-    
-    echo '</response>';
-    
-    if (isset($conn)) {
-        mysqli_close($conn);
     }
 }
 ?>
