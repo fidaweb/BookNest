@@ -122,6 +122,8 @@
             margin-left: 0.5rem;
             opacity: 1;
         }
+        
+
     </style>
   </head>
   <body>
@@ -194,17 +196,19 @@ the category button is attached to function on click event that renders a bootst
     <!-- This is the bar that shows the search compnent and buttons to navigate to different pages except the catagory button -->
     <div
       class="d-flex p-3 align-center justify-content-between flex-wrap gap-3" 
-      
     >
       <div class="search align-center ">
-        <input  class="rounded-3" style="height: 100%"  type="text" />
+        <input  class="search rounded-3" placeholder="Search" style="height: 100%"  type="text" />
         <button class="btn btn-outline-light ">Search</button>
       </div>
       <div>
         <button class="category btn btn-secondary">Category</button>
-        <button class="cart btn btn-secondary">Cart</button>
+        <span class="user-nav">
+          <button class="cart btn btn-secondary">Cart</button>
         <button class="mybooks btn btn-secondary">My Books</button>
         <button class="mycommunities btn btn-secondary">My Communities</button>
+        </span>
+        
       </div>
       
     </div>
@@ -386,6 +390,17 @@ the category button is attached to function on click event that renders a bootst
             new bootstrap.Modal($("#categorymodal")).show();
           });
 
+          
+          if(getCookie("user_id")===""||getCookie("session_id"==="")){
+            $(".user-nav").css({display:"none"})
+          }
+         
+          $(".search").keydown(function(){
+            console.log(this.value)
+          })
+          
+         
+
 
           //this is the mycommunities button when clicked sets the current window location to mycommunities.html
           $(".mycommunities").click(function(){
@@ -409,6 +424,22 @@ the category button is attached to function on click event that renders a bootst
 
         });
       }
+
+      function getCookie(cname){
+        cname=cname+"="
+        let cookie=decodeURIComponent(document.cookie).split(";")
+        for(let i=0;i<cookie.length;i++){
+          c=cookie[i]
+          while(c.charAt(0)==" "){
+            c=c.substring(1)
+          }
+          if(c.indexOf(cname)==0){
+            return c.substring(cname.length,c.length)
+          }
+        }
+        return ""
+      }
+
 //this is the add cart function attached to each card during the  loop for populating the main element with cards after fetching data from database
       function addToCart(event, bookID) {
         //initalize an empty array
