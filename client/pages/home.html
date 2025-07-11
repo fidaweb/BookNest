@@ -395,8 +395,27 @@ the category button is attached to function on click event that renders a bootst
             $(".user-nav").css({display:"none"})
           }
          
-          $(".search").keydown(function(){
-            console.log(this.value)
+          $(".search").on('input',function(e){
+            cards=document.querySelectorAll(".card")
+           
+            let title=""
+            let author=""
+
+          cards.forEach(card=>{
+            
+            title=card.getElementsByClassName("title")[0].innerText.toLowerCase()
+            author=card.getElementsByClassName("author")[0].innerText.toLowerCase()
+            h=e.target.value.toLowerCase()
+    
+            if(title.match(h)==null&&
+            author.match(h)==null){
+              card.style.display="none"
+             
+            }
+            else{
+              card.style.display="block"
+            }
+          })
           })
           
          
