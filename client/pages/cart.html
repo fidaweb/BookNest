@@ -132,6 +132,7 @@
        .pay-img{
         width: 5rem;
         height: 5rem;
+        
        }
        .disc{
         border-bottom: 1px solid black; /* Adds the black line */
@@ -170,19 +171,19 @@
             <div class="break-down">
               <div class="cost">
                 <h3 >Subtotal</h3>
-                <h3 class="break">$45</h3>
+                <h3 class="break sub-total">$0</h3>
               </div>
-              <div class="cost">
+              <!-- <div class="cost">
                 <h3 >Delivery</h3>
                 <h3 class="break">$45</h3>
-              </div>
+              </div> -->
               <div class="cost">
                 <h3 >Discount</h3>
-                <h3 class="break disc">$45</h3>
+                <h3 class="break disc">$0</h3>
               </div>
               <div class="cost">
                 <h3 >Total</h3>
-                <h3 class="break">$45</h3>
+                <h3 class="break tot">$0</h3>
               </div>
               <div class="cost">
                 <button class="payments btn btn-outline-dark">Proceed to Payments</button>
@@ -287,74 +288,12 @@
                 console.log('cart loading')
                 if(localStorage.getItem('books')){
                    
-                    // let books=JSON.parse(localStorage.getItem('books'))
-//Database Connection                
-//                     $.ajax({
-//                         url: 'http://localhost/Project/api/cart.php',  // adjust the path as needed
-//                         method: 'POST',
-//                         contentType: 'application/json',
-//                         data: JSON.stringify({ isbns: books }),
-                        
-//                         success: function(response) {
-//                           console.log('error')
-                         
-//                             console.log("Books received:", response);
-                            
-//                             let books=JSON.parse(response)
-//                             console.log(books.length)
-//                             books.forEach(book => {
-                           
-
-//                             const card = $("<my-card></my-card>");
-//                             card.addClass("card");
-
-//                             card.append(
-//                               `<img slot="image"style="width: 100%;
-//                             height: 200px;
-//                             object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
-//                             );
-
-//                             card.append(
-//                               `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
-//                             );
-
-//                             card.append(
-//                               `<p  class='author' slot="author">${book["Book_Author"]}</p>`
-//                             );
-//                             card.append(
-//                               `<p class='desc' slot="desc">This book is a bestseller with a very interesting story to tell ...</p>`
-//                             );
-//                             card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
-//                             card.append(
-//                               `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book["ISBN"]})}>Remove From Cart</button>`
-//                             );
-
-//                             const item=`
-//                             <div class="book-item">
-//                               <img class="pay-img" src="${book["Image_URL_L"]}" alt="">
-//                               <div class="content">
-//                                   <h4>${book["Book_Title"]}</h4>
-//                                   <h5>${book["Book_Author"]}</h5>
-//                               </div>
-//                               <h4>${book["PRICE"]}</h4>
-//                             </div>
-//                             `
-//                             $('.order-summary .book-item-list').append(item)
-
-//                             $("#main").append(card);
-                            
-                                
-//                     });
-// },
-//                         error: function(xhr, status, error) {
-//                             console.error("Error loading books:", xhr.responseText);
-//                         }
-//                     })
+                    
                       
-$.get("../../api/home.php", function (data) {
-
+$.get(`../../api/cart.php?books=${localStorage.getItem('books')}`, function (data) {
+console.log(data)
   //get books array as string populated from home and categories pages then get real array from string by parsing it
-  let books=JSON.parse(localStorage.getItem('books'))
+  let books=JSON.parse(data)
 
   //iterate over the array embedding the id as argument to the removefromcart function for each id
           books.forEach((book) => {
@@ -365,32 +304,32 @@ $.get("../../api/home.php", function (data) {
             card.append(
               `<img slot="image"style="width: 100%;
             height: 200px;
-            object-fit: cover;" src="${'http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg'}" alt="Great Gatsby" style="height: 10rem;">`
+            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
             );
 
             card.append(
-              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${'Book Title'}"  slot="title">${'Book Title'}</h2>`
+              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
             );
 
             card.append(
-              `<p  class='author' slot="author">${"Book_Author"}</p>`
+              `<p  class='author' slot="author">${book["Book_Author"]}</p>`
             );
             card.append(
               `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
             );
-            card.append(`<p class='price' slot="price">$${'80'}</p>`);
+            card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
             card.append(
-              `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book})}>Remove From Cart</button>`
+              `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book['id']})}>Remove From Cart</button>`
             );
 //also populate the book item list for each book id present in local storage
             const item=`
                             <div class="book-item">
-                              <img class="pay-img" src="${'http://images.amazon.com/images/P/0002005018.01.LZZZZZZZ.jpg'}" alt="">
+                              <img class="pay-img" src="${book["Image_URL_L"]}" alt="">
                               <div class="content">
-                                  <h4>${'Book Title'}</h4>
-                                  <h5>${'Book Author'}</h5>
+                                  <h4>${book["Book_Title"]}</h4>
+                                  <h5>${book["Book_Author"]}</h5>
                               </div>
-                              <h4>${'50'}</h4>0
+                              <h4 class='price'>${book["PRICE"]}</h4>
                             </div>
                             `
                             $('.order-summary .book-item-list').append(item)
@@ -423,6 +362,18 @@ $.get("../../api/home.php", function (data) {
           $('.order-summary .break-down .cost button').click(function(){
             window.location.href='payment.html'
           });
+
+          var prices=$('.order-summary .book-item-list .price')
+          var total=0;
+          for( i=0;i<prices.length;i++){
+            console.log(prices[i])
+              total+=Number(prices[i].innerText);
+          }
+          
+          
+          $('.order-summary .break-down .sub-total').text(`${total}`)
+          $('.order-summary .break-down .disc').text(`${total*0.1}`)
+          $('.order-summary .break-down .tot').text(`${total*0.9}`)
          
             //get array of elements with data-bs-toggle="tooltip"
           var tooltipTriggerList =
