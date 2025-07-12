@@ -312,7 +312,7 @@
             document.getElementById('errorPopup').style.display = 'none';
             
             const formData = new FormData(this);
-            
+            console.log(formData)
             fetch('../../api/add_community.php', {
                 method: 'POST',
                 body: formData

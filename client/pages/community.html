@@ -428,13 +428,13 @@
         $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
             currentCommunityId = urlParams.get('id');
-            
+            console.log(currentCommunityId)
             if (!currentCommunityId) {
                 showError('Community ID not found');
                 return;
             }
             
-            loadChatMessages();
+            loadChatMessages(currentCommunityId);
             
             // Send message on button click
             $('#sendBtn').click(function() {
@@ -451,12 +451,12 @@
             // Auto-refresh messages every 5 seconds
             setInterval(function() {
                 if (!$('#sendBtn').prop('disabled')) {
-                    loadChatMessages();
+                    loadChatMessages(currentCommunityId);
                 }
             }, 5000);
         });
         
-        function loadChatMessages() {
+        function loadChatMessages(currentCommunityId) {
             $.ajax({
                 url: '../../api/community.php',
                 type: 'GET',
@@ -555,6 +555,7 @@
                 dataType: 'xml',
                 timeout: 10000,
                 success: function(data) {
+                    console.log(data)
                     var success = $(data).find('success').text();
                     
                     if (success === 'true') {

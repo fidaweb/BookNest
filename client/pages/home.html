@@ -44,7 +44,7 @@
       .card {
         transition: transform 0.8s;
         background: transparent;
-       
+        height: 25rem;
         color: black;
         /* background: var(--main-background) */
         background-color: rgba(255, 255, 255, 0.3);
@@ -218,11 +218,15 @@ the category button is attached to function on click event that renders a bootst
       class="p-3 gap-5 align-center d-flex justify-content-center flex-wrap"
      
     ></div>
+    <div class="d-flex align-center justify-content-center p-3">
+      <button class="more btn btn-dark">More...</button>
+    </div>
+   
 
 
 <!-- This is the pagination boostrap element taken from the lab manual from boostrap -->
 
-    <nav
+    <!-- <nav
       style="
         align-items: center;
         justify-content: center;
@@ -246,7 +250,7 @@ the category button is attached to function on click event that renders a bootst
           <a class="page-link" href="#">Next</a>
         </li>
       </ul>
-    </nav>
+    </nav> -->
 
   <!-- This is the footer done by Adline -->
     <footer class="footer">
@@ -313,8 +317,56 @@ the category button is attached to function on click event that renders a bootst
 <!-- this is the load books functions that will fetch from database but currently using a static array for the fetched data -->
 
     <script>
-      function loadBooks() {
-        return $.get("../../api/category.php?page=home", function (data) {
+      function load(count){
+        $.get(`../../api/category.php?page=home&offset=${count}`, function (data) {
+        //   this is data array representing what will be fetched from database
+
+
+
+ //since database echos an array of JSON format objects as string  and send it as data
+//JSON.parse parses the string into an array of JSON objects
+          const books = JSON.parse(data);
+          
+          //iterate over the array and for each object get data from object create a card
+          //embed the data[url,name,ISBN,Book Title,Author] in the card html element 
+          //append or populate the main element with the newly embedded card
+          books.forEach((book) => {
+            //create my card
+            const card = $("<my-card></my-card>");
+
+            // add class card to enforce page specific styling
+            card.addClass("card");
+            
+
+            //append child elements to card embedded with data fetched from database
+            card.append(
+              `<img slot="image"style="width: 100%;
+            height: 200px;
+            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+            );
+
+            card.append(
+              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
+            );
+
+            card.append(
+              `<p  class='author' slot="author">${book["Book_Author"]}</p>`
+            );
+            card.append(
+              `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
+            );
+            card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
+            card.append(
+              `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
+            );
+            //append or populate main element with newly embedded card
+            $("#main").append(card);
+          });
+        })
+
+      }
+      function loadBooks(count) {
+        return $.get(`../../api/category.php?page=home&offset=${count}`, function (data) {
         //   this is data array representing what will be fetched from database
 
 
@@ -389,6 +441,11 @@ the category button is attached to function on click event that renders a bootst
           $(".category").click(function(){
             new bootstrap.Modal($("#categorymodal")).show();
           });
+
+          $(".more").click(function(){
+            count+=20
+            load(count);
+          })
 
           
           if(getCookie("user_id")===""||getCookie("session_id"==="")){
@@ -479,7 +536,7 @@ the category button is attached to function on click event that renders a bootst
       //this is like the entry point of script the main function- loadBooks is called only after document reloads
       $(document).ready(function () {
 
-        loadBooks();
+        loadBooks(0);
       });
     </script>
   </body>

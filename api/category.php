@@ -1,16 +1,18 @@
 <?php
-require '../config/db.php';
+require '../config/connection.php';
 
 
 
 
 $page=$_GET["page"];
 
+$offset=$_GET["offset"];
+
 if($page==="home"){
-    $sql = "SELECT * FROM books_table LIMIT 20 ";  // corrected SQL
+    $sql = "SELECT * FROM books LIMIT 20 OFFSET $offset";  // corrected SQL
 }
 else{
-    $sql="SELECT * FROM books_table  WHERE Category IN ('$page') LIMIT 20";
+    $sql="SELECT * FROM books  WHERE Category ='$page' LIMIT 20 OFFSET $offset";
 }
 
 

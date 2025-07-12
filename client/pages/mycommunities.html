@@ -487,7 +487,8 @@
         
         function loadUserCommunities() {
             // Construct absolute URL based on common XAMPP setup
-            var apiUrl = window.location.origin + '/BookNest/api/mycommunities.php';
+            // var apiUrl = window.location.origin + '/BookNest/api/mycommunities.php';
+            var apiUrl ="../../api/mycommunities.php" ;
             console.log('Attempting to fetch from URL:', apiUrl);
             
             $.ajax({

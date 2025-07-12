@@ -5,8 +5,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo '<response>';
 
 try {
+    include("session.php");
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("Only POST requests are allowed");
+    }
+    if (checkSession()) {
+        throw new Exception("No Session");
     }
     
     if (!isset($_POST['community_id']) || empty($_POST['community_id'])) {

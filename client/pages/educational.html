@@ -147,29 +147,34 @@ id="categorymodal"
 </div>
 </div>
 
+
 <!-- This is the bar that shows the search compnent and buttons to navigate to different pages except the catagory button -->
 <div
 class="d-flex p-3 align-center justify-content-between flex-wrap gap-3" 
 
 >
 <div class="search align-center ">
-  <input  class="rounded-3" style="height: 100%"  type="text" />
+  <input  class="search rounded-3" style="height: 100%"  type="text" />
   <button class="btn btn-outline-light ">Search</button>
 </div>
 <div>
   <button class="category btn btn-secondary">Category</button>
-  <button class="cart btn btn-secondary">Cart</button>
+  <span class="user-nav">
+    <button class="cart btn btn-secondary">Cart</button>
   <button class="mybooks btn btn-secondary">My Books</button>
   <button class="mycommunities btn btn-secondary">My Communities</button>
+  </span>
+  
 </div>
 
 </div>
+
 
     <div
       style="
         height: 30rem;
         padding-top: 10rem;
-        background-image: url(../assets/edutheme.jpg);
+        
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -183,10 +188,12 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
           background-color: rgba(255, 255, 255, 0.5);
         "
       >
-        <h1 style="color: var(--black)" class="display-4">Educational</h1>
+        <h1 style="color: var(--black)" class="display-4">
+          Educational
+        </h1>
         <p style="color: var(--black)" class="lead">
-          This is the place where you will find all things educational from life
-          skills to science and maths.
+          This is the place where you will find all things from lifestyle
+          to academic course books.
         </p>
       </div>
     </div>
@@ -195,7 +202,11 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
       id="main"
       class="p-3 gap-3 align-center d-flex justify-content-center flex-wrap"
     ></div>
-    <nav
+
+    <div class="d-flex align-center justify-content-center p-3">
+      <button class="more btn btn-dark">More...</button>
+    </div>
+    <!-- <nav
       style="
         align-items: center;
         justify-content: center;
@@ -219,7 +230,7 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
           <a class="page-link" href="#">Next</a>
         </li>
       </ul>
-    </nav>
+    </nav> -->
 
     <footer>
       <div
@@ -304,8 +315,57 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
       import "../components/navbar.js";
     </script>
     <script>
-      function loadBooks() {
-        return $.get("../../api/category.php?page=education", function (data) {
+      function load(count){
+        $.get(`../../api/category.php?page=education&offset=${count}`, function (data) {
+        //   this is data array representing what will be fetched from database
+
+
+
+ //since database echos an array of JSON format objects as string  and send it as data
+//JSON.parse parses the string into an array of JSON objects
+          const books = JSON.parse(data);
+          
+          //iterate over the array and for each object get data from object create a card
+          //embed the data[url,name,ISBN,Book Title,Author] in the card html element 
+          //append or populate the main element with the newly embedded card
+          books.forEach((book) => {
+            //create my card
+            const card = $("<my-card></my-card>");
+
+            // add class card to enforce page specific styling
+            card.addClass("card");
+            
+
+            //append child elements to card embedded with data fetched from database
+            card.append(
+              `<img slot="image"style="width: 100%;
+            height: 200px;
+            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+            );
+
+            card.append(
+              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
+            );
+
+            card.append(
+              `<p  class='author' slot="author">${book["Book_Author"]}</p>`
+            );
+            card.append(
+              `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
+            );
+            card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
+            card.append(
+              `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
+            );
+            //append or populate main element with newly embedded card
+            $("#main").append(card);
+          });
+        })
+
+      }
+
+      function loadBooks(count) {
+        return $.get(`../../api/category.php?page=education&offset=${count}`, function (data) {
           const books = JSON.parse(data);
 
           books.forEach((book) => {
@@ -331,7 +391,7 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
             );
             card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
             card.append(
-              `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["ISBN"]})}>Add to Cart</button>`
+              `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
             );
 
             $("#main").append(card);
@@ -352,12 +412,45 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
             }
           });
 
-
            //this is where the category button is attached to the function that creates a bootstrap modal element based on the modal styled above
           //then shows the modal
           $(".category").click(function(){
             new bootstrap.Modal($("#categorymodal")).show();
           });
+
+          $(".more").click(function(){
+            count+=20
+            load(count);
+          })
+
+          
+          if(getCookie("user_id")===""||getCookie("session_id"==="")){
+            $(".user-nav").css({display:"none"})
+          }
+         
+          $(".search").on('input',function(e){
+            cards=document.querySelectorAll(".card")
+            
+            let title=""
+            let author=""
+
+          cards.forEach(card=>{
+            
+            title=card.getElementsByClassName("title")[0].innerText.toLowerCase()
+            author=card.getElementsByClassName("author")[0].innerText.toLowerCase()
+            h=e.target.value.toLowerCase()
+    
+            if(title.match(h)==null&&
+            author.match(h)==null){
+              card.style.display="none"
+             
+            }
+            else{
+              card.style.display="block"
+            }
+          })
+
+          })
 
 
           //this is the mycommunities button when clicked sets the current window location to mycommunities.html
@@ -381,6 +474,20 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
           });
         });
       }
+      function getCookie(cname){
+        cname=cname+"="
+        let cookie=decodeURIComponent(document.cookie).split(";")
+        for(let i=0;i<cookie.length;i++){
+          c=cookie[i]
+          while(c.charAt(0)==" "){
+            c=c.substring(1)
+          }
+          if(c.indexOf(cname)==0){
+            return c.substring(cname.length,c.length)
+          }
+        }
+        return ""
+      }
 
       function addToCart(event, bookID) {
         let books = [];
@@ -394,7 +501,7 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
       }
 
       $(document).ready(function () {
-        loadBooks();
+        loadBooks(0);
       });
     </script>
   </body>

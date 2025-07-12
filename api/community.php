@@ -14,6 +14,7 @@ echo '<response>';
 
 try {
     include("../config/connection.php");
+    include("session.php");
     
     if (!isset($conn)) {
         throw new Exception("Connection variable not found");
@@ -22,17 +23,20 @@ try {
     if ($conn->connect_error) {
         throw new Exception("Connection failed: " . $conn->connect_error);
     }
+
     
     // Handle sending new message (POST request)
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_message') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_message'&&checkSession()) {
         if (!isset($_POST['community_id']) || !isset($_POST['user_id']) || !isset($_POST['message'])) {
             throw new Exception("Missing required fields");
         }
         
         $community_id = intval($_POST['community_id']);
-        $user_id = intval($_POST['user_id']);
+        $user_id = intval($_COOKIE['user_id']);
         $message = trim($_POST['message']);
-        
+        // echo $_POST['community_id'];
+        // echo $_POST['user_id'];
+        // echo $_POST['message'];
         if (empty($message)) {
             throw new Exception("Message cannot be empty");
         }
@@ -74,12 +78,13 @@ try {
         } else {
             throw new Exception("Failed to send message: " . mysqli_stmt_error($stmt));
         }
-        
+       
         mysqli_stmt_close($stmt);
     }
+   
     
     // Handle getting messages and community info (GET request)
-    else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['community_id'])) {
+    else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['community_id'])&&checkSession()) {
         $community_id = intval($_GET['community_id']);
         
         if ($community_id <= 0) {

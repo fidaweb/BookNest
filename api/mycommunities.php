@@ -34,17 +34,17 @@ try {
     if ($conn->connect_error) {
         throw new Exception("Database connection failed: " . $conn->connect_error);
     }
-
-    // Include session checking - CORRECTED PATH (same folder)
-    $sessionFile = __DIR__ . '/session.php';
-    if (file_exists($sessionFile)) {
-        require_once($sessionFile);
-    } else {
-        // Simple fallback session check (should not be needed if session.php exists)
-        function checkSession() {
-            return isset($_COOKIE["session_id"]) && isset($_COOKIE["user_id"]);
-        }
-    }
+    include('session.php');
+    // // Include session checking - CORRECTED PATH (same folder)
+    // $sessionFile = __DIR__ . '/session.php';
+    // if (file_exists($sessionFile)) {
+    //     require_once($sessionFile);
+    // } else {
+    //     // Simple fallback session check (should not be needed if session.php exists)
+    //     function checkSession() {
+    //         return isset($_COOKIE["session_id"]) && isset($_COOKIE["user_id"]);
+    //     }
+    // }
 
     // Handle different actions
     if (isset($_POST['action']) && $_POST['action'] === 'leave_community') {
@@ -165,9 +165,9 @@ function handleGetCommunities($conn) {
                     c.image_url, 
                     c.category,
                     COUNT(cm2.user_id) as member_count
-                FROM community_member cm 
+                FROM community_members cm 
                 INNER JOIN communities c ON cm.community_id = c.community_id 
-                LEFT JOIN community_member cm2 ON c.community_id = cm2.community_id
+                LEFT JOIN community_members cm2 ON c.community_id = cm2.community_id
                 WHERE cm.user_id = ? 
                 GROUP BY c.community_id, c.name, c.description, c.image_url, c.category
                 ORDER BY c.name ASC";

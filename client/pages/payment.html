@@ -354,7 +354,7 @@
 </head>
 <body>
     <my-navbar></my-navbar>
-
+cvv
     <div class="container my-5">
         <div class="row">
             
@@ -629,7 +629,7 @@ let total=0
         
             const cardNumber = document.getElementById('cardNumber');
             if (cardNumber) {
-                cardNumber.addEventListener('input', function() {
+                cardNumber.addEventListener('change', function() {
                     const value = this.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
                     const formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
                     this.value = formattedValue;
@@ -638,7 +638,7 @@ let total=0
             }
             const expiryDate = document.getElementById('expiryDate');
             if (expiryDate) {
-                expiryDate.addEventListener('input', function() {
+                expiryDate.addEventListener('change', function() {
                     let value = this.value.replace(/\D/g, '');
                     if (value.length >= 2) {
                         value = value.substring(0, 2) + '/' + value.substring(2, 4);
@@ -708,10 +708,11 @@ let total=0
                 alert('Card number must be between 13-19 digits!');
                 setFieldInvalid(field);
                 return false;
-            } else if (!luhnCheck(cleanNumber)) {
-                alert('Invalid card number!');
-                setFieldInvalid(field);
-                return false;
+            
+            // } else if (!luhnCheck(cleanNumber)) {
+            //     alert('Invalid card number!');
+            //     setFieldInvalid(field);
+            //     return false;
             } else {
                 setFieldValid(field);
                 return true;
@@ -845,7 +846,7 @@ let total=0
                 const cardholderName = document.getElementById('cardholderName').value;
                 const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
                 const expiryDate = document.getElementById('expiryDate').value;
-                const cvv = document.getElementById('cvv').value;
+                // const cvv = document.getElementById('cvv').value;
                 
                 if (!validateCardholderName(cardholderName)) {
                     document.getElementById('cardholderName').focus();
@@ -859,10 +860,10 @@ let total=0
                     document.getElementById('expiryDate').focus();
                     return false;
                 }
-                if (!validateCVV(cvv)) {
-                    document.getElementById('cvv').focus();
-                    return false;
-                }
+                // if (!validateCVV(cvv)) {
+                //     document.getElementById('cvv').focus();
+                //     return false;
+                // }
                 
             } else if (activeTab === 'mobile') {
                 const mobileService = document.getElementById('mobileService').value;
@@ -887,6 +888,33 @@ let total=0
             if (!validateCurrentForm()) {
                 return;
             }
+            let xml=`<root></root>`
+            let parser=new DOMParser()
+            xmln=parser.parseFromString(xml,'application/xml')
+            root=xmln.querySelector("root")
+            let arr=JSON.parse(localStorage.getItem('books'))
+            arr.forEach(id=>{
+                let temp=xmln.createElement('bookid')
+                temp.textContent=id
+                root.appendChild(temp)
+            })
+            xmln=new XMLSerializer().serializeToString(xmln)
+
+            console.log(xmln)
+            $.ajax({
+               url:"../../api/payment.php",
+               method:"POST",
+               contentType:"application/xml",
+        
+            data:`<?xml version='1.0' encoding='UTF-8'?>
+                    ${xmln}
+            `,
+               success:function(result){
+                console.log(result)
+              
+               }
+            })
+            
             
             const button = document.getElementById('proceedPayment');
             

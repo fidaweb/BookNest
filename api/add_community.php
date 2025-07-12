@@ -21,5 +21,5 @@ if ($stmt->execute()) {
     echo "error: " . $stmt->error;
 }
 
-$conn->close();
+// $conn->close();
 ?>

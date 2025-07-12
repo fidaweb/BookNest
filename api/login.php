@@ -1,5 +1,5 @@
 <?php
-include "../config/db.php";
+include "../config/connection.php";
 
 $xml=file_get_contents("php://input");
 
