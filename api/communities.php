@@ -1,24 +1,102 @@
 <?php
-// Handle regular communities fetch
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-header('Content-Type: text/xml');
+// Include connection and session files once at the top
+include("../config/connection.php");
+include("session.php"); // Session file is now included
 
+// Check if the database connection was successful
+if (!$conn) {
+    // If connection fails, handle it for both GET and POST
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Database connection failed: ' . mysqli_connect_error()]);
+    } else {
+        header('Content-Type: text/xml');
+        echo '<?xml version="1.0" encoding="UTF-8"?><response><success>false</success><error>Database connection failed: ' . htmlspecialchars(mysqli_connect_error()) . '</error></response>';
+    }
+    exit;
+}
+
+// --- Handle POST request for joining community ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
+    
+    try {
+        // Check if user is logged in using the session function
+        if (!checkSession()) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Please log in to join communities.'
+            ]);
+            exit;
+        }
+        
+        // Get user_id from cookie (after checkSession confirms it's valid)
+        $user_id = (int)$_COOKIE["user_id"]; 
+        
+        // Check if community_id is provided
+        if (!isset($_POST['community_id']) || empty($_POST['community_id'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Community ID is required.'
+            ]);
+            exit;
+        }
+        
+        $community_id = (int)$_POST['community_id'];
+        
+        // Check if user is already a member
+        $check_stmt = $conn->prepare("SELECT 1 FROM community_member WHERE community_id = ? AND user_id = ?");
+        $check_stmt->bind_param("ii", $community_id, $user_id);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
+        
+        if ($check_result->num_rows > 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'You are already a member of this community.'
+            ]);
+            exit;
+        }
+        
+        // Insert into community_member table
+        $insert_stmt = $conn->prepare("INSERT INTO community_member (community_id, user_id) VALUES (?, ?)");
+        $insert_stmt->bind_param("ii", $community_id, $user_id);
+        
+        if ($insert_stmt->execute()) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Successfully joined the community!'
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Failed to join community: ' . $insert_stmt->error
+            ]);
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Server error: ' . $e->getMessage()
+        ]);
+    } finally {
+        if (isset($conn) && $conn) {
+            mysqli_close($conn);
+        }
+    }
+    exit; // IMPORTANT: Exit after handling POST request
+}
+
+// --- Handle GET request for fetching communities ---
+// This part will only execute if it's NOT a POST request
+header('Content-Type: text/xml');
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo '<response>';
 
 try {
-    include("../config/connection.php");
-    
-    if (!isset($conn)) {
-        throw new Exception("Connection variable not found in connection file");
-    }
-    
-    if ($conn->connect_error) {
-        throw new Exception("Connection failed: " . $conn->connect_error);
-    }
-    
     $sql = "SELECT community_id, name, description, image_url, category FROM communities ORDER BY community_id DESC";
     $result = mysqli_query($conn, $sql);
     
@@ -46,11 +124,11 @@ try {
 } catch (Exception $e) {
     echo '<success>false</success>';
     echo '<error>' . htmlspecialchars($e->getMessage()) . '</error>';
+} finally {
+    if (isset($conn) && $conn) {
+        mysqli_close($conn);
+    }
 }
 
 echo '</response>';
-
-if (isset($conn)) {
-    mysqli_close($conn);
-}
 ?>

@@ -611,9 +611,39 @@
             displayCommunities(searchResults);
         }
 
+        // --- START OF CLEANED joinCommunity FUNCTION ---
         function joinCommunity(communityName, communityId) {
-            window.location.href = '../pages/mycommunities.html?name=' + encodeURIComponent(communityName) + '&id=' + communityId;
+            // Show loading state
+            event.target.disabled = true;
+            event.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Joining...';
+            
+            $.ajax({
+                url: '../../api/communities.php',
+                type: 'POST',
+                data: {
+                    community_id: communityId
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Redirect to my communities page
+                        window.location.href = '../pages/mycommunities.html?name=' + encodeURIComponent(communityName) + '&id=' + communityId;
+                    } else {
+                        // Reset button and show message (e.g., "Please log in")
+                        alert(response.message); // Show message to user
+                        event.target.disabled = false;
+                        event.target.innerHTML = '<i class="fas fa-plus"></i> Join Community';
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Reset button and show generic error
+                    alert('Failed to join community. Please try again.');
+                    event.target.disabled = false;
+                    event.target.innerHTML = '<i class="fas fa-plus"></i> Join Community';
+                }
+            });
         }
+        // --- END OF CLEANED joinCommunity FUNCTION ---
 
         function hideLoading() {
             $('#loadingSpinner').hide();
