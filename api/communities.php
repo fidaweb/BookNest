@@ -19,19 +19,23 @@ if (!$conn) {
     exit;
 }
 
+
+
 // --- Handle POST request for joining community ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
     
     try {
-        // Check if user is logged in using the session function
-        if (!checkSession()) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Please log in to join communities.'
-            ]);
-            exit;
-        }
+
+// Check if user is logged in using the session function
+ if (!checkSession()) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Please log in to join communities.'
+    ]);
+    exit;
+}
+       
         
         // Get user_id from cookie (after checkSession confirms it's valid)
         $user_id = (int)$_COOKIE["user_id"]; 
@@ -48,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $community_id = (int)$_POST['community_id'];
         
         // Check if user is already a member
-        $check_stmt = $conn->prepare("SELECT 1 FROM community_member WHERE community_id = ? AND user_id = ?");
+        $check_stmt = $conn->prepare("SELECT 1 FROM community_members WHERE community_id = ? AND user_id = ?");
         $check_stmt->bind_param("ii", $community_id, $user_id);
         $check_stmt->execute();
         $check_result = $check_stmt->get_result();
@@ -62,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         // Insert into community_member table
-        $insert_stmt = $conn->prepare("INSERT INTO community_member (community_id, user_id) VALUES (?, ?)");
+        $insert_stmt = $conn->prepare("INSERT INTO community_members (community_id, user_id) VALUES (?, ?)");
         $insert_stmt->bind_param("ii", $community_id, $user_id);
         
         if ($insert_stmt->execute()) {

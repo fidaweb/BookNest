@@ -208,6 +208,20 @@
       function cli() {
         window.location.href = "blog.html";
       }
+      function getCookie(cname) {
+        cname = cname + "=";
+        let cookie = decodeURIComponent(document.cookie).split(";");
+        for (let i = 0; i < cookie.length; i++) {
+          c = cookie[i];
+          while (c.charAt(0) == " ") {
+            c = c.substring(1);
+          }
+          if (c.indexOf(cname) == 0) {
+            return c.substring(cname.length, c.length);
+          }
+        }
+        return "";
+      }
     </script>
   </body>
 </html>

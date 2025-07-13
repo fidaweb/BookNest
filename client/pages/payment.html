@@ -535,6 +535,11 @@ cvv
 <!-----------------------------------------------JS------------------------------------------------------------------>
     <script src="../assets/bootstrap.bundle.min.js"></script>
     <script>
+
+if(getCookie("user_id")===""||getCookie("session_id"==="")){
+            window.location.href="home.html"
+          }
+        
         document.addEventListener('DOMContentLoaded', function() {
             const bankBtn = document.getElementById('bankTabBtn');
             const mobileBtn = document.getElementById('mobileTabBtn');
@@ -910,28 +915,41 @@ let total=0
                     ${xmln}
             `,
                success:function(result){
-                console.log(result)
+                try{
+                    console.log(result)
+                    res=JSON.parse(result)
+                    console.log(res)
+                    if(res['msg']=='success'){
+                        const button = document.getElementById('proceedPayment');
+            
+                        button.disabled = true;
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                        
+                        setTimeout(() => {
+                            button.disabled = false;
+                            button.innerHTML = '<i class="fas fa-lock"></i> <span>Proceed to Pay</span>';
+                
+                            if (window.bootstrap && document.getElementById('successModal')) {
+                                const modal = new bootstrap.Modal(document.getElementById('successModal'));
+                                modal.show();
+                            } else {
+                                alert('Payment successful! Your order has been placed.');
+                            }
+                        }, 2000);
+
+                    }else{
+                        alert(res['msg'])
+                    }
+
+                }catch{
+                    alert("Try again")
+                }
               
                }
             })
             
             
-            const button = document.getElementById('proceedPayment');
             
-            button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            
-            setTimeout(() => {
-                button.disabled = false;
-                button.innerHTML = '<i class="fas fa-lock"></i> <span>Proceed to Pay</span>';
-    
-                if (window.bootstrap && document.getElementById('successModal')) {
-                    const modal = new bootstrap.Modal(document.getElementById('successModal'));
-                    modal.show();
-                } else {
-                    alert('Payment successful! Your order has been placed.');
-                }
-            }, 2000);
         }
         
         function downloadReceipt() {
@@ -941,6 +959,20 @@ let total=0
         function goHome() {
             window.location.href = '../pages/home.html';
         }
+        function getCookie(cname){
+        cname=cname+"="
+        let cookie=decodeURIComponent(document.cookie).split(";")
+        for(let i=0;i<cookie.length;i++){
+          c=cookie[i]
+          while(c.charAt(0)==" "){
+            c=c.substring(1)
+          }
+          if(c.indexOf(cname)==0){
+            return c.substring(cname.length,c.length)
+          }
+        }
+        return ""
+      }
     </script>
     <script type="module">
         import '../components/navbar.js';

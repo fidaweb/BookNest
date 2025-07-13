@@ -7,19 +7,49 @@ $xmlr=simplexml_load_string($xml);
 $email=$xmlr->email;
 $password=crypt($xmlr->password,"123!>67");
 
-$sql="SELECT * FROM users WHERE email IN ('$email') AND password IN ('$password')";
+
+
+$sql="SELECT * FROM users WHERE email ='$email' AND password ='$password'";
 $result=mysqli_query($conn,$sql);
-$user=[];
-while($row=mysqli_fetch_assoc($result)){
-    $user[]=$row;
+
+if($result->num_rows>0){
+    $id=mysqli_fetch_assoc($result)['user_id'];
+
+$sql="SELECT * FROM admin";
+$admin=mysqli_query($conn,$sql);
+$isAdmin=false;
+if($admin->num_rows>0){
+    $admin=mysqli_fetch_assoc($admin);
+    $adminsession=$admin['session'];
+    if($email==$admin['email']&&$password==$admin['password']){
+        $isAdmin=true;
+    }
 }
-if(count($user)==1){
-    $sessionid=bin2hex(random_bytes(16));
-    $id=$user[0]["user_id"];
-    $sql="INSERT INTO `sessions`(`sessionid`, `user_id`, `created_at`, `expires_at`) VALUES ('$sessionid',$id,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP()+INTERVAL 3 Day)";
+$sessionid="";
+
+if($result->num_rows>0){
+    do{
+        $sessionid=bin2hex(random_bytes(16));
+    }while($sessionid==$adminsession);
+    if($isAdmin){
+
+        $sessionid=$adminsession;
+    }
+    
+   
+    $sql="INSERT INTO `sessions`(`sessionid`, `user_id`, `created_at`, `expires_at`) VALUES (?,?,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP()+INTERVAL 3 Day)";
+    $stmt=mysqli_prepare($conn,$sql);
+    mysqli_stmt_bind_param($stmt,"si",$sessionid,$id);
+    mysqli_stmt_execute($stmt);
+    
   
-    $result=mysqli_query($conn,$sql);
+    // $result=mysqli_query($conn,$sql);
     echo "{\"sessionid\":\"".$sessionid."\",\"userid\":".$id."}";
 
 }
+}
+else{
+    echo "{\"error\":\"Incorrect Email or Password\"}";
+}
+
 ?>

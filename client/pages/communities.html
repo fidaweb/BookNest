@@ -367,6 +367,15 @@
                 </div>
             </div>
 
+            <div class="communities-container">
+                <div class="search-filter-section d-flex justify-content-center align-center gap-3" >
+                    <button class="addcom btn btn-outline-dark">Add Communities</button>
+                <button class="delcom btn btn-outline-dark">Delete Communities</button>
+
+                </div>
+                
+            </div>
+
             <!-- Loading spinner -->
             <div id="loadingSpinner" class="loading-spinner">
                 <div class="spinner"></div>
@@ -439,6 +448,12 @@
         $(document).ready(function() {
             loadCommunities();
             setupEventListeners();
+            $('.addcom').click(function(){
+                window.location.href="add_community.html"
+            })
+            $('.delcom').click(function(){
+                window.location.href="delete_community.html"
+            })
         });
 
         function loadCommunities() {

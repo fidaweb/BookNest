@@ -35,16 +35,7 @@ try {
         throw new Exception("Database connection failed: " . $conn->connect_error);
     }
     include('session.php');
-    // // Include session checking - CORRECTED PATH (same folder)
-    // $sessionFile = __DIR__ . '/session.php';
-    // if (file_exists($sessionFile)) {
-    //     require_once($sessionFile);
-    // } else {
-    //     // Simple fallback session check (should not be needed if session.php exists)
-    //     function checkSession() {
-    //         return isset($_COOKIE["session_id"]) && isset($_COOKIE["user_id"]);
-    //     }
-    // }
+   
 
     // Handle different actions
     if (isset($_POST['action']) && $_POST['action'] === 'leave_community') {

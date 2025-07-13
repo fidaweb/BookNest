@@ -9,8 +9,11 @@ try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("Only POST requests are allowed");
     }
-    if (checkSession()) {
+    if (!checkSession()) {
         throw new Exception("No Session");
+    }
+    if (!checkAdminSession()) {
+        throw new Exception("Must be admin");
     }
     
     if (!isset($_POST['community_id']) || empty($_POST['community_id'])) {

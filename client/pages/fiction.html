@@ -89,6 +89,9 @@
       #main {
         /* background: black; */
       }
+      .no-session{
+          display:none;
+        }
     </style>
   </head>
   <body>
@@ -163,6 +166,10 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
     <button class="cart btn btn-secondary">Cart</button>
   <button class="mybooks btn btn-secondary">My Books</button>
   <button class="mycommunities btn btn-secondary">My Communities</button>
+  <button class="logout btn btn-secondary">Logout</button>
+  </span>
+  <span class="no-session">
+    <button class="login btn btn-secondary">Log In</button>
   </span>
   
 </div>
@@ -423,9 +430,20 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
             load(count);
           })
 
+          $(".logout").click(function(){
+            deleteCookie("user_id",1,1);
+            deleteCookie("session_id",1,1);
+            window.location.reload()
+          })
+
+          
+          $(".login").click(function(){
+            window.location.href='login.html'
+          })
           
           if(getCookie("user_id")===""||getCookie("session_id"==="")){
             $(".user-nav").css({display:"none"})
+            $(".no-session").css({display:"inline"})
           }
          
           $(".search").on('input',function(e){
@@ -474,6 +492,18 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
           });
         });
       }
+      function deleteCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() - exdays * 24 * 60 * 60 * 1000);
+            let expires = "expires=" + d.toUTCString();
+            // document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";path=/";
+            let temp=cname + "=" + cvalue + ";" + expires + ";path=/"
+            console.log(temp)
+            document.cookie =temp ;
+        }
+
+
+
       function getCookie(cname){
         cname=cname+"="
         let cookie=decodeURIComponent(document.cookie).split(";")

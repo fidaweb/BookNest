@@ -478,6 +478,7 @@
         var currentUserId = null; // This will be set by the server response if logged in
         
         $(document).ready(function() {
+            
             loadUserCommunities();
         });
         
@@ -758,6 +759,20 @@
             $('#errorText').text(message);
             $('#errorMessage').show();
         }
+        function getCookie(cname){
+        cname=cname+"="
+        let cookie=decodeURIComponent(document.cookie).split(";")
+        for(let i=0;i<cookie.length;i++){
+          c=cookie[i]
+          while(c.charAt(0)==" "){
+            c=c.substring(1)
+          }
+          if(c.indexOf(cname)==0){
+            return c.substring(cname.length,c.length)
+          }
+        }
+        return ""
+      }
     </script>
     <script type="module">
         import '../components/navbar.js';

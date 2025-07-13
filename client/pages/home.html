@@ -122,6 +122,9 @@
             margin-left: 0.5rem;
             opacity: 1;
         }
+        .no-session{
+          display:none;
+        }
         
 
     </style>
@@ -207,6 +210,10 @@ the category button is attached to function on click event that renders a bootst
           <button class="cart btn btn-secondary">Cart</button>
         <button class="mybooks btn btn-secondary">My Books</button>
         <button class="mycommunities btn btn-secondary">My Communities</button>
+        <button class="logout btn btn-secondary">Logout</button>
+        </span>
+        <span class="no-session">
+          <button class="login btn btn-secondary">Login</button>
         </span>
         
       </div>
@@ -356,9 +363,12 @@ the category button is attached to function on click event that renders a bootst
               `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
             );
             card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
-            card.append(
+           
+              card.append(
               `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
             );
+            
+            
             //append or populate main element with newly embedded card
             $("#main").append(card);
           });
@@ -446,11 +456,21 @@ the category button is attached to function on click event that renders a bootst
             count+=20
             load(count);
           })
+          $(".logout").click(function(){
+            deleteCookie("user_id",1,1);
+            deleteCookie("session_id",1,1);
+            window.location.reload()
+          })
 
+          $(".login").click(function(){
+            window.location.href='login.html'
+          })
           
           if(getCookie("user_id")===""||getCookie("session_id"==="")){
             $(".user-nav").css({display:"none"})
+            $(".no-session").css({display:"inline"})
           }
+         
          
           $(".search").on('input',function(e){
             cards=document.querySelectorAll(".card")
@@ -474,6 +494,8 @@ the category button is attached to function on click event that renders a bootst
             }
           })
           })
+
+          
           
          
 
@@ -500,6 +522,15 @@ the category button is attached to function on click event that renders a bootst
 
         });
       }
+      function deleteCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() - exdays * 24 * 60 * 60 * 1000);
+            let expires = "expires=" + d.toUTCString();
+            // document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";path=/";
+            let temp=cname + "=" + cvalue + ";" + expires + ";path=/"
+            console.log(temp)
+            document.cookie =temp ;
+        }
 
       function getCookie(cname){
         cname=cname+"="
@@ -518,6 +549,7 @@ the category button is attached to function on click event that renders a bootst
 
 //this is the add cart function attached to each card during the  loop for populating the main element with cards after fetching data from database
       function addToCart(event, bookID) {
+        if(getCookie("user_id")!=""||getCookie("session_id")!=""){
         //initalize an empty array
         let books = [];
         //check localstorage for array of books
@@ -532,6 +564,9 @@ the category button is attached to function on click event that renders a bootst
 
         //create new modal based on styled modal above and then show it
         new bootstrap.Modal($("#mymodal")).show();
+      }else{
+        alert("Login to add to cart")
+      }
       }
       //this is like the entry point of script the main function- loadBooks is called only after document reloads
       $(document).ready(function () {

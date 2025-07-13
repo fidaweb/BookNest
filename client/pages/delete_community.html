@@ -413,6 +413,9 @@
 
     <script src="../assets/bootstrap.bundle.min.js"></script>
     <script>
+         if(getCookie("user_id")===""||getCookie("session_id"==="")){
+            window.location.href="home.html"
+          }
         var allCommunities = [];
 
         $(document).ready(function() {
@@ -625,6 +628,20 @@
             $('#errorText').text(message);
             $('#errorMessage').show();
         }
+        function getCookie(cname){
+        cname=cname+"="
+        let cookie=decodeURIComponent(document.cookie).split(";")
+        for(let i=0;i<cookie.length;i++){
+          c=cookie[i]
+          while(c.charAt(0)==" "){
+            c=c.substring(1)
+          }
+          if(c.indexOf(cname)==0){
+            return c.substring(cname.length,c.length)
+          }
+        }
+        return ""
+      }
     </script>
     <script type="module">
         import '../components/navbar.js';

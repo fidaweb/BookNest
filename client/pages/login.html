@@ -691,32 +691,59 @@
                success:function(result){
                 console.log(result)
                 result=JSON.parse(result)
-                console.log(result)
+                if(result["error"]==null){
                 setCookie("session_id",result["sessionid"],3)
                 setCookie("user_id",result["userid"],3)
-               }
-            })
-            setTimeout(() => {
+                setTimeout(() => {
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-sign-in-alt"></i> <span>Login to Account</span>';
                 
                 window.location.href='home.html'
-                alert(' Login successful! Redirecting to dashboard...');
-                
-                
-                // setTimeout(() => {
-                //     alert(' Welcome');
-                    
-                // }, 1000);
+                alert(' Login successful! Redirecting to dashboard...')
                 
             }, 2000);
+
+                }
+                else{
+                    setTimeout(() => {
+                       
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-sign-in-alt"></i> <span>Login to Account</span>';
+                alert(result["error"])
+               
+                
+                
+            }, 2000);
+                   
+                }
+                    
+                
+                console.log(result)
+                
+               },
+               error:function(xhr,status,error){
+
+                if(xhr.status==404){
+                    msg="User not found"
+                }
+                else if(xhr.status==500){
+                    msg="Internal Server Error"
+                }
+                else{
+                    msg="Please try later"
+                }
+                alert(`Error:${msg}`)
+               }
+
+            })
+            
         }
         
         function setCookie(cname, cvalue, exdays) {
             const d = new Date();
             d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
             let expires = "expires=" + d.toUTCString();
-            // document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";path=/";
+        
             let temp=cname + "=" + cvalue + ";" + expires + ";path=/"
             console.log(temp)
             document.cookie =temp ;
@@ -774,24 +801,50 @@
                     </note>
             `,
                success:function(result){
-                setCookie("session_id",result,3)
-               }
-            })
-            
-            
-            setTimeout(() => {
+                try{
+                    msg=JSON.parse(result)
+                if(msg["msg"]=="success"){
+
+                    setTimeout(() => {
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-user-plus"></i> <span>Create Account</span>';
                 showSuccessMessage(' Account created successfully! Please login with your credentials.');
                 document.getElementById('registerForm').reset();
-                // setCookie("name", name, 7);
-                // setCookie("email", email, 7);
+               
 
                 setTimeout(() => {
                     switchTab('login');
                 }, 2000);
                 
-            }, 2000);
+                }, 2000);
+
+                }
+
+                }
+                
+                catch{
+                    alert('Please try again')
+                    window.location.reload()
+                }
+               },
+               error:function(xhr,status,error){
+
+                if(xhr.status==404){
+                    msg="User not found"
+                }
+                else if(xhr.status==500){
+                    msg="Internal Server Error"
+                }
+                else{
+                    msg="Please try later"
+                }
+                alert(`Error:${msg}`)
+                }
+
+            })
+            
+            
+           
         }
         
         function togglePassword(fieldId) {
