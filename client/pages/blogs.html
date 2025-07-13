@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blogs</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
       :root {
         --primary: #f4b400;
@@ -127,18 +128,12 @@
     <div class="container py-4">
       <h2 class="mb-4">Latest Blogs</h2>
       <div class="blog-grid">
-        <div class="blog-card">
+        <!-- <div class="blog-card">
           <h3>How to Read More Books</h3>
           <p>by Ayesha Khan</p>
-          <p>Reading can transform your life. Here's how to start...</p>
           <button onclick="cli()">Read More</button>
-        </div>
-        <div class="blog-card">
-          <h3>Book Review: 1984</h3>
-          <p>by Hasan Ali</p>
-          <p>A powerful dystopian novel that warns about totalitarianism.</p>
-          <button onclick="cli()">Read More</button>
-        </div>
+        </div> -->
+
         <!-- Add more blog cards here -->
       </div>
     </div>
@@ -205,9 +200,25 @@
       </div>
     </footer>
     <script>
-      function cli() {
-        window.location.href = "blog.html";
+      $.get("../../api/blogs.php", function (data) {
+        data = JSON.parse(data);
+        data.forEach((blog) => {
+          console.log(blog);
+          card = `
+        <div class="blog-card">
+          <h3>${blog["title"]}</h3>
+          <p>by<p>${blog["name"]}</p></p>
+          <button onclick="cli(${blog["blog_id"]})">Read More</button>
+        </div>
+        `;
+          $(".blog-grid").append(card);
+        });
+      });
+
+      function cli(id) {
+        window.location.href = `blog.html?id=${id}`;
       }
+
       function getCookie(cname) {
         cname = cname + "=";
         let cookie = decodeURIComponent(document.cookie).split(";");

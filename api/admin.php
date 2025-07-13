@@ -16,14 +16,15 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         $category=$xmlr->category;
         $price=$xmlr->price;
         $description=$xmlr->description;
+        $bookurl=$xmlr->bookurl;
         $action=$xmlr->action;
         
         
         if($action=="add"){
-        $sql="INSERT INTO `books`(`ISBN`, `Book_Title`, `Book_Author`, `Year_Of_Publication`, `Publisher`, `Image_URL_S`, `Image_URL_M`, `Image_URL_L`, `PRICE`, `Category`, `description`) VALUES ('[value-1]',?,?,'[value-4]','[value-5]','[value-6]','[value-7]',?,?,?,?)";
+        $sql="INSERT INTO `books`(`ISBN`, `Book_Title`, `Book_Author`, `Year_Of_Publication`, `Publisher`, `Image_URL_S`, `Image_URL_M`, `Image_URL_L`, `PRICE`, `Category`, `description`,`book_url`) VALUES ('[value-1]',?,?,'[value-4]','[value-5]','[value-6]','[value-7]',?,?,?,?,?)";
         
         $stmt=mysqli_prepare($conn,$sql);
-        mysqli_stmt_bind_param($stmt,'sssdss',$title,$author,$url,$price,$category,$description);
+        mysqli_stmt_bind_param($stmt,'sssdss',$title,$author,$url,$price,$category,$description,$bookurl);
         mysqli_stmt_execute($stmt);
         echo "{\"msg\":\"success\"}";
         

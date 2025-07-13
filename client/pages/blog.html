@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title>Blog Details</title>
     <style>
       :root {
@@ -101,36 +102,26 @@
   </head>
 
   <body>
-    <header>
+    <!-- <header>
       <h1>Book Nest</h1>
       <nav>
         <a href="home.html">Home</a>
         <a href="blogs.html">Blogs</a>
         <a href="communities.html">Communities</a>
       </nav>
-    </header>
+    </header> -->
+    <my-navbar></my-navbar>
 
     <div class="content-container">
-      <img class="blog-banner" alt="Blog Banner" />
-      <h2>How to Read More Books</h2>
-      <p>
+      <img src="" class="blog-banner" alt="Blog Banner" />
+      <h2 class="title">How to Read More Books</h2>
+      <p class="content">
         Reading more books isn't just about finishing books quickly; it's about
         making reading a habit. The more you read, the more you learn. Here are
         a few tips that can help you incorporate more books into your daily
         routine. Start with books you enjoy, set a goal for daily reading, and
         try to eliminate distractions like social media when reading. Also,
         creating a dedicated reading time can help you maintain consistency.
-      </p>
-      <p>
-        Additionally, consider using tools like audiobooks or e-readers to
-        increase accessibility to books when you're on the go. Reading not only
-        expands your knowledge but also allows you to explore different worlds
-        and viewpoints that can broaden your horizons.
-      </p>
-      <p>
-        Whether you prefer fiction or non-fiction, there's always something new
-        to learn through books. So start reading today, and see how much you can
-        grow.
       </p>
     </div>
 
@@ -195,7 +186,22 @@
         </div>
       </div>
     </footer>
+    <script type="module">
+      import "../components/my-card.js";
+      import "../components/navbar.js";
+    </script>
     <script>
+      param = new URLSearchParams(window.location.search);
+      id = param.get("id");
+      console.log(id);
+
+      $.get(`../../api/blog.php?id=${id}`, function (data) {
+        res = JSON.parse(data)[0];
+        $(".blog-banner")[0].src = res["image_url"];
+        $(".title").text(res["title"]);
+        $(".content").text(res["content"]);
+      });
+
       function getCookie(cname) {
         cname = cname + "=";
         let cookie = decodeURIComponent(document.cookie).split(";");
