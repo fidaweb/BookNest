@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Nest</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
       :root {
         --primary: #f4b400;
@@ -69,13 +71,21 @@
         padding: 0.5rem 1rem;
       }
 
-      .filters button {
+      
+      .filters a {
         background-color: var(--accent);
         border: none;
         padding: 0.5rem 1rem;
         border-radius: 6px;
         color: white;
         cursor: pointer;
+        text-decoration: none; 
+        display: inline-block; 
+        text-align: center;
+      }
+
+      .filters a:hover {
+        background-color: #00a0b0; 
       }
 
       .book-grid {
@@ -161,39 +171,13 @@
       </nav>
     </header>
 
-    <div class="search-bar">
-      <input type="text" placeholder="Search books..." />
-      <button>Search</button>
-    </div>
-
     <div class="filters">
-      <button>Category</button>
-      <button>My Books</button>
-      <button>My Communities</button>
+      <a href="mycommunities.html">My Communities</a>
     </div>
 
-    <div class="book-grid">
-      <div class="book-card">
-        <img
-          src="https://images-na.ssl-images-amazon.com/images/I/51xwGfW4UdL.SX342_SY445_QL70_ML2.jpg"
-          alt="Classical Mythology"
-        />
-        <h3>Classical Mythology</h3>
-        <p>Mark P. O. Morford</p>
-        <p>$110</p>
-        <button>Download Books</button>
-      </div>
-      <div class="book-card">
-        <img
-          src="https://images-na.ssl-images-amazon.com/images/I/51YTRd+nYkL.SX322_BO1,204,203,200.jpg"
-          alt="Clara Callan"
-        />
-        <h3>Clara Callan</h3>
-        <p>Richard Bruce Wright</p>
-        <p>$80</p>
-        <button>Download Books</button>
-      </div>
-      <!-- Add more books below if needed -->
+    <div id="books-container" class="book-grid">
+      <!-- books load kori -->
+      <p style="text-align: center; width: 100%">Loading your books...</p>
     </div>
 
     <footer>
@@ -265,11 +249,12 @@
       </div>
     </footer>
     <script>
+      
       function getCookie(cname) {
         cname = cname + "=";
         let cookie = decodeURIComponent(document.cookie).split(";");
         for (let i = 0; i < cookie.length; i++) {
-          c = cookie[i];
+          let c = cookie[i];
           while (c.charAt(0) == " ") {
             c = c.substring(1);
           }
@@ -279,6 +264,73 @@
         }
         return "";
       }
+
+      $(document).ready(function () {
+        const booksContainer = $("#books-container");
+
+        function fetchAndDisplayBooks() {
+          
+          const userId = getCookie("user_id"); 
+          if (!userId) {
+            booksContainer.html(
+              '<p style="text-align: center; width: 100%; color: red;">User not logged in. Please ensure user_id cookie is set.</p>'
+            );
+            return;
+          }
+
+          $.ajax({
+            url: "../../api/mybooks.php",
+            method: "GET",
+            dataType: "json", 
+            success: function (data) {
+              console.log("AJAX Success! Data received:", data);
+              booksContainer.empty(); 
+
+              if (data.error) {
+                booksContainer.html(
+                  '<p style="text-align: center; width: 100%; color: red;">Error from PHP: ' +
+                    data.error +
+                    "</p>"
+                );
+              } else if (data.message) {
+                booksContainer.html(
+                  '<p style="text-align: center; width: 100%;">' +
+                    data.message +
+                    "</p>"
+                );
+              } else if (Array.isArray(data) && data.length > 0) {
+                console.log("Books found, attempting to render.");
+                data.forEach(function (book) {
+                  const bookCard = `
+                    <div class="book-card">
+                      <img
+                        src="${book.image || '../../client/assets/images/placeholder.svg?height=200&width=150'}"
+                        alt="${book.title}"
+                      />
+                      <h3>${book.title}</h3>
+                      <p>${book.author}</p>
+                      <p>$${book.price}</p>
+                      <button onclick="window.open('../../api/download.php?book_name=${encodeURIComponent(book.title.trim())}', '_blank')">Download Books</button>
+                    </div>
+                  `;
+                  booksContainer.append(bookCard);
+                });
+              } else {
+                booksContainer.html(
+                  '<p style="text-align: center; width: 100%;">No books found for this user.</p>'
+                );
+              }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.error("AJAX Error:", textStatus, errorThrown, jqXHR.responseText);
+              booksContainer.html(
+                '<p style="text-align: center; width: 100%; color: red;">Failed to load books. Please try again later.</p>'
+              );
+            },
+          });
+        }
+        fetchAndDisplayBooks();
+      });
     </script>
   </body>
 </html>

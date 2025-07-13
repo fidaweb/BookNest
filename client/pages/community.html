@@ -376,7 +376,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr -->
     <footer class="footer">
         <div class="container py-5">
             <div class="row">
@@ -423,32 +423,37 @@
     <script src="../assets/bootstrap.bundle.min.js"></script>
     <script>
         var currentCommunityId = null;
-        var currentUserId = 1; // Hardcoded for testing - replace with actual user session
+        var currentUserId = getCookie("user_id"); 
         
         $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
             currentCommunityId = urlParams.get('id');
-            console.log(currentCommunityId)
+            
+            console.log('Community ID:', currentCommunityId);
+            console.log('User ID:', currentUserId);
+
             if (!currentCommunityId) {
-                showError('Community ID not found');
+                showError('Community ID not found in URL.');
+                return;
+            }
+            if (!currentUserId) { 
+                showError('User not logged in. Please ensure user_id cookie is set.');
                 return;
             }
             
             loadChatMessages(currentCommunityId);
-            
-            // Send message on button click
+        
             $('#sendBtn').click(function() {
                 sendMessage();
             });
             
-            // Send message on Enter key
             $('#messageInput').keypress(function(e) {
                 if (e.which === 13) {
                     sendMessage();
                 }
             });
 
-            // Auto-refresh messages every 5 seconds
+            // refresh message
             setInterval(function() {
                 if (!$('#sendBtn').prop('disabled')) {
                     loadChatMessages(currentCommunityId);
@@ -460,18 +465,15 @@
             $.ajax({
                 url: '../../api/community.php',
                 type: 'GET',
-                data: { community_id: currentCommunityId },
+                data: { community_id: currentCommunityId }, 
                 dataType: 'xml',
                 timeout: 10000,
                 success: function(data) {
                     var success = $(data).find('success').text();
                     
                     if (success === 'true') {
-                        // Update community info
                         var communityName = $(data).find('community name').text();
                         $('#communityName').text(communityName || 'Community Chat');
-                        
-                        // Display messages
                         displayMessages(data);
                     } else {
                         var error = $(data).find('error').text();
@@ -533,13 +535,8 @@
             if (!messageText) {
                 return;
             }
-
-            if (messageText.length > 500) {
-                alert('Message is too long. Maximum 500 characters allowed.');
-                return;
-            }
             
-            // Disable send button
+            
             $('#sendBtn').prop('disabled', true);
             $('#sendBtn').html('<i class="fas fa-spinner fa-spin"></i>');
             
@@ -549,9 +546,8 @@
                 data: {
                     action: 'send_message',
                     community_id: currentCommunityId,
-                    user_id: currentUserId,
                     message: messageText
-                },
+                }, 
                 dataType: 'xml',
                 timeout: 10000,
                 success: function(data) {
@@ -560,7 +556,7 @@
                     
                     if (success === 'true') {
                         $('#messageInput').val('');
-                        loadChatMessages(); // Reload messages
+                        loadChatMessages(); // reload message
                     } else {
                         var error = $(data).find('error').text();
                         alert('Error: ' + error);

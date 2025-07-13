@@ -2,13 +2,13 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Include connection and session files once at the top
-include("../config/connection.php");
-include("session.php"); // Session file is now included
 
-// Check if the database connection was successful
+include("../config/connection.php");
+include("session.php"); 
+
+
 if (!$conn) {
-    // If connection fails, handle it for both GET and POST
+    // connection fail
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => 'Database connection failed: ' . mysqli_connect_error()]);
@@ -21,13 +21,13 @@ if (!$conn) {
 
 
 
-// --- Handle POST request for joining community ---
+//  joining community 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
     
     try {
 
-// Check if user is logged in using the session function
+
  if (!checkSession()) {
     echo json_encode([
         'success' => false,
@@ -37,10 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
        
         
-        // Get user_id from cookie (after checkSession confirms it's valid)
+        // user_id from cookie 
         $user_id = (int)$_COOKIE["user_id"]; 
         
-        // Check if community_id is provided
+        
         if (!isset($_POST['community_id']) || empty($_POST['community_id'])) {
             echo json_encode([
                 'success' => false,
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $community_id = (int)$_POST['community_id'];
         
-        // Check if user is already a member
+        // check user already  member
         $check_stmt = $conn->prepare("SELECT 1 FROM community_members WHERE community_id = ? AND user_id = ?");
         $check_stmt->bind_param("ii", $community_id, $user_id);
         $check_stmt->execute();
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         
-        // Insert into community_member table
+        // insert to community_member 
         $insert_stmt = $conn->prepare("INSERT INTO community_members (community_id, user_id) VALUES (?, ?)");
         $insert_stmt->bind_param("ii", $community_id, $user_id);
         
@@ -91,11 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mysqli_close($conn);
         }
     }
-    exit; // IMPORTANT: Exit after handling POST request
+    exit; 
 }
 
-// --- Handle GET request for fetching communities ---
-// This part will only execute if it's NOT a POST request
+//  fetching communities 
+
 header('Content-Type: text/xml');
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo '<response>';

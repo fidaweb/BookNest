@@ -4,7 +4,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Handle preflight requests
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
@@ -16,6 +16,20 @@ try {
     include("../config/connection.php");
     include("session.php");
     
+    
+    if (!function_exists('checkSession') || !checkSession()) {
+        echo '<success>false</success>';
+        echo '<error>Unauthorized: Session invalid or user not logged in.</error>';
+        exit();
+    }
+    
+    if (!isset($_COOKIE["user_id"])) {
+        echo '<success>false</success>';
+        echo '<error>User ID not found in session. Please log in again.</error>';
+        exit();
+    }
+    $user_id = (int)$_COOKIE["user_id"]; 
+
     if (!isset($conn)) {
         throw new Exception("Connection variable not found");
     }
@@ -25,14 +39,13 @@ try {
     }
 
     
-    // Handle sending new message (POST request)
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_message'&&checkSession()) {
-        if (!isset($_POST['community_id']) || !isset($_POST['user_id']) || !isset($_POST['message'])) {
+    //  send new message 
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_message') {
+        if (!isset($_POST['community_id']) || !isset($_POST['message'])) {
             throw new Exception("Missing required fields");
         }
         
         $community_id = intval($_POST['community_id']);
-        $user_id = intval($_COOKIE['user_id']);
         $message = trim($_POST['message']);
         // echo $_POST['community_id'];
         // echo $_POST['user_id'];
@@ -45,7 +58,7 @@ try {
             throw new Exception("Message too long");
         }
         
-        // Check if community exists
+       
         $check_sql = "SELECT community_id FROM communities WHERE community_id = ?";
         $check_stmt = mysqli_prepare($conn, $check_sql);
         
@@ -62,7 +75,7 @@ try {
         }
         mysqli_stmt_close($check_stmt);
         
-        // Insert message
+        //  message
         $sql = "INSERT INTO chat (community_id, user_id, message, sent_at) VALUES (?, ?, ?, NOW())";
         $stmt = mysqli_prepare($conn, $sql);
         
@@ -83,15 +96,16 @@ try {
     }
    
     
-    // Handle getting messages and community info (GET request)
-    else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['community_id'])&&checkSession()) {
+    // get message
+    else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['community_id'])) {
         $community_id = intval($_GET['community_id']);
+        
         
         if ($community_id <= 0) {
             throw new Exception("Invalid community ID");
         }
         
-        // Get community info
+        // community info fetch kore
         $community_sql = "SELECT name, description FROM communities WHERE community_id = ?";
         $community_stmt = mysqli_prepare($conn, $community_sql);
         
@@ -109,7 +123,7 @@ try {
         
         $community_data = mysqli_fetch_assoc($community_result);
         
-        // Get chat messages
+        // chat messages fetch kore
         $chat_sql = "SELECT chat_id, user_id, message, sent_at 
                      FROM chat 
                      WHERE community_id = ? 

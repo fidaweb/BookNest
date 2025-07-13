@@ -1,25 +1,25 @@
 <?php
-// Enable error reporting for debugging
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Set proper headers
+
 header('Content-Type: application/xml; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Handle preflight requests
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Start output
+
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo '<response>';
 
 try {
-    // Include database connection first
+    
     $connectionFile = __DIR__ . '/../config/connection.php';
     if (!file_exists($connectionFile)) {
         throw new Exception("Database connection file not found at: " . $connectionFile);
@@ -37,11 +37,11 @@ try {
     include('session.php');
    
 
-    // Handle different actions
+    //leave community
     if (isset($_POST['action']) && $_POST['action'] === 'leave_community') {
         handleLeaveCommunity($conn);
     } else {
-        // Handle get communities
+        //  get communities
         handleGetCommunities($conn);
     }
 
@@ -59,12 +59,12 @@ if (isset($conn)) {
 
 function handleLeaveCommunity($conn) {
     try {
-        // Check session
+        
         if (!function_exists('checkSession') || !checkSession()) {
             throw new Exception("Please log in to continue");
         }
         
-        // Get user_id from session cookie
+        
         if (!isset($_COOKIE["user_id"])) {
             throw new Exception("Session expired. Please log in again.");
         }
@@ -77,7 +77,6 @@ function handleLeaveCommunity($conn) {
         
         $community_id = intval($_POST['community_id']);
         
-        // Check if user is member of this community
         $check_sql = "SELECT cm.id, c.name FROM community_member cm 
                       INNER JOIN communities c ON cm.community_id = c.community_id 
                       WHERE cm.user_id = ? AND cm.community_id = ?";
@@ -98,7 +97,6 @@ function handleLeaveCommunity($conn) {
         $membership_data = mysqli_fetch_assoc($check_result);
         $community_name = $membership_data['name'];
         
-        // Remove user from community
         $delete_sql = "DELETE FROM community_member WHERE user_id = ? AND community_id = ?";
         $delete_stmt = mysqli_prepare($conn, $delete_sql);
         
@@ -135,20 +133,16 @@ function handleGetCommunities($conn) {
     try {
         $user_id = null;
         
-        // Try to get user_id from session first
         if (function_exists('checkSession') && checkSession() && isset($_COOKIE["user_id"])) {
             $user_id = (int)$_COOKIE["user_id"];
         } 
-        // Fallback to GET parameter for testing - REMOVED FOR PRODUCTION
-        // else if (isset($_GET['user_id']) && !empty($_GET['user_id'])) {
-        //     $user_id = intval($_GET['user_id']);
-        // }
+        
         
         if (!$user_id) {
             throw new Exception("Please log in to view your communities");
         }
         
-        // Get user's communities with member count
+
         $sql = "SELECT 
                     c.community_id, 
                     c.name, 

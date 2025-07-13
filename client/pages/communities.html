@@ -376,26 +376,24 @@
                 
             </div>
 
-            <!-- Loading spinner -->
             <div id="loadingSpinner" class="loading-spinner">
                 <div class="spinner"></div>
             </div>
 
-            <!-- Error message -->
             <div id="errorMessage" class="error-message" style="display: none;">
                 <h4>Error Loading Communities</h4>
-                <p id="errorText">Unable to load communities at this time. Please try again later.</p>
+                <p id="errorText">Unable to load communities</p>
                 <button class="btn btn-primary" onclick="loadCommunities()">Retry</button>
             </div>
 
             <!-- Communities grid -->
             <div class="row" id="communitiesGrid">
-                <!-- Dynamic communities will be loaded here -->
+                <!--dynamically ekhane communities load kori-->
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr -->
     <footer class="footer">
         <div class="container py-5">
             <div class="row">
@@ -520,7 +518,6 @@
             for (var i = 0; i < communities.length; i++) {
                 var community = communities[i];
                 
-                // Simple image handling - use URL from database or default
                 var imageUrl = community.image_url;
                 if (!imageUrl || imageUrl.trim() === '') {
                     imageUrl = 'https://via.placeholder.com/400x200/007bff/ffffff?text=BookNest+Community';
@@ -627,9 +624,8 @@
             displayCommunities(searchResults);
         }
 
-        // --- START OF CLEANED joinCommunity FUNCTION ---
+        //join communityyyyyy
         function joinCommunity(communityName, communityId) {
-            // Show loading state
             event.target.disabled = true;
             event.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Joining...';
             
@@ -642,24 +638,24 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        // Redirect to my communities page
+                    
                         window.location.href = '../pages/mycommunities.html?name=' + encodeURIComponent(communityName) + '&id=' + communityId;
                     } else {
-                        // Reset button and show message (e.g., "Please log in")
-                        alert(response.message); // Show message to user
+                        
+                        alert(response.message); 
                         event.target.disabled = false;
                         event.target.innerHTML = '<i class="fas fa-plus"></i> Join Community';
                     }
                 },
                 error: function(xhr, status, error) {
-                    // Reset button and show generic error
+                    
                     alert('Failed to join community. Please try again.');
                     event.target.disabled = false;
                     event.target.innerHTML = '<i class="fas fa-plus"></i> Join Community';
                 }
             });
         }
-        // --- END OF CLEANED joinCommunity FUNCTION ---
+        
 
         function hideLoading() {
             $('#loadingSpinner').hide();
