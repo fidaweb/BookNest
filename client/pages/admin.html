@@ -1,283 +1,541 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book Nest - Admin Panel</title>
-  <style>
-    :root {
-      --primary: #f4b400;
-      --dark-bg: #121212;
-      --sidebar-bg: #1e1e1e;
-      --card-bg: #222;
-      --text-light: #ccc;
-      --accent: #00bcd4;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <script src="bootstrap.bundle.min.js.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Book Nest - Admin Panel</title>
+    <style>
+      :root {
+        --primary: #f4b400;
+        --dark-bg: #121212;
+        --sidebar-bg: #1e1e1e;
+        --card-bg: #222;
+        --text-light: #ccc;
+        --accent: #00bcd4;
+      }
 
-    * {
-      box-sizing: border-box;
-    }
+      * {
+        box-sizing: border-box;
+      }
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--dark-bg);
-      color: var(--text-light);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--dark-bg);
+        color: var(--text-light);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
 
-    header {
-      background-color: var(--primary);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
+      header {
+        background-color: var(--primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
 
-    header h1 {
-      color: black;
-      margin: 0;
-      font-weight: bold;
-    }
+      header h1 {
+        color: black;
+        margin: 0;
+        font-weight: bold;
+      }
 
-    nav a {
-      color: black;
-      margin-left: 1rem;
-      text-decoration: none;
-      font-weight: 600;
-      transition: opacity 0.3s;
-    }
+      nav a {
+        color: black;
+        margin-left: 1rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: opacity 0.3s;
+      }
 
-    nav a:hover {
-      opacity: 0.7;
-    }
+      nav a:hover {
+        opacity: 0.7;
+      }
 
-    .sidebar {
-      width: 220px;
-      height: 100vh;
-      background-color: var(--sidebar-bg);
-      position: fixed;
-      top: 0;
-      left: -220px;
-      padding-top: 80px;
-      border-right: 1px solid #333;
-      transition: left 0.3s ease;
-      z-index: 999;
-    }
+      .sidebar {
+        width: 220px;
+        height: 100vh;
+        background-color: var(--sidebar-bg);
+        position: fixed;
+        top: 0;
+        left: -220px;
+        padding-top: 80px;
+        border-right: 1px solid #333;
+        transition: left 0.3s ease;
+        z-index: 999;
+      }
 
-    .sidebar.active {
-      left: 0;
-    }
+      .sidebar.active {
+        left: 0;
+      }
 
-    .sidebar a {
-      display: block;
-      padding: 1rem;
-      color: var(--text-light);
-      text-decoration: none;
-      font-weight: 500;
-      transition: background 0.3s;
-    }
+      .sidebar a {
+        display: block;
+        padding: 1rem;
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 500;
+        transition: background 0.3s;
+      }
 
-    .sidebar a:hover {
-      background-color: #333;
-      color: white;
-    }
+      .sidebar a:hover {
+        background-color: #333;
+        color: white;
+      }
 
-    .menu-toggle {
-      font-size: 24px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: black;
-    }
+      .menu-toggle {
+        font-size: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: black;
+      }
 
-    .main {
-      margin-left: 0;
-      padding: 2rem;
-      flex-grow: 1;
-      transition: margin-left 0.3s ease;
-    }
+      .main {
+        margin-left: 0;
+        padding: 2rem;
+        flex-grow: 1;
+        transition: margin-left 0.3s ease;
+      }
 
-    .sidebar.active ~ .main {
-      margin-left: 220px;
-    }
+      .sidebar.active ~ .main {
+        margin-left: 220px;
+      }
 
-    .card {
-      background: #1a1a1a;
-      border-left: 5px solid var(--primary);
-      color: white;
-      padding: 1.5rem;
-      border-radius: 10px;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    }
+      .card {
+        background: #1a1a1a;
+        border-left: 5px solid var(--primary);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
 
-    .card h2 {
-      margin-top: 0;
-      border-bottom: 1px solid #444;
-      padding-bottom: 0.5rem;
-    }
+      .card h2 {
+        margin-top: 0;
+        border-bottom: 1px solid #444;
+        padding-bottom: 0.5rem;
+      }
 
-    .form-group {
-      margin-bottom: 1.2rem;
-    }
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 0.3rem;
-      font-weight: 600;
-      color: #eee;
-    }
+      .form-group label {
+        display: block;
+        margin-bottom: 0.3rem;
+        font-weight: 600;
+        color: #eee;
+      }
 
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.6rem;
-      border: 1px solid #444;
-      border-radius: 6px;
-      background-color: #2a2a2a;
-      color: white;
-    }
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid #444;
+        border-radius: 6px;
+        background-color: #2a2a2a;
+        color: white;
+      }
 
-    .form-group button {
-      padding: 0.7rem 1.2rem;
-      background-color: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+      .form-group button {
+        padding: 0.7rem 1.2rem;
+        background-color: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
 
-    .form-group button:hover {
-      background-color: #008c9e;
-    }
+      .form-group button:hover {
+        background-color: #008c9e;
+      }
 
-    footer {
-      background: rgba(215, 128, 40, 0.95);
-      color: white;
-      padding: 3rem 1rem 1rem 1rem;
-    }
+      footer {
+        background: rgba(215, 128, 40, 0.95);
+        color: white;
+        padding: 3rem 1rem 1rem 1rem;
+      }
 
-    footer h5, footer h6 {
-      color: #fff;
-      margin-bottom: 1rem;
-    }
+      footer h5,
+      footer h6 {
+        color: #fff;
+        margin-bottom: 1rem;
+      }
 
-    footer ul {
-      list-style: none;
-      padding: 0;
-    }
+      footer ul {
+        list-style: none;
+        padding: 0;
+      }
 
-    footer ul li {
-      margin-bottom: 0.5rem;
-    }
+      footer ul li {
+        margin-bottom: 0.5rem;
+      }
 
-    footer ul li a {
-      color: #fff;
-      text-decoration: none;
-    }
+      footer ul li a {
+        color: #fff;
+        text-decoration: none;
+      }
 
-    footer .payment-logo {
-      height: 30px;
-      margin-left: 0.5rem;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Book Nest Admin</h1>
-    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
-    <nav>
+      footer .payment-logo {
+        height: 30px;
+        margin-left: 0.5rem;
+      }
+
+
+      .order-summary-box {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .summary-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .summary-title i {
+            color: var(--primary);
+        }
+        
+        .book-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .book-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .book-image {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 1rem;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .book-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 0.25rem 0;
+        }
+        
+        .book-author {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .book-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #007bff;
+        }
+        
+        .price-breakdown {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .price-row.discount {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .price-row.total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0;
+            padding-top: 0.5rem;
+            border-top: 2px solid var(--primary);
+        }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Book Nest Admin</h1>
+      <button
+        class="menu-toggle"
+        onclick="document.querySelector('.sidebar').classList.toggle('active')"
+      >
+        ☰
+      </button>
+      <nav>
+        <a href="#">Dashboard</a>
+        <a href="#">Logout</a>
+      </nav>
+    </header>
+
+    <div class="sidebar">
       <a href="#">Dashboard</a>
-      <a href="#">Logout</a>
-    </nav>
-  </header>
+      <a href="#">Add New Book</a>
+    </div>
 
-  <div class="sidebar">
-    <a href="#">Dashboard</a>
-    <a href="#">Add New Book</a>
-    <a href="#">Manage Books</a>
-    <a href="#">Orders</a>
-    <a href="#">Users</a>
-    <a href="#">Reports</a>
-  </div>
+    <div class="main">
+      <div class="card">
+        <h2>Add New Book</h2>
+        <div class="form-group">
+          <label>Book Title</label>
+          <input class="title" type="text" placeholder="Enter book title" />
+        </div>
+        <div class="form-group">
+          <label>Author</label>
+          <input class="author" type="text" placeholder="Enter author name" />
+        </div>
+        <div class="form-group">
+          <label>Price ($)</label>
+          <input class="price" type="number" placeholder="Enter price" />
+        </div>
+        <div class="form-group">
+          <label>Cover Image URL</label>
+          <input class="url" type="text" placeholder="Enter image URL" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea
+            class="description"
+            rows="4"
+            placeholder="Enter book description"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <button class="addbook">Add Book</button>
+        </div>
+      </div>
 
-  <div class="main">
-    <div class="card">
-      <h2>Add New Book</h2>
-      <div class="form-group">
-        <label>Book Title</label>
-        <input type="text" placeholder="Enter book title" />
-      </div>
-      <div class="form-group">
-        <label>Author</label>
-        <input type="text" placeholder="Enter author name" />
-      </div>
-      <div class="form-group">
-        <label>Price ($)</label>
-        <input type="number" placeholder="Enter price" />
-      </div>
-      <div class="form-group">
-        <label>Cover Image URL</label>
-        <input type="text" placeholder="Enter image URL" />
-      </div>
-      <div class="form-group">
-        <label>Description</label>
-        <textarea rows="4" placeholder="Enter book description"></textarea>
-      </div>
-      <div class="form-group">
-        <button>Add Book</button>
+
+      <div class="">
+        <div class="order-summary-box">
+            <h4 class="summary-title">
+                <i class="fas fa-receipt"></i>
+                <div class="form-group">
+                  <label>Book Title</label>
+                  <input class="title search" type="text" placeholder="Enter book title" />
+                </div>
+                
+            </h4>
+            
+            
+           
+            <div class="book-container">
+
+            </div>
+            <!-- <div class="book-item">
+                <img src="../assets/images/scu.jpg" alt="Book" class="book-image">
+                <div>
+                    <h6 class="book-title">To Kill a Mockingbird</h6>
+                    <p class="book-author">by Harper Lee</p>
+                    <span class="book-price">$50</span>
+                </div>
+            </div>  -->
+            <div class="price-row total">
+                <span>Total Amount</span>
+                <span class="tot">$70</span>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+      <div class="card">
+        <h2>Latest Orders</h2>
+        <p>No orders yet.</p>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Latest Orders</h2>
-      <p>No orders yet.</p>
-    </div>
-  </div>
+    <footer>
+      <div class="footer-container">
+        <div
+          style="display: flex; flex-wrap: wrap; justify-content: space-around"
+        >
+          <div style="max-width: 300px">
+            <h5>BookNest</h5>
+            <p>
+              Your trusted online bookstore for all genres. Discover, read, and
+              grow with our vast collection of books.
+            </p>
+          </div>
+          <div>
+            <h6>Quick Links</h6>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Books</a></li>
+              <li><a href="#">Categories</a></li>
+              <li><a href="#">Authors</a></li>
+            </ul>
+          </div>
+          <div>
+            <h6>Contact Us</h6>
+            <p>&#9993; Email: booknest@gmail.com</p>
+            <p>&#9743; Phone: 01824673890</p>
+            <p>&#8962; Address: Block A Dhaka, Bangladesh</p>
+          </div>
+        </div>
+        <hr style="margin: 2rem 0; border-color: #495057" />
+        <div
+          style="
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <p>&copy; 2025 BookNest. All rights reserved.</p>
+          <div>
+            <img
+              src="../assets/images/visa.jpg"
+              alt="Visa"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/mastercard.png"
+              alt="Mastercard"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/bkash.jpg"
+              alt="Bkash"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/nagad.png"
+              alt="Nagad"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/upay.png"
+              alt="Upay"
+              class="payment-logo"
+            />
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      $(document).ready(function () {
+        $(".addbook").click(function () {
+          title = $(".title")[0].value;
+          author = $(".author")[0].value;
+          price = $(".price")[0].value;
+          url = $(".url")[0].value;
+          description = $(".description")[0].value;
+          action = "add";
+          console.log(url);
+          $.ajax({
+            url: "../../api/admin.php",
+            method: "POST",
+            contentType: "application/xml",
+            data: `<?xml version='1.0' encoding='UTF-8'?>
+            <body>
+            <title>${title}</title>
+            <author>${author}</author>
+            <price>${price}</price>
+            <url>${url}</url>
+            <description>${description}</description>
+            <action>${action}</action>
+            </body>`,
+            success: function (data) {
+              console.log(JSON.parse(data));
+            },
+          });
+        });
+      });
 
-  <footer>
-    <div class="footer-container">
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-        <div style="max-width: 300px;">
-          <h5>BookNest</h5>
-          <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
-        </div>
-        <div>
-          <h6>Quick Links</h6>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Books</a></li>
-            <li><a href="#">Categories</a></li>
-            <li><a href="#">Authors</a></li>
-          </ul>
-        </div>
-        <div>
-          <h6>Contact Us</h6>
-          <p>&#9993; Email: booknest@gmail.com</p>
-          <p>&#9743; Phone: 01824673890</p>
-          <p>&#8962; Address: Block A Dhaka, Bangladesh</p>
-        </div>
-      </div>
-      <hr style="margin: 2rem 0; border-color: #495057;">
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
-        <p>&copy; 2025 BookNest. All rights reserved.</p>
-        <div>
-          <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
-          <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
-          <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
-          <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
-          <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
-        </div>
-      </div>
-    </div>
-  </footer>
-</body>
+      function deleteBook(id){
+        $.get(`../../api/admin.php?id=${id}`,function(data){
+          console.log(data)
+          try{
+            res=JSON.parse(data)
+            alert(res['msg'])
+
+          }catch{
+            alert('Error')
+          }
+        })
+      }
+
+
+      $('.search').on('input',function(){
+      
+          console.log('kkkkkk')
+                $.get(`../../api/search.php?term=${this.value}`, function (data) {
+console.log(data)
+  //get books array as string populated from home and categories pages then get real array from string by parsing it
+  let books=JSON.parse(data)
+let total=0
+$(".book-container").empty()
+  //iterate over the array embedding the id as argument to the removefromcart function for each id
+          books.forEach((book) => {
+            
+            const item=`
+            <div class="book-item">
+                        <img src="${book["Image_URL_L"]}" alt="Book" class="book-image">
+                        <div>
+                            <h6 class="book-title">${book["Book_Title"]}</h6>
+                            <p class="book-author">by ${book["Book_Author"]}</p>
+                            <span class="book-price">${book["PRICE"]}</span>
+                            <button class="btn btn-danger" onClick="deleteBook(${book["id"]})">Delete</button>
+                        </div>
+            </div>
+            `
+            $(".book-container").append(item)
+            total+=parseInt(book["PRICE"])
+
+          });
+          
+          $('.tot').text("$"+total)
+
+
+
+})
+            
+      })
+    </script>
+  </body>
 </html>

@@ -324,6 +324,41 @@ the category button is attached to function on click event that renders a bootst
 <!-- this is the load books functions that will fetch from database but currently using a static array for the fetched data -->
 
     <script>
+      function createCard(book){
+        //create my card
+        const card = $("<my-card></my-card>");
+
+// add class card to enforce page specific styling
+card.addClass("card");
+
+
+//append child elements to card embedded with data fetched from database
+card.append(
+  `<img slot="image"style="width: 100%;
+height: 200px;
+object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+);
+
+card.append(
+  `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
+);
+
+card.append(
+  `<p  class='author' slot="author">${book["Book_Author"]}</p>`
+);
+card.append(
+  `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
+);
+card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
+
+  card.append(
+  `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
+);
+
+return card
+      }
+
+
       function load(count){
         $.get(`../../api/category.php?page=home&offset=${count}`, function (data) {
         //   this is data array representing what will be fetched from database
@@ -338,35 +373,9 @@ the category button is attached to function on click event that renders a bootst
           //embed the data[url,name,ISBN,Book Title,Author] in the card html element 
           //append or populate the main element with the newly embedded card
           books.forEach((book) => {
-            //create my card
-            const card = $("<my-card></my-card>");
-
-            // add class card to enforce page specific styling
-            card.addClass("card");
             
 
-            //append child elements to card embedded with data fetched from database
-            card.append(
-              `<img slot="image"style="width: 100%;
-            height: 200px;
-            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
-            );
-
-            card.append(
-              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
-            );
-
-            card.append(
-              `<p  class='author' slot="author">${book["Book_Author"]}</p>`
-            );
-            card.append(
-              `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
-            );
-            card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
-           
-              card.append(
-              `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
-            );
+            card=createCard(book)
             
             
             //append or populate main element with newly embedded card
@@ -389,35 +398,7 @@ the category button is attached to function on click event that renders a bootst
           //embed the data[url,name,ISBN,Book Title,Author] in the card html element 
           //append or populate the main element with the newly embedded card
           books.forEach((book) => {
-            //create my card
-            const card = $("<my-card></my-card>");
-
-            // add class card to enforce page specific styling
-            card.addClass("card");
-            
-
-            //append child elements to card embedded with data fetched from database
-            card.append(
-              `<img slot="image"style="width: 100%;
-            height: 200px;
-            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
-            );
-
-            card.append(
-              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
-            );
-
-            card.append(
-              `<p  class='author' slot="author">${book["Book_Author"]}</p>`
-            );
-            card.append(
-              `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
-            );
-            card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
-            card.append(
-              `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
-            );
-            //append or populate main element with newly embedded card
+           card=createCard(book)
             $("#main").append(card);
           });
         }).then(function () {
@@ -472,27 +453,23 @@ the category button is attached to function on click event that renders a bootst
           }
          
          
-          $(".search").on('input',function(e){
-            cards=document.querySelectorAll(".card")
-           
-            let title=""
-            let author=""
 
-          cards.forEach(card=>{
+
+
+          $(".search").on('input',function(e){
+            $('#main').empty()
+            $.get(`../../api/search.php?term=${this.value}&&category=home`, function (data) {
+              
+            //get books array as string populated from home and categories pages then get real array from string by parsing it
+            let books=JSON.parse(data)
+            books.forEach(book=>{
+              card=createCard(book)
+              $('#main').append(card)
+            })
+
+
+})
             
-            title=card.getElementsByClassName("title")[0].innerText.toLowerCase()
-            author=card.getElementsByClassName("author")[0].innerText.toLowerCase()
-            h=e.target.value.toLowerCase()
-    
-            if(title.match(h)==null&&
-            author.match(h)==null){
-              card.style.display="none"
-             
-            }
-            else{
-              card.style.display="block"
-            }
-          })
           })
 
           

@@ -1,5 +1,58 @@
 <?php
+include "../config/db.php";
+include "session.php";
 
-echo "hello";
-echo "Connected successfully";
+if($_SERVER['REQUEST_METHOD']=="POST"){
+
+    if(checkAdminSession()){
+
+        $xml=file_get_contents("php://input");
+
+        $xmlr=simplexml_load_string($xml);
+        
+        $title=$xmlr->title;
+        $author=$xmlr->author;
+        $url=$xmlr->url;
+        $category=$xmlr->category;
+        $price=$xmlr->price;
+        $description=$xmlr->description;
+        $action=$xmlr->action;
+        
+        
+        if($action=="add"){
+        $sql="INSERT INTO `books`(`ISBN`, `Book_Title`, `Book_Author`, `Year_Of_Publication`, `Publisher`, `Image_URL_S`, `Image_URL_M`, `Image_URL_L`, `PRICE`, `Category`, `description`) VALUES ('[value-1]',?,?,'[value-4]','[value-5]','[value-6]','[value-7]',?,?,?,?)";
+        
+        $stmt=mysqli_prepare($conn,$sql);
+        mysqli_stmt_bind_param($stmt,'sssdss',$title,$author,$url,$price,$category,$description);
+        mysqli_stmt_execute($stmt);
+        echo "{\"msg\":\"success\"}";
+        
+        }
+
+    }
+    else{
+        echo "{\"msg\":\"Must be admin\"}";
+    }
+   
+}
+
+
+
+if($_SERVER['REQUEST_METHOD']=="GET"){
+if(checkAdminSession()){
+    $id=$_GET["id"];
+    $sql="DELETE FROM `books` WHERE `id`=?";
+    $stmt=mysqli_prepare($conn,$sql);
+    mysqli_stmt_bind_param($stmt,'i',$id);
+    mysqli_stmt_execute($stmt);
+    echo "{\"msg\":\"success\"}";
+}
+else{
+    echo "{\"msg\":\"Must be admin\"}";
+}
+
+
+}
+
+
 ?>
