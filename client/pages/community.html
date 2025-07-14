@@ -557,7 +557,9 @@
                     if (success === 'true') {
                         $('#messageInput').val('');
                         loadChatMessages(); // reload message
-                    } else {
+                    } 
+                    
+                    else {
                         var error = $(data).find('error').text();
                         alert('Error: ' + error);
                     }

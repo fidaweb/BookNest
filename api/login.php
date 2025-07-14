@@ -26,7 +26,7 @@ if($admin->num_rows>0){
     }
 }
 $sessionid="";
-
+$temp=0;
 if($result->num_rows>0){
     do{
         $sessionid=bin2hex(random_bytes(16));
@@ -34,7 +34,7 @@ if($result->num_rows>0){
     if($isAdmin){
 
         $sessionid=$adminsession;
-        
+        $temp=1;
     }
    
    
@@ -46,7 +46,7 @@ if($result->num_rows>0){
   
     
     // echo "{\"sessionid\":\"".$sessionid."\",\"userid\":".$id."}";
-    echo "{\"sessionid\":\"".$sessionid."\",\"userid\":".$id.",\"admin\":".$isAdmin."}";
+    echo "{\"sessionid\":\"".$sessionid."\",\"userid\":".$id.",\"admin\":".$temp."}";
 
 }
 }
