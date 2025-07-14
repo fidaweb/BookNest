@@ -34,8 +34,9 @@ if($result->num_rows>0){
     if($isAdmin){
 
         $sessionid=$adminsession;
+        
     }
-    
+   
    
     $sql="INSERT INTO `sessions`(`sessionid`, `user_id`, `created_at`, `expires_at`) VALUES (?,?,CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP()+INTERVAL 3 Day)";
     $stmt=mysqli_prepare($conn,$sql);
@@ -43,8 +44,9 @@ if($result->num_rows>0){
     mysqli_stmt_execute($stmt);
     
   
-    // $result=mysqli_query($conn,$sql);
-    echo "{\"sessionid\":\"".$sessionid."\",\"userid\":".$id."}";
+    
+    // echo "{\"sessionid\":\"".$sessionid."\",\"userid\":".$id."}";
+    echo "{\"sessionid\":\"".$sessionid."\",\"userid\":".$id.",\"admin\":".$isAdmin."}";
 
 }
 }

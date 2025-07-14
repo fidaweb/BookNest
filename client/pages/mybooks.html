@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Nest</title>
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
       :root {
@@ -71,7 +71,6 @@
         padding: 0.5rem 1rem;
       }
 
-      
       .filters a {
         background-color: var(--accent);
         border: none;
@@ -79,13 +78,13 @@
         border-radius: 6px;
         color: white;
         cursor: pointer;
-        text-decoration: none; 
-        display: inline-block; 
+        text-decoration: none;
+        display: inline-block;
         text-align: center;
       }
 
       .filters a:hover {
-        background-color: #00a0b0; 
+        background-color: #00a0b0;
       }
 
       .book-grid {
@@ -249,7 +248,6 @@
       </div>
     </footer>
     <script>
-      
       function getCookie(cname) {
         cname = cname + "=";
         let cookie = decodeURIComponent(document.cookie).split(";");
@@ -269,8 +267,7 @@
         const booksContainer = $("#books-container");
 
         function fetchAndDisplayBooks() {
-          
-          const userId = getCookie("user_id"); 
+          const userId = getCookie("user_id");
           if (!userId) {
             booksContainer.html(
               '<p style="text-align: center; width: 100%; color: red;">User not logged in. Please ensure user_id cookie is set.</p>'
@@ -281,10 +278,11 @@
           $.ajax({
             url: "../../api/mybooks.php",
             method: "GET",
-            dataType: "json", 
+            dataType: "text",
             success: function (data) {
-              console.log("AJAX Success! Data received:", data);
-              booksContainer.empty(); 
+              console.log("Success! Data received:", JSON.parse(data));
+              data = JSON.parse(data);
+              booksContainer.empty();
 
               if (data.error) {
                 booksContainer.html(
@@ -304,13 +302,18 @@
                   const bookCard = `
                     <div class="book-card">
                       <img
-                        src="${book.image || '../../client/assets/images/placeholder.svg?height=200&width=150'}"
-                        alt="${book.title}"
+                        src="${
+                          book.image ||
+                          "../../client/assets/images/placeholder.svg?height=200&width=150"
+                        }"
+                        alt="${book.Book_Title}"
                       />
-                      <h3>${book.title}</h3>
-                      <p>${book.author}</p>
-                      <p>$${book.price}</p>
-                      <button onclick="window.open('../../api/download.php?book_name=${encodeURIComponent(book.title.trim())}', '_blank')">Download Books</button>
+                      <h3>${book.Book_Title}</h3>
+                      <p>${book.Book_Author}</p>
+                      <p>$${book.PRICE}</p>
+                      <button onclick="window.open('../../api/download.php?book_name=${encodeURIComponent(
+                        book.Book_Title.trim()
+                      )}', '_blank')">Download Books</button>
                     </div>
                   `;
                   booksContainer.append(bookCard);
@@ -322,7 +325,12 @@
               }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-              console.error("AJAX Error:", textStatus, errorThrown, jqXHR.responseText);
+              console.error(
+                "AJAX Error:",
+                textStatus,
+                errorThrown,
+                jqXHR.responseText
+              );
               booksContainer.html(
                 '<p style="text-align: center; width: 100%; color: red;">Failed to load books. Please try again later.</p>'
               );

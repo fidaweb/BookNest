@@ -44,12 +44,13 @@ try {
         exit();
     }
 
-    
+    // echo json_encode($book_ids);
     $placeholders = implode(',', array_fill(0, count($book_ids), '?'));
     $types = str_repeat('i', count($book_ids)); 
 
     //book details fetch
-    $stmt_books = $conn->prepare("SELECT book_id, title, author, description, price, image FROM books WHERE book_id IN ($placeholders)");
+    // $stmt_books = $conn->prepare("SELECT book_id, title, author, description, price, image FROM books WHERE book_id IN ($placeholders)");
+    $stmt_books = $conn->prepare("SELECT id, Book_Title, Book_Author, description, PRICE, Image_URL_L FROM books WHERE id IN ($placeholders)");
     if (!$stmt_books) {
         throw new Exception("Failed to prepare books statement: " . $conn->error);
     }

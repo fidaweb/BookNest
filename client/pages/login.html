@@ -694,6 +694,9 @@
                 if(result["error"]==null){
                 setCookie("session_id",result["sessionid"],3)
                 setCookie("user_id",result["userid"],3)
+                if(parseInt(result['admin'])==1){
+                    window.location.href='admin.html'
+                }
                 setTimeout(() => {
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-sign-in-alt"></i> <span>Login to Account</span>';

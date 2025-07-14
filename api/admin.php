@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         $sql="INSERT INTO `books`(`ISBN`, `Book_Title`, `Book_Author`, `Year_Of_Publication`, `Publisher`, `Image_URL_S`, `Image_URL_M`, `Image_URL_L`, `PRICE`, `Category`, `description`,`book_url`) VALUES ('[value-1]',?,?,'[value-4]','[value-5]','[value-6]','[value-7]',?,?,?,?,?)";
         
         $stmt=mysqli_prepare($conn,$sql);
-        mysqli_stmt_bind_param($stmt,'sssdss',$title,$author,$url,$price,$category,$description,$bookurl);
+        mysqli_stmt_bind_param($stmt,'sssdsss',$title,$author,$url,$price,$category,$description,$bookurl);
         mysqli_stmt_execute($stmt);
         echo "{\"msg\":\"success\"}";
         

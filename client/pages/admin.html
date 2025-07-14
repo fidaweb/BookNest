@@ -311,10 +311,19 @@
       </nav>
     </header> -->
     <my-navbar></my-navbar>
+    <div style="background-color:var(--primary);align-items: center;justify-content: center;display: flex;">
+      <button
+      class="menu-toggle"
+      onclick="document.querySelector('.sidebar').classList.toggle('active')"
+    >
+      ☰
+    </button>
+    </div>
+   
 
     <div class="sidebar">
       <a href="#">Dashboard</a>
-      <a href="#">Add New Book</a>
+      <a href="delete_community.html">Delete Community</a>
     </div>
 
     <div class="main">
@@ -378,20 +387,17 @@
                     <span class="book-price">$50</span>
                 </div>
             </div>  -->
-            <div class="price-row total">
-                <span>Total Amount</span>
-                <span class="tot">$70</span>
-            </div>
+            
             </div>
         </div>
     </div>
 </div>
 </div>
 
-      <div class="card">
+      <!-- <div class="card">
         <h2>Latest Orders</h2>
         <p>No orders yet.</p>
-      </div>
+      </div> -->
     </div>
 
     <footer>
@@ -492,7 +498,9 @@
             <action>${action}</action>
             </body>`,
             success: function (data) {
-              console.log(JSON.parse(data));
+              console.log(data)
+             res=JSON.parse(data);
+              alert(res['msg'])
             },
           });
         });
@@ -515,7 +523,7 @@
       $('.search').on('input',function(){
       
           
-    $.get(`../../api/search.php?term=${this.value}`, function (data) {
+    $.get(`../../api/search.php?term=${this.value}&&category=home`, function (data) {
 
   //get books array as string populated from home and categories pages then get real array from string by parsing it
   let books=JSON.parse(data)
@@ -536,11 +544,10 @@ $(".book-container").empty()
             </div>
             `
             $(".book-container").append(item)
-            total+=parseInt(book["PRICE"])
-
+           
           });
           
-          $('.tot').text("$"+total)
+        
 
 
 

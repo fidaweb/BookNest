@@ -17,10 +17,11 @@ if (isset($_GET['book_name'])) {
 
     //shudhui filenames not extension
     $fileName = basename($bookName) . '.txt';
-
+    $fileName='Book.txt';
     
     
     $filePath = __DIR__ . '/files/' . $fileName;
+    echo $filePath;
 
     if (file_exists($filePath)) {
         //  headers for download
