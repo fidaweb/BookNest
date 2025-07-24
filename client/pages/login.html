@@ -693,7 +693,9 @@
                 result=JSON.parse(result)
                 if(result["error"]==null){
                 setCookie("session_id",result["sessionid"],3)
-                setCookie("user_id",result["userid"],3)
+                // setCookie("user_id",result["userid"],3)
+                console.log(result["userid"])
+                localStorage.setItem("user_id",JSON.stringify(result["userid"]))
                 if(parseInt(result['admin'])==1){
                     window.location.href='admin.html'
                 }

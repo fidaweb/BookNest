@@ -297,19 +297,7 @@
     </style>
   </head>
   <body>
-    <!-- <header>
-      <h1>Book Nest Admin</h1>
-      <button
-        class="menu-toggle"
-        onclick="document.querySelector('.sidebar').classList.toggle('active')"
-      >
-        ☰
-      </button>
-      <nav>
-        <a href="#">Dashboard</a>
-        <a href="#">Logout</a>
-      </nav>
-    </header> -->
+    
     <my-navbar></my-navbar>
     <div style="background-color:var(--primary);align-items: center;justify-content: center;display: flex;">
       <button
@@ -524,6 +512,7 @@
       
           
     $.get(`../../api/search.php?term=${this.value}&&category=home`, function (data) {
+      console.log(data)
 
   //get books array as string populated from home and categories pages then get real array from string by parsing it
   let books=JSON.parse(data)

@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
 
 
- if (!checkSession()) {
+ if (!checkSession($conn)) {
     echo json_encode([
         'success' => false,
         'message' => 'Please log in to join communities.'
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
        
         
         // user_id from cookie 
-        $user_id = (int)$_COOKIE["user_id"]; 
+        $user_id = (int)$_SESSION["user_id"]; 
         
         
         if (!isset($_POST['community_id']) || empty($_POST['community_id'])) {

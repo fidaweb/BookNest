@@ -423,14 +423,14 @@
     <script src="../assets/bootstrap.bundle.min.js"></script>
     <script>
         var currentCommunityId = null;
-        var currentUserId = getCookie("user_id"); 
+        // var currentUserId = getCookie("user_id");
+        var currentUserId = parseInt(localStorage.getItem("user_id"));  
         
         $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
             currentCommunityId = urlParams.get('id');
             
-            console.log('Community ID:', currentCommunityId);
-            console.log('User ID:', currentUserId);
+            
 
             if (!currentCommunityId) {
                 showError('Community ID not found in URL.');
@@ -467,7 +467,7 @@
                 type: 'GET',
                 data: { community_id: currentCommunityId }, 
                 dataType: 'xml',
-                timeout: 10000,
+                // timeout: 10000,
                 success: function(data) {
                     var success = $(data).find('success').text();
                     
@@ -475,9 +475,11 @@
                         var communityName = $(data).find('community name').text();
                         $('#communityName').text(communityName || 'Community Chat');
                         displayMessages(data);
-                    } else {
-                        var error = $(data).find('error').text();
-                        showError('Error: ' + error);
+                    } 
+                    else {
+                        // var error = $(data).find('error').text();
+                        // showError('Error: ' + error);
+                        showSending('Sending...')
                     }
                 },
                 error: function(xhr, status, error) {
@@ -549,7 +551,7 @@
                     message: messageText
                 }, 
                 dataType: 'xml',
-                timeout: 10000,
+                // timeout: 10000,
                 success: function(data) {
                     console.log(data)
                     var success = $(data).find('success').text();
@@ -623,6 +625,16 @@
                     <h5>Error</h5>
                     <p>${message}</p>
                     <button class="btn btn-primary" onclick="loadChatMessages()">Retry</button>
+                </div>
+            `);
+        }
+
+        function showSending(message) {
+            $('#chatMessages').html(`
+                <div class="succcess">
+                   
+                    <p>${message}</p>
+                
                 </div>
             `);
         }

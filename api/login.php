@@ -9,11 +9,15 @@ $password=crypt($xmlr->password,"123!>67");
 
 
 
-$sql="SELECT * FROM users WHERE email ='$email' AND password ='$password'";
-$result=mysqli_query($conn,$sql);
+$sql="SELECT * FROM users WHERE email =? AND password =?";
+$stmt=mysqli_prepare($conn,$sql);
+mysqli_stmt_bind_param($stmt,'ss',$email,$password);
+mysqli_stmt_execute($stmt);
+$result=mysqli_stmt_get_result($stmt);
 
 if($result->num_rows>0){
-    $id=mysqli_fetch_assoc($result)['user_id'];
+   
+$id=mysqli_fetch_assoc($result)['user_id'];
 
 $sql="SELECT * FROM admin";
 $admin=mysqli_query($conn,$sql);
@@ -28,6 +32,7 @@ if($admin->num_rows>0){
 $sessionid="";
 $temp=0;
 if($result->num_rows>0){
+    session_start();
     do{
         $sessionid=bin2hex(random_bytes(16));
     }while($sessionid==$adminsession);
@@ -35,6 +40,7 @@ if($result->num_rows>0){
 
         $sessionid=$adminsession;
         $temp=1;
+        $_SESSION['admin_id']=$sessionid;
     }
    
    
@@ -42,10 +48,11 @@ if($result->num_rows>0){
     $stmt=mysqli_prepare($conn,$sql);
     mysqli_stmt_bind_param($stmt,"si",$sessionid,$id);
     mysqli_stmt_execute($stmt);
+   
+    $_SESSION['session_id']=$sessionid;
+    $_SESSION['user_id']=$id;
+
     
-  
-    
-    // echo "{\"sessionid\":\"".$sessionid."\",\"userid\":".$id."}";
     echo "{\"sessionid\":\"".$sessionid."\",\"userid\":".$id.",\"admin\":".$temp."}";
 
 }

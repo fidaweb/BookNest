@@ -17,18 +17,18 @@ try {
     include("session.php");
     
     
-    if (!function_exists('checkSession') || !checkSession()) {
+    if (!function_exists('checkSession') || !checkSession($conn)) {
         echo '<success>false</success>';
         echo '<error>Unauthorized: Session invalid or user not logged in.</error>';
         exit();
     }
     
-    if (!isset($_COOKIE["user_id"])) {
+    if (!isset($_SESSION["user_id"])) {
         echo '<success>false</success>';
         echo '<error>User ID not found in session. Please log in again.</error>';
         exit();
     }
-    $user_id = (int)$_COOKIE["user_id"]; 
+    $user_id = (int)$_SESSION["user_id"]; 
 
     if (!isset($conn)) {
         throw new Exception("Connection variable not found");
@@ -165,7 +165,8 @@ try {
     }
     
     else {
-        throw new Exception("Invalid request - missing required parameters");
+        // throw new Exception("Invalid request - missing required parameters");
+        throw new Exception("Sending ...");
     }
     
 } catch (Exception $e) {

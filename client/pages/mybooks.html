@@ -267,20 +267,19 @@
         const booksContainer = $("#books-container");
 
         function fetchAndDisplayBooks() {
-          const userId = getCookie("user_id");
-          if (!userId) {
-            booksContainer.html(
-              '<p style="text-align: center; width: 100%; color: red;">User not logged in. Please ensure user_id cookie is set.</p>'
-            );
-            return;
-          }
+          // const userId = getCookie("user_id");
+          // if (!userId) {
+          //   booksContainer.html(
+          //     '<p style="text-align: center; width: 100%; color: red;">User not logged in. Please ensure user_id cookie is set.</p>'
+          //   );
+          //   return;
+          // }
 
           $.ajax({
             url: "../../api/mybooks.php",
             method: "GET",
             dataType: "text",
             success: function (data) {
-              console.log("Success! Data received:", JSON.parse(data));
               data = JSON.parse(data);
               booksContainer.empty();
 

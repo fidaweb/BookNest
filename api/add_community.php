@@ -1,6 +1,6 @@
 <?php
 include("../config/connection.php");
-include("session.php")
+include("session.php");
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -13,7 +13,7 @@ $description = $_POST['description'];
 $image_url = $_POST['image_url'];
 $category = $_POST['category'];
 
-if(checkSession()){
+if(checkSession($conn)){
     $stmt = $conn->prepare("INSERT INTO communities (name, description, image_url,category) VALUES (?, ?, ?,?)");
     $stmt->bind_param("ssss", $name, $description, $image_url,$category);
     
@@ -24,7 +24,7 @@ if(checkSession()){
     }
 }
 else{
-    echo "Session not valid"
+    echo "Session not valid";
 }
 
 

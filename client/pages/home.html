@@ -4,16 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="bootstrap.min.css" />
-    <link rel="stylesheet" href="../style.css" />
-    <script src="bootstrap.bundle.min.js.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-      crossorigin="anonymous"
-    ></script>
+   
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="preload" href="bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="bootstrap.min.css"></noscript>
+  
+    <link rel="preload" href="../style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../style.css"></noscript>
+    
+    <script src="bootstrap.bundle.min.js.js"></script>
+    
+
+  
+    <link rel="preload" as="script" href="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
+    
     <style>
       
       body {
@@ -36,20 +41,21 @@
             z-index: -1;
         }
 
-      .card.flip {
+      /* .flip {
         transform: rotateY(360deg);
         transition: transform 0.8s;
-      }
+        
+      } */
 
-      .card {
+      /* .card {
         transition: transform 0.8s;
         background: transparent;
         height: 25rem;
         color: black;
-        /* background: var(--main-background) */
+    
         background-color: rgba(255, 255, 255, 0.3);
        
-      }
+      } */
 
       h2 {
         width: 20rem;
@@ -71,17 +77,11 @@
 
       .modal-header {
         background: transparent;
-        /* background-color: rgba(255, 255, 255, 0.3); */
-        /* background-color: white; */
+       
       }
 
       #main{
-        /* background: rgba(255, 255, 255, 0.9); */
-        /* background: linear-gradient(
-          0deg,
-          rgba(34, 193, 195, 1) 0%,
-          rgba(253, 187, 45, 1) 100%
-        ); */
+      
         min-height: 100vh;
       
       }
@@ -130,10 +130,13 @@
     </style>
   </head>
   <body>
+    <script src="./utility.js">
+
+    </script>
 
 <!-- Most of the logic of home.html is the same as the other category pages -->
  
-    <my-navbar></my-navbar>
+
 
     <!--This is the modal for add to cart notification which is almost the same modal as done in class for bootstrap
 the addtocart button is attached to function on click event that renders a bootstrap element based on this modal defined below
@@ -204,14 +207,14 @@ the category button is attached to function on click event that renders a bootst
         <input  class="search rounded-3" placeholder="Search" style="height: 100%"  type="text" />
         <button class="btn btn-outline-light ">Search</button>
       </div>
-      <div>
+      <div class="d-flex flex-wrap gap-1">
         <button class="category btn btn-secondary">Category</button>
-        <span class="user-nav">
+        <div class="user-nav d-flex flex-wrap gap-1">
           <button class="cart btn btn-secondary">Cart</button>
         <button class="mybooks btn btn-secondary">My Books</button>
         <button class="mycommunities btn btn-secondary">My Communities</button>
         <button class="logout btn btn-secondary">Logout</button>
-        </span>
+        </div>
         <span class="no-session">
           <button class="login btn btn-secondary">Login</button>
         </span>
@@ -231,35 +234,7 @@ the category button is attached to function on click event that renders a bootst
    
 
 
-<!-- This is the pagination boostrap element taken from the lab manual from boostrap -->
 
-    <!-- <nav
-      style="
-        align-items: center;
-        justify-content: center;
-        display: flex;
-        padding: 0.5rem;
-      "
-      aria-label="..."
-    >
-      <ul class="pagination">
-        <li class="page-item disabled">
-          <a class="page-link" href="#" tabindex="-1">Previous</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item active">
-          <a class="page-link" href="#"
-            >2 <span class="sr-only">(current)</span></a
-          >
-        </li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#">Next</a>
-        </li>
-      </ul>
-    </nav> -->
-
-  <!-- This is the footer done by Adline -->
     <footer class="footer">
       <div class="container py-5">
           <div class="row">
@@ -318,47 +293,16 @@ the category button is attached to function on click event that renders a bootst
     <script type="module">
       import "../components/my-card.js";
       import "../components/navbar.js";
+      import "./utility.js"
     </script>
+    
 
 
 <!-- this is the load books functions that will fetch from database but currently using a static array for the fetched data -->
 
-    <script>
-      function createCard(book){
-        //create my card
-        const card = $("<my-card></my-card>");
-
-// add class card to enforce page specific styling
-card.addClass("card");
-
-
-//append child elements to card embedded with data fetched from database
-card.append(
-  `<img slot="image"style="width: 100%;
-height: 200px;
-object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
-);
-
-card.append(
-  `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
-);
-
-card.append(
-  `<p  class='author' slot="author">${book["Book_Author"]}</p>`
-);
-card.append(
-  `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
-);
-card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
-
-  card.append(
-  `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
-);
-
-return card
-      }
-
-
+    <script >
+      navbar()
+      books_a=[]
       function load(count){
         $.get(`../../api/category.php?page=home&offset=${count}`, function (data) {
         //   this is data array representing what will be fetched from database
@@ -369,11 +313,12 @@ return card
 //JSON.parse parses the string into an array of JSON objects
           const books = JSON.parse(data);
           
+          
           //iterate over the array and for each object get data from object create a card
           //embed the data[url,name,ISBN,Book Title,Author] in the card html element 
           //append or populate the main element with the newly embedded card
           books.forEach((book) => {
-            
+            books_a.push(book)
 
             card=createCard(book)
             
@@ -398,6 +343,7 @@ return card
           //embed the data[url,name,ISBN,Book Title,Author] in the card html element 
           //append or populate the main element with the newly embedded card
           books.forEach((book) => {
+            books_a.push(book)
            card=createCard(book)
             $("#main").append(card);
           });
@@ -438,7 +384,7 @@ return card
             load(count);
           })
           $(".logout").click(function(){
-            deleteCookie("user_id",1,1);
+            // deleteCookie("user_id",1,1);
             deleteCookie("session_id",1,1);
             window.location.reload()
           })
@@ -447,28 +393,65 @@ return card
             window.location.href='login.html'
           })
           
-          if(getCookie("user_id")===""||getCookie("session_id"==="")){
+          if(getCookie("session_id")===""){
+          
             $(".user-nav").css({display:"none"})
             $(".no-session").css({display:"inline"})
           }
          
          
 
-
+          
 
           $(".search").on('input',function(e){
-            $('#main').empty()
-            $.get(`../../api/search.php?term=${this.value}&&category=home`, function (data) {
+           
+            var books
+            
+            if(this.value!=undefined){
+              console.log(this.value)
+              $('#main').empty()
+              let search=this.value.toLowerCase()
+             books=books_a.filter((book,index)=>{
               
-            //get books array as string populated from home and categories pages then get real array from string by parsing it
-            let books=JSON.parse(data)
-            books.forEach(book=>{
+              return (book['Book_Title'].toLowerCase().includes(search)||book['Book_Author'].toLowerCase().includes(search))
+            })
+            
+
+            if(books.length==0){
+              console.log('request')
+              $.get(`../../api/search.php?term=${this.value}&&category=home`, function (data) {
+              console.log(data)
+              //get books array as string populated from home and categories pages then get real array from string by parsing it
+              
+               books=books.concat(JSON.parse(data))
+               books_a=books_a.concat(JSON.parse(data))
+               
+
+               books.forEach(book=>{
+            
               card=createCard(book)
+             
               $('#main').append(card)
             })
+             
+            })
+            
+            }
+
+            if(books.length!=0){
+              books.forEach(book=>{
+            card=createCard(book)
+            $('#main').append(card)
+          })
+            }
+
+            if(books_a.length>250){
+              books_a=books_a.slice(0,250)
+            }
+           
 
 
-})
+            }
             
           })
 
@@ -499,34 +482,11 @@ return card
 
         });
       }
-      function deleteCookie(cname, cvalue, exdays) {
-            const d = new Date();
-            d.setTime(d.getTime() - exdays * 24 * 60 * 60 * 1000);
-            let expires = "expires=" + d.toUTCString();
-            // document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";path=/";
-            let temp=cname + "=" + cvalue + ";" + expires + ";path=/"
-            console.log(temp)
-            document.cookie =temp ;
-        }
-
-      function getCookie(cname){
-        cname=cname+"="
-        let cookie=decodeURIComponent(document.cookie).split(";")
-        for(let i=0;i<cookie.length;i++){
-          c=cookie[i]
-          while(c.charAt(0)==" "){
-            c=c.substring(1)
-          }
-          if(c.indexOf(cname)==0){
-            return c.substring(cname.length,c.length)
-          }
-        }
-        return ""
-      }
+  
 
 //this is the add cart function attached to each card during the  loop for populating the main element with cards after fetching data from database
       function addToCart(event, bookID) {
-        if(getCookie("user_id")!=""||getCookie("session_id")!=""){
+        if(getCookie("session_id")!=""){
         //initalize an empty array
         let books = [];
         //check localstorage for array of books
@@ -545,9 +505,8 @@ return card
         alert("Login to add to cart")
       }
       }
-      //this is like the entry point of script the main function- loadBooks is called only after document reloads
+      // loadBooks is called only after document reloads
       $(document).ready(function () {
-
         loadBooks(0);
       });
     </script>

@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 require 'session.php';
 
 
-if (!checkSession()) { 
+if (!checkSession($conn)) { 
     http_response_code(401);
     echo "Unauthorized access.";
     exit();

@@ -9,10 +9,10 @@ try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("Only POST requests are allowed");
     }
-    if (!checkSession()) {
+    if (!checkSession($conn)) {
         throw new Exception("No Session");
     }
-    if (!checkAdminSession()) {
+    if (!checkAdminSession($conn)) {
         throw new Exception("Must be admin");
     }
     

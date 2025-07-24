@@ -95,8 +95,10 @@
     </style>
   </head>
   <body>
-    <my-navbar></my-navbar>
+    <script src="./utility.js">
 
+    </script>
+   
     <div class="container">
       <div
         aria-labelledby="modtitle"
@@ -213,31 +215,7 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
     <div class="d-flex align-center justify-content-center p-3">
       <button class="more btn btn-dark">More...</button>
     </div>
-    <!-- <nav
-      style="
-        align-items: center;
-        justify-content: center;
-        display: flex;
-        padding: 0.5rem;
-      "
-      aria-label="..."
-    >
-      <ul class="pagination">
-        <li class="page-item disabled">
-          <a class="page-link" href="#" tabindex="-1">Previous</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item active">
-          <a class="page-link" href="#"
-            >2 <span class="sr-only">(current)</span></a
-          >
-        </li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#">Next</a>
-        </li>
-      </ul>
-    </nav> -->
+   
 
     <footer>
       <div
@@ -322,39 +300,8 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
       import "../components/navbar.js";
     </script>
     <script>
-       function createCard(book){
-        //create my card
-        const card = $("<my-card></my-card>");
-
-          // add class card to enforce page specific styling
-          card.addClass("card");
-
-
-          //append child elements to card embedded with data fetched from database
-          card.append(
-            `<img slot="image"style="width: 100%;
-          height: 200px;
-          object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
-          );
-
-          card.append(
-            `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
-          );
-
-          card.append(
-            `<p  class='author' slot="author">${book["Book_Author"]}</p>`
-          );
-          card.append(
-            `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
-          );
-          card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
-
-            card.append(
-            `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
-          );
-
-          return card
-      }
+      navbar()
+     
 
 
       function load(count){
@@ -415,7 +362,7 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
           })
 
           $(".logout").click(function(){
-            deleteCookie("user_id",1,1);
+            // deleteCookie("user_id",1,1);
             deleteCookie("session_id",1,1);
             window.location.reload()
           })
@@ -425,7 +372,7 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
             window.location.href='login.html'
           })
           
-          if(getCookie("user_id")===""||getCookie("session_id"==="")){
+          if(getCookie("session_id")===""){
             $(".user-nav").css({display:"none"})
             $(".no-session").css({display:"inline"})
           }
@@ -466,41 +413,9 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
           });
         });
       }
-      function deleteCookie(cname, cvalue, exdays) {
-            const d = new Date();
-            d.setTime(d.getTime() - exdays * 24 * 60 * 60 * 1000);
-            let expires = "expires=" + d.toUTCString();
-            // document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";path=/";
-            let temp=cname + "=" + cvalue + ";" + expires + ";path=/"
-            console.log(temp)
-            document.cookie =temp ;
-        }
+      
 
-      function getCookie(cname){
-        cname=cname+"="
-        let cookie=decodeURIComponent(document.cookie).split(";")
-        for(let i=0;i<cookie.length;i++){
-          c=cookie[i]
-          while(c.charAt(0)==" "){
-            c=c.substring(1)
-          }
-          if(c.indexOf(cname)==0){
-            return c.substring(cname.length,c.length)
-          }
-        }
-        return ""
-      }
-
-      function addToCart(event, bookID) {
-        let books = [];
-        if (localStorage.getItem("books")) {
-          books = JSON.parse(localStorage.getItem("books"));
-        }
-
-        books.push(bookID);
-        localStorage.setItem("books", JSON.stringify(books));
-        new bootstrap.Modal($("#mymodal")).show();
-      }
+      
 
       $(document).ready(function () {
         loadBooks(0);

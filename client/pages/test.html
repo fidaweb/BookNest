@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <link rel="stylesheet" href="../style.css" />
+    <div id="container"></div>
+    <div id="box">
+      <div><div>box</div></div>
+    </div>
+    <div id="temp"></div>
+    <script>
+      p = new DOMParser();
+      $.get("../components/card.html", function (data) {
+        console.log(data);
+        k = p
+          .parseFromString(data, "text/html")
+          .getElementsByClassName("card")[0];
+
+        console.log(k);
+
+        for (i = 0; i < 9; i++) {
+          temp = k.cloneNode(true);
+          console.log($(temp).find(".price").text(`${i}`));
+          $("#container").append(temp);
+        }
+      });
+    </script>
+  </body>
+</html>

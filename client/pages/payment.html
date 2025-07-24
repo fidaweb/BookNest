@@ -536,7 +536,7 @@ cvv
     <script src="../assets/bootstrap.bundle.min.js"></script>
     <script>
 
-if(getCookie("user_id")===""||getCookie("session_id"==="")){
+if(getCookie("session_id")===""){
             window.location.href="home.html"
           }
         
@@ -898,14 +898,15 @@ let total=0
             xmln=parser.parseFromString(xml,'application/xml')
             root=xmln.querySelector("root")
             let arr=JSON.parse(localStorage.getItem('books'))
+            let temp='<bookid></bookid>'
             arr.forEach(id=>{
-                let temp=xmln.createElement('bookid')
+                temp=xmln.createElement('bookid')
                 temp.textContent=id
                 root.appendChild(temp)
             })
             xmln=new XMLSerializer().serializeToString(xmln)
 
-            console.log(xmln)
+            
             $.ajax({
                url:"../../api/payment.php",
                method:"POST",
@@ -915,8 +916,9 @@ let total=0
                     ${xmln}
             `,
                success:function(result){
+                console.log(result)
                 try{
-                    console.log(result)
+                   
                     res=JSON.parse(result)
                     console.log(res)
                     if(res['msg']=='success'){

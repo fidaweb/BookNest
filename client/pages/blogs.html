@@ -126,16 +126,9 @@
     </header>
 
     <div class="container py-4">
+      <a style="color: #f9f9f9" href="add_blog.html">Add Blog</a>
       <h2 class="mb-4">Latest Blogs</h2>
-      <div class="blog-grid">
-        <!-- <div class="blog-card">
-          <h3>How to Read More Books</h3>
-          <p>by Ayesha Khan</p>
-          <button onclick="cli()">Read More</button>
-        </div> -->
-
-        <!-- Add more blog cards here -->
-      </div>
+      <div class="blog-grid"></div>
     </div>
 
     <footer class="footer">
@@ -203,7 +196,6 @@
       $.get("../../api/blogs.php", function (data) {
         data = JSON.parse(data);
         data.forEach((blog) => {
-          console.log(blog);
           card = `
         <div class="blog-card">
           <h3>${blog["title"]}</h3>

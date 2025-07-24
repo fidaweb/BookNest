@@ -2,38 +2,74 @@
 require '../config/connection.php';
 
 
-function checkSession(){
-    global $conn;
-    if(!isset($_COOKIE["session_id"])||!isset($_COOKIE["user_id"])){
-        return False;
-    }
-    $session_id=$_COOKIE["session_id"];
-    $user_id=(int)$_COOKIE["user_id"];
-
-    $stmt=$conn->prepare("SELECT * FROM sessions WHERE sessionid=? AND user_id=?");
-    $stmt->bind_param("si",$session_id,$user_id);
-    $stmt->execute();
-    $result=$stmt->get_result();
+function checkSession($conn){
    
-    return ($result->num_rows>0);
+    if(!isset($_COOKIE["session_id"])){
+            return False;
+        }
+    if(!isset($_SESSION["session_id"])){
+        $session_id=$_COOKIE["session_id"];
+      
+
+        $stmt=$conn->prepare("SELECT * FROM sessions WHERE sessionid=?");
+        $stmt->bind_param("s",$session_id);
+        $stmt->execute();
+        $result=$stmt->get_result();
+    
+       
+
+        if($result->num_rows>0){
+            session_start();
+            $session=mysqli_fetch_assoc($result);
+            $_SESSION['user_id']=$session['user_id'];
+            $_SESSION['session_id']=$session_id;
+            return true;
+            
+        }
+        else{
+            return false;
+        }
+
+    }else{
+        return true;
+    }
+    
+    
    
 }
 
-function checkAdminSession(){
-    global $conn;
-    if(!isset($_COOKIE["session_id"])||!isset($_COOKIE["user_id"])){
-        return False;
-    }
-    $session_id=$_COOKIE["session_id"];
-    $user_id=(int)$_COOKIE["user_id"];
 
-    $stmt=$conn->prepare("SELECT * FROM admin WHERE session=?");
-    $stmt->bind_param("s",$session_id);
-    $stmt->execute();
-    $result=$stmt->get_result();
-   
-    return ($result->num_rows>0);
-   
+
+function checkAdminSession($conn){
+    if(checkSession($conn)){
+    
+        
+        if(!isset($_SESSION['admin_id'])){
+            echo $_SESSION['session_id'];
+            $session_id=$_SESSION['session_id'];
+            $stmt=$conn->prepare("SELECT * FROM admin WHERE session=?");
+            $stmt->bind_param("s",$session_id);
+            $stmt->execute();
+            $result=$stmt->get_result();
+
+           
+            if($result->num_rows>0){
+                $_SESSION['admin_id']=$session_id;
+                return true;
+            }
+            else{
+                return false;
+            }
+        
+            }
+            else{
+                return true;
+            }
+    }else{
+        return false;
+    }
+    
+
 }
 
 

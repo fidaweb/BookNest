@@ -4,7 +4,7 @@ include "session.php";
 
 if($_SERVER['REQUEST_METHOD']=="POST"){
 
-    if(checkAdminSession()){
+    if(checkAdminSession($conn)){
 
         $xml=file_get_contents("php://input");
 
@@ -40,7 +40,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
 
 
 if($_SERVER['REQUEST_METHOD']=="GET"){
-if(checkAdminSession()){
+if(checkAdminSession($conn)){
     $id=$_GET["id"];
     $sql="DELETE FROM `books` WHERE `id`=?";
     $stmt=mysqli_prepare($conn,$sql);

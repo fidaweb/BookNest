@@ -60,16 +60,16 @@ if (isset($conn)) {
 function handleLeaveCommunity($conn) {
     try {
         
-        if (!function_exists('checkSession') || !checkSession()) {
+        if (!function_exists('checkSession') || !checkSession($conn)) {
             throw new Exception("Please log in to continue");
         }
         
         
-        if (!isset($_COOKIE["user_id"])) {
+        if (!isset($_SESSION["user_id"])) {
             throw new Exception("Session expired. Please log in again.");
         }
         
-        $user_id = (int)$_COOKIE["user_id"];
+        $user_id = (int)$_SESSION["user_id"];
         
         if (!isset($_POST['community_id']) || empty($_POST['community_id'])) {
             throw new Exception("Community ID is required");
@@ -133,8 +133,8 @@ function handleGetCommunities($conn) {
     try {
         $user_id = null;
         
-        if (function_exists('checkSession') && checkSession() && isset($_COOKIE["user_id"])) {
-            $user_id = (int)$_COOKIE["user_id"];
+        if (function_exists('checkSession') && checkSession($conn)) {
+            $user_id = (int)$_SESSION["user_id"];
         } 
         
         

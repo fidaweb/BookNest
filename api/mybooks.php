@@ -8,18 +8,18 @@ require 'session.php';
 header('Content-Type: application/json');
 
 
-if (!checkSession()) {
+if (!checkSession($conn)) {
     echo json_encode(['error' => 'Unauthorized: Session invalid or user not logged in.']);
     exit();
 }
 
 
 
-if (!isset($_COOKIE["user_id"])) { 
+if (!isset($_SESSION["user_id"])) { 
     echo json_encode(['error' => 'User ID not found in session.']);
     exit();
 }
-$user_id = (int)$_COOKIE["user_id"]; 
+$user_id = (int)$_SESSION["user_id"]; 
 
 $books = [];
 
@@ -38,6 +38,8 @@ try {
         $book_ids[] = $row['book_id'];
     }
     $stmt_payments->close();
+
+
 
     if (empty($book_ids)) {
         echo json_encode(['message' => 'No books found for this user.']);
@@ -62,8 +64,11 @@ try {
         $books[] = $row;
     }
     $stmt_books->close();
-
     echo json_encode($books);
+
+    
+
+  
 
 } catch (Exception $e) {
     error_log("Error in mybooks.php: " . $e->getMessage());
