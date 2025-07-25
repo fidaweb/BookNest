@@ -4,7 +4,6 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
@@ -16,19 +15,25 @@ try {
     include("../config/connection.php");
     include("session.php");
     
-    
     if (!function_exists('checkSession') || !checkSession($conn)) {
         echo '<success>false</success>';
-        echo '<error>Unauthorized: Session invalid or user not logged in.</error>';
+        echo '<error>' . htmlspecialchars('Unauthorized: Session invalid or user not logged in.', ENT_QUOTES, 'UTF-8') . '</error>';
         exit();
     }
     
     if (!isset($_SESSION["user_id"])) {
         echo '<success>false</success>';
-        echo '<error>User ID not found in session. Please log in again.</error>';
+        echo '<error>' . htmlspecialchars('User ID not found in session. Please log in again.', ENT_QUOTES, 'UTF-8') . '</error>';
         exit();
     }
-    $user_id = (int)$_SESSION["user_id"]; 
+    
+    // Input sanitization for user_id
+    $user_id = filter_var($_SESSION["user_id"], FILTER_VALIDATE_INT);
+    if ($user_id === false || $user_id <= 0) {
+        echo '<success>false</success>';
+        echo '<error>' . htmlspecialchars('Invalid user ID in session.', ENT_QUOTES, 'UTF-8') . '</error>';
+        exit();
+    }
 
     if (!isset($conn)) {
         throw new Exception("Connection variable not found");
@@ -38,27 +43,49 @@ try {
         throw new Exception("Connection failed: " . $conn->connect_error);
     }
 
-    
-    //  send new message 
+    // Input sanitization function
+    function sanitizeInput($input, $type = 'string') {
+        $input = trim($input);
+        
+        switch ($type) {
+            case 'int':
+                return filter_var($input, FILTER_VALIDATE_INT);
+            case 'string':
+                // Remove potential XSS characters
+                $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+                // Additional XSS prevention
+                $input = preg_replace('/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/mi', '', $input);
+                $input = preg_replace('/javascript:/i', '', $input);
+                $input = preg_replace('/on\w+\s*=/i', '', $input);
+                return $input;
+            default:
+                return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+        }
+    }
+
+    // Send new message
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_message') {
         if (!isset($_POST['community_id']) || !isset($_POST['message'])) {
             throw new Exception("Missing required fields");
         }
         
-        $community_id = intval($_POST['community_id']);
-        $message = trim($_POST['message']);
-        // echo $_POST['community_id'];
-        // echo $_POST['user_id'];
-        // echo $_POST['message'];
+        // Input validation and sanitization
+        $community_id = sanitizeInput($_POST['community_id'], 'int');
+        if ($community_id === false || $community_id <= 0) {
+            throw new Exception("Invalid community ID");
+        }
+        
+        $message = sanitizeInput($_POST['message'], 'string');
+        
         if (empty($message)) {
             throw new Exception("Message cannot be empty");
         }
         
         if (strlen($message) > 500) {
-            throw new Exception("Message too long");
+            throw new Exception("Message too long (maximum 500 characters)");
         }
         
-       
+        // Verify community exists (SQL injection prevention with prepared statements)
         $check_sql = "SELECT community_id FROM communities WHERE community_id = ?";
         $check_stmt = mysqli_prepare($conn, $check_sql);
         
@@ -75,7 +102,7 @@ try {
         }
         mysqli_stmt_close($check_stmt);
         
-        //  message
+        // Insert message with prepared statement (SQL injection prevention)
         $sql = "INSERT INTO chat (community_id, user_id, message, sent_at) VALUES (?, ?, ?, NOW())";
         $stmt = mysqli_prepare($conn, $sql);
         
@@ -87,25 +114,23 @@ try {
         
         if (mysqli_stmt_execute($stmt)) {
             echo '<success>true</success>';
-            echo '<message>Message sent successfully</message>';
+            echo '<message>' . htmlspecialchars('Message sent successfully', ENT_QUOTES, 'UTF-8') . '</message>';
         } else {
             throw new Exception("Failed to send message: " . mysqli_stmt_error($stmt));
         }
        
         mysqli_stmt_close($stmt);
     }
-   
     
-    // get message
+    // Get messages
     else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['community_id'])) {
-        $community_id = intval($_GET['community_id']);
+        $community_id = sanitizeInput($_GET['community_id'], 'int');
         
-        
-        if ($community_id <= 0) {
+        if ($community_id === false || $community_id <= 0) {
             throw new Exception("Invalid community ID");
         }
         
-        // community info fetch kore
+        // Fetch community info with prepared statement
         $community_sql = "SELECT name, description FROM communities WHERE community_id = ?";
         $community_stmt = mysqli_prepare($conn, $community_sql);
         
@@ -123,7 +148,7 @@ try {
         
         $community_data = mysqli_fetch_assoc($community_result);
         
-        // chat messages fetch kore
+        // Fetch chat messages with prepared statement
         $chat_sql = "SELECT chat_id, user_id, message, sent_at 
                      FROM chat 
                      WHERE community_id = ? 
@@ -141,19 +166,19 @@ try {
 
         echo '<success>true</success>';
         echo '<community>';
-        echo '<name>' . htmlspecialchars($community_data['name']) . '</name>';
-        echo '<description>' . htmlspecialchars($community_data['description']) . '</description>';
+        echo '<name>' . htmlspecialchars($community_data['name'], ENT_QUOTES, 'UTF-8') . '</name>';
+        echo '<description>' . htmlspecialchars($community_data['description'], ENT_QUOTES, 'UTF-8') . '</description>';
         echo '</community>';
         echo '<messages>';
 
         if (mysqli_num_rows($chat_result) > 0) {
             while($row = mysqli_fetch_assoc($chat_result)) {
                 echo '<chat>';
-                echo '<chat_id>' . htmlspecialchars($row['chat_id']) . '</chat_id>';
-                echo '<user_id>' . htmlspecialchars($row['user_id']) . '</user_id>';
-                echo '<username>User' . htmlspecialchars($row['user_id']) . '</username>';
-                echo '<message>' . htmlspecialchars($row['message']) . '</message>';
-                echo '<sent_at>' . htmlspecialchars($row['sent_at']) . '</sent_at>';
+                echo '<chat_id>' . htmlspecialchars($row['chat_id'], ENT_QUOTES, 'UTF-8') . '</chat_id>';
+                echo '<user_id>' . htmlspecialchars($row['user_id'], ENT_QUOTES, 'UTF-8') . '</user_id>';
+                echo '<username>User' . htmlspecialchars($row['user_id'], ENT_QUOTES, 'UTF-8') . '</username>';
+                echo '<message>' . htmlspecialchars($row['message'], ENT_QUOTES, 'UTF-8') . '</message>';
+                echo '<sent_at>' . htmlspecialchars($row['sent_at'], ENT_QUOTES, 'UTF-8') . '</sent_at>';
                 echo '</chat>';
             }
         }
@@ -165,13 +190,12 @@ try {
     }
     
     else {
-        // throw new Exception("Invalid request - missing required parameters");
-        throw new Exception("Sending ...");
+        throw new Exception("Invalid request - missing required parameters");
     }
     
 } catch (Exception $e) {
     echo '<success>false</success>';
-    echo '<error>' . htmlspecialchars($e->getMessage()) . '</error>';
+    echo '<error>' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . '</error>';
 }
 
 echo '</response>';

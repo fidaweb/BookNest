@@ -3,9 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;">
     <title>Book Nest</title>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Defer jQuery script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
+    
     <style>
       :root {
         --primary: #f4b400;
@@ -14,14 +16,12 @@
         --light: #f9f9f9;
         --book-bg: #222;
       }
-
       body {
         margin: 0;
         font-family: "Segoe UI", sans-serif;
         background-color: var(--dark-bg);
         color: white;
       }
-
       header {
         background-color: var(--primary);
         display: flex;
@@ -29,32 +29,27 @@
         align-items: center;
         padding: 1rem 2rem;
       }
-
       header h1 {
         margin: 0;
         color: black;
       }
-
       nav a {
         margin-left: 1.5rem;
         color: black;
         text-decoration: none;
         font-weight: 600;
       }
-
       .search-bar {
         display: flex;
         justify-content: center;
         padding: 1rem;
       }
-
       .search-bar input {
         padding: 0.6rem;
         width: 300px;
         border-radius: 6px 0 0 6px;
         border: none;
       }
-
       .search-bar button {
         padding: 0.6rem 1rem;
         background-color: var(--accent);
@@ -63,14 +58,12 @@
         border-radius: 0 6px 6px 0;
         cursor: pointer;
       }
-
       .filters {
         display: flex;
         justify-content: center;
         gap: 1rem;
         padding: 0.5rem 1rem;
       }
-
       .filters a {
         background-color: var(--accent);
         border: none;
@@ -82,18 +75,15 @@
         display: inline-block;
         text-align: center;
       }
-
       .filters a:hover {
         background-color: #00a0b0;
       }
-
       .book-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 1.5rem;
         padding: 2rem;
       }
-
       .book-card {
         background-color: var(--book-bg);
         border: 3px solid var(--primary);
@@ -103,22 +93,18 @@
         color: white;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       }
-
       .book-card img {
         width: 100%;
         height: 200px;
         object-fit: cover;
         border-radius: 6px;
       }
-
       .book-card h3 {
         margin: 0.8rem 0 0.2rem;
       }
-
       .book-card p {
         margin: 0.3rem 0;
       }
-
       .book-card button {
         margin-top: 0.5rem;
         padding: 0.5rem 1rem;
@@ -133,27 +119,22 @@
         color: white;
         padding: 3rem 1rem 1rem 1rem;
       }
-
       footer h5,
       footer h6 {
         color: #fff;
         margin-bottom: 1rem;
       }
-
       footer ul {
         list-style: none;
         padding: 0;
       }
-
       footer ul li {
         margin-bottom: 0.5rem;
       }
-
       footer ul li a {
         color: #fff;
         text-decoration: none;
       }
-
       footer .payment-logo {
         height: 30px;
         margin-left: 0.5rem;
@@ -169,16 +150,13 @@
         <a href="communities.html">Communities</a>
       </nav>
     </header>
-
     <div class="filters">
       <a href="mycommunities.html">My Communities</a>
     </div>
-
     <div id="books-container" class="book-grid">
       <!-- books load kori -->
       <p style="text-align: center; width: 100%">Loading your books...</p>
     </div>
-
     <footer>
       <div class="footer-container">
         <div
@@ -219,27 +197,27 @@
           <p>&copy; 2025 BookNest. All rights reserved.</p>
           <div>
             <img
-              src="../assets/images/visa.jpg"
+              src="/placeholder.jpg?height=30&width=50&query=visa+logo"
               alt="Visa"
               class="payment-logo"
             />
             <img
-              src="../assets/images/mastercard.png"
+              src="/placeholder.png?height=30&width=50&query=mastercard+logo"
               alt="Mastercard"
               class="payment-logo"
             />
             <img
-              src="../assets/images/bkash.jpg"
+              src="/placeholder.jpg?height=30&width=50&query=bkash+logo"
               alt="Bkash"
               class="payment-logo"
             />
             <img
-              src="../assets/images/nagad.png"
+              src="/placeholder.png?height=30&width=50&query=nagad+logo"
               alt="Nagad"
               class="payment-logo"
             />
             <img
-              src="../assets/images/upay.png"
+              src="/placeholder.png?height=30&width=50&query=upay+logo"
               alt="Upay"
               class="payment-logo"
             />
@@ -248,6 +226,21 @@
       </div>
     </footer>
     <script>
+      // XSS Prevention: Basic input sanitization function
+      function sanitizeInput(input) {
+        if (typeof input !== 'string') return '';
+        return input.replace(/[<>\"'&]/g, function(match) {
+          const escapeMap = {
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#x27;',
+            '&': '&amp;'
+          };
+          return escapeMap[match];
+        });
+      }
+
       function getCookie(cname) {
         cname = cname + "=";
         let cookie = decodeURIComponent(document.cookie).split(";");
@@ -265,58 +258,58 @@
 
       $(document).ready(function () {
         const booksContainer = $("#books-container");
+        const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+        let booksCache = {}; // Client-side cache for books
 
         function fetchAndDisplayBooks() {
-          // const userId = getCookie("user_id");
-          // if (!userId) {
-          //   booksContainer.html(
-          //     '<p style="text-align: center; width: 100%; color: red;">User not logged in. Please ensure user_id cookie is set.</p>'
-          //   );
-          //   return;
-          // }
+          const userId = getCookie("user_id");
+          if (!userId) {
+            booksContainer.html(
+              '<p style="text-align: center; width: 100%; color: red;">User not logged in. Please ensure user_id cookie is set.</p>'
+            );
+            return;
+          }
 
+          const cacheKey = `user_books_${userId}`;
+          const cachedData = booksCache[cacheKey];
+
+          // Check if data is in cache and not expired
+          if (cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRATION_TIME)) {
+            console.log('Loading books from client-side cache.');
+            renderBooks(cachedData.data);
+            return;
+          }
+
+          console.log('Fetching books from server...');
           $.ajax({
             url: "../../api/mybooks.php",
             method: "GET",
-            dataType: "text",
+            dataType: "json", // Expect JSON directly
             success: function (data) {
-              data = JSON.parse(data);
               booksContainer.empty();
-
               if (data.error) {
+                // XSS Prevention: Sanitize error message
+                const sanitizedError = sanitizeInput(data.error);
                 booksContainer.html(
                   '<p style="text-align: center; width: 100%; color: red;">Error from PHP: ' +
-                    data.error +
+                    sanitizedError +
                     "</p>"
                 );
               } else if (data.message) {
+                // XSS Prevention: Sanitize message
+                const sanitizedMessage = sanitizeInput(data.message);
                 booksContainer.html(
                   '<p style="text-align: center; width: 100%;">' +
-                    data.message +
+                    sanitizedMessage +
                     "</p>"
                 );
               } else if (Array.isArray(data) && data.length > 0) {
                 console.log("Books found, attempting to render.");
-                data.forEach(function (book) {
-                  const bookCard = `
-                    <div class="book-card">
-                      <img
-                        src="${
-                          book.image ||
-                          "../../client/assets/images/placeholder.svg?height=200&width=150"
-                        }"
-                        alt="${book.Book_Title}"
-                      />
-                      <h3>${book.Book_Title}</h3>
-                      <p>${book.Book_Author}</p>
-                      <p>$${book.PRICE}</p>
-                      <button onclick="window.open('../../api/download.php?book_name=${encodeURIComponent(
-                        book.Book_Title.trim()
-                      )}', '_blank')">Download Books</button>
-                    </div>
-                  `;
-                  booksContainer.append(bookCard);
-                });
+                booksCache[cacheKey] = { // Store data in cache
+                    data: data,
+                    timestamp: Date.now()
+                };
+                renderBooks(data);
               } else {
                 booksContainer.html(
                   '<p style="text-align: center; width: 100%;">No books found for this user.</p>'
@@ -336,6 +329,41 @@
             },
           });
         }
+
+        function renderBooks(books) {
+            booksContainer.empty();
+            books.forEach(function (book) {
+                // XSS Prevention: Sanitize book data before rendering
+                const sanitizedTitle = sanitizeInput(book.Book_Title || 'Unknown Title');
+                const sanitizedAuthor = sanitizeInput(book.Book_Author || 'Unknown Author');
+                const sanitizedPrice = book.PRICE || '0.00';
+                
+                const imageUrl = book.Image_URL_L || "/placeholder.jpg?height=200&width=150&query=book+cover";
+                const webpImageUrl = imageUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp') || "/placeholder.webp?height=200&width=150&query=book+cover";
+
+                const bookCard = `
+                    <div class="book-card">
+                        <picture>
+                            <source srcset="${webpImageUrl}" type="image/webp">
+                            <img
+                                src="${imageUrl}"
+                                alt="${sanitizedTitle}"
+                                loading="lazy"
+                                onerror="this.onerror=null; this.src='/placeholder.jpg?height=200&width=150&query=book+cover+not+found';"
+                            />
+                        </picture>
+                        <h3>${sanitizedTitle}</h3>
+                        <p>${sanitizedAuthor}</p>
+                        <p>$${sanitizedPrice}</p>
+                        <button onclick="window.open('../../api/download.php?book_name=${encodeURIComponent(
+                            sanitizedTitle.trim()
+                        )}', '_blank')">Download Books</button>
+                    </div>
+                `;
+                booksContainer.append(bookCard);
+            });
+        }
+
         fetchAndDisplayBooks();
       });
     </script>

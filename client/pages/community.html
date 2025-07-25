@@ -376,7 +376,7 @@
         </div>
     </div>
 
-    <!-- Footerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="container py-5">
             <div class="row">
@@ -423,15 +423,37 @@
     <script src="../assets/bootstrap.bundle.min.js"></script>
     <script>
         var currentCommunityId = null;
-        // var currentUserId = getCookie("user_id");
         var currentUserId = parseInt(localStorage.getItem("user_id"));  
+        
+        // Input sanitization function
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            
+            // Remove potential XSS characters
+            input = input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            input = input.replace(/javascript:/gi, '');
+            input = input.replace(/on\w+\s*=/gi, '');
+            input = input.replace(/[<>]/g, '');
+            
+            return input.trim();
+        }
+        
+        // HTML escaping function
+        function escapeHtml(text) {
+            var map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
         
         $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
             currentCommunityId = urlParams.get('id');
             
-            
-
             if (!currentCommunityId) {
                 showError('Community ID not found in URL.');
                 return;
@@ -453,7 +475,7 @@
                 }
             });
 
-            // refresh message
+            // Refresh messages
             setInterval(function() {
                 if (!$('#sendBtn').prop('disabled')) {
                     loadChatMessages(currentCommunityId);
@@ -467,7 +489,6 @@
                 type: 'GET',
                 data: { community_id: currentCommunityId }, 
                 dataType: 'xml',
-                // timeout: 10000,
                 success: function(data) {
                     var success = $(data).find('success').text();
                     
@@ -477,9 +498,8 @@
                         displayMessages(data);
                     } 
                     else {
-                        // var error = $(data).find('error').text();
-                        // showError('Error: ' + error);
-                        showSending('Getting...')
+                        var error = $(data).find('error').text();
+                        showError('Error: ' + error);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -507,15 +527,21 @@
                 var displayName = isOwn ? 'Me' : username;
                 var timeAgo = formatTime(sentAt);
                 
+                // Escape HTML to prevent XSS
+                var safeMessage = escapeHtml(message);
+                var safeDisplayName = escapeHtml(displayName);
+                var safeAvatar = escapeHtml(avatar);
+                var safeTimeAgo = escapeHtml(timeAgo);
+                
                 var messageHtml = `
                     <div class="${messageClass}">
-                        <div class="message-avatar">${avatar}</div>
+                        <div class="message-avatar">${safeAvatar}</div>
                         <div class="message-content">
                             <div class="message-header">
-                                <span class="message-author">${displayName}</span>
-                                <span class="message-time">${timeAgo}</span>
+                                <span class="message-author">${safeDisplayName}</span>
+                                <span class="message-time">${safeTimeAgo}</span>
                             </div>
-                            <div class="message-text">${message}</div>
+                            <div class="message-text">${safeMessage}</div>
                         </div>
                     </div>
                 `;
@@ -538,6 +564,8 @@
                 return;
             }
             
+            // Sanitize input
+            var sanitizedMessage = sanitizeInput(messageText);
             
             $('#sendBtn').prop('disabled', true);
             $('#sendBtn').html('<i class="fas fa-spinner fa-spin"></i>');
@@ -548,19 +576,16 @@
                 data: {
                     action: 'send_message',
                     community_id: currentCommunityId,
-                    message: messageText
+                    message: sanitizedMessage
                 }, 
                 dataType: 'xml',
-                // timeout: 10000,
                 success: function(data) {
-                    console.log(data)
                     var success = $(data).find('success').text();
                     
                     if (success === 'true') {
                         $('#messageInput').val('');
-                        loadChatMessages(); // reload message
+                        loadChatMessages(currentCommunityId);
                     } 
-                    
                     else {
                         var error = $(data).find('error').text();
                         alert('Error: ' + error);
@@ -599,20 +624,21 @@
                 return 'Unknown';
             }
         }
+        
         function getCookie(cname){
-        cname=cname+"="
-        let cookie=decodeURIComponent(document.cookie).split(";")
-        for(let i=0;i<cookie.length;i++){
-          c=cookie[i]
-          while(c.charAt(0)==" "){
-            c=c.substring(1)
-          }
-          if(c.indexOf(cname)==0){
-            return c.substring(cname.length,c.length)
-          }
+            cname = cname + "=";
+            let cookie = decodeURIComponent(document.cookie).split(";");
+            for(let i = 0; i < cookie.length; i++){
+                let c = cookie[i];
+                while(c.charAt(0) == " "){
+                    c = c.substring(1);
+                }
+                if(c.indexOf(cname) == 0){
+                    return c.substring(cname.length, c.length);
+                }
+            }
+            return "";
         }
-        return ""
-      }
         
         function scrollToBottom() {
             var chatMessages = document.getElementById('chatMessages');
@@ -623,18 +649,16 @@
             $('#chatMessages').html(`
                 <div class="error-message">
                     <h5>Error</h5>
-                    <p>${message}</p>
-                    <button class="btn btn-primary" onclick="loadChatMessages()">Retry</button>
+                    <p>${escapeHtml(message)}</p>
+                    <button class="btn btn-primary" onclick="loadChatMessages(currentCommunityId)">Retry</button>
                 </div>
             `);
         }
 
         function showSending(message) {
             $('#chatMessages').html(`
-                <div class="succcess">
-                   
-                    <p>${message}</p>
-                
+                <div class="loading-message">
+                    <p>${escapeHtml(message)}</p>
                 </div>
             `);
         }
