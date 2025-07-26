@@ -27,7 +27,7 @@ try {
         exit();
     }
     
-    // Input sanitization for user_id
+    //  sanitization for user_id
     $user_id = filter_var($_SESSION["user_id"], FILTER_VALIDATE_INT);
     if ($user_id === false || $user_id <= 0) {
         echo '<success>false</success>';
@@ -43,7 +43,7 @@ try {
         throw new Exception("Connection failed: " . $conn->connect_error);
     }
 
-    // Input sanitization function
+    
     function sanitizeInput($input, $type = 'string') {
         $input = trim($input);
         
@@ -51,9 +51,9 @@ try {
             case 'int':
                 return filter_var($input, FILTER_VALIDATE_INT);
             case 'string':
-                // Remove potential XSS characters
+                
                 $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
-                // Additional XSS prevention
+                // additional XSS prevention
                 $input = preg_replace('/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/mi', '', $input);
                 $input = preg_replace('/javascript:/i', '', $input);
                 $input = preg_replace('/on\w+\s*=/i', '', $input);
@@ -63,13 +63,13 @@ try {
         }
     }
 
-    // Send new message
+    // sending new message
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_message') {
         if (!isset($_POST['community_id']) || !isset($_POST['message'])) {
             throw new Exception("Missing required fields");
         }
         
-        // Input validation and sanitization
+        
         $community_id = sanitizeInput($_POST['community_id'], 'int');
         if ($community_id === false || $community_id <= 0) {
             throw new Exception("Invalid community ID");
@@ -85,7 +85,7 @@ try {
             throw new Exception("Message too long (maximum 500 characters)");
         }
         
-        // Verify community exists (SQL injection prevention with prepared statements)
+        // sql injection prevention 
         $check_sql = "SELECT community_id FROM communities WHERE community_id = ?";
         $check_stmt = mysqli_prepare($conn, $check_sql);
         
@@ -102,7 +102,7 @@ try {
         }
         mysqli_stmt_close($check_stmt);
         
-        // Insert message with prepared statement (SQL injection prevention)
+        // insert message 
         $sql = "INSERT INTO chat (community_id, user_id, message, sent_at) VALUES (?, ?, ?, NOW())";
         $stmt = mysqli_prepare($conn, $sql);
         
@@ -122,7 +122,7 @@ try {
         mysqli_stmt_close($stmt);
     }
     
-    // Get messages
+    // get messages
     else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['community_id'])) {
         $community_id = sanitizeInput($_GET['community_id'], 'int');
         
@@ -130,7 +130,7 @@ try {
             throw new Exception("Invalid community ID");
         }
         
-        // Fetch community info with prepared statement
+        // fetch community info 
         $community_sql = "SELECT name, description FROM communities WHERE community_id = ?";
         $community_stmt = mysqli_prepare($conn, $community_sql);
         
@@ -148,7 +148,7 @@ try {
         
         $community_data = mysqli_fetch_assoc($community_result);
         
-        // Fetch chat messages with prepared statement
+        // fetch chat messages 
         $chat_sql = "SELECT chat_id, user_id, message, sent_at 
                      FROM chat 
                      WHERE community_id = ? 

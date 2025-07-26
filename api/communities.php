@@ -1,25 +1,25 @@
 <?php
-// Turn off error display to prevent XML corruption
+
 error_reporting(0);
 ini_set('display_errors', 0);
 
 include("../config/connection.php");
 include("session.php");
 
-// Set content type before any output
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
 } else {
     header('Content-Type: text/xml; charset=utf-8');
 }
 
-// Simple fallback if Memcached is not available
+//   if memcached not available
 $memcache = null;
 if (class_exists('Memcached')) {
     try {
         $memcache = new Memcached();
         $memcache->addServer('localhost', 11211);
-        // Test connection
+
         if ($memcache->getStats() === false) {
             $memcache = null;
         }
@@ -41,10 +41,10 @@ if (!$conn) {
     exit;
 }
 
-// Handle POST requests (joining community)
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Check session
+
         if (!checkSession($conn)) {
             echo json_encode([
                 'success' => false,
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $community_id = (int)$_POST['community_id'];
         
-        // Check if user is already a member
+        // check if user is already a member
         $check_sql = "SELECT 1 FROM community_members WHERE community_id = ? AND user_id = ?";
         $check_stmt = mysqli_prepare($conn, $check_sql);
         
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         
-        // Insert new member
+        //  new member
         $insert_sql = "INSERT INTO community_members (community_id, user_id) VALUES (?, ?)";
         $insert_stmt = mysqli_prepare($conn, $insert_sql);
         
@@ -116,16 +116,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit; 
 }
 
-// Handle GET requests (fetching communities)
+// fetching communities
 try {
-    // Start XML output
+    
     echo '<?xml version="1.0" encoding="UTF-8"?>';
     echo '<response>';
     
     $cache_key = 'all_communities_xml';
     $xml_data = false;
 
-    // Try to get data from cache
+    // get data from cache
     if ($memcache) {
         $xml_data = $memcache->get($cache_key);
     }
@@ -136,7 +136,7 @@ try {
         echo $xml_data;
         echo '</communities>';
     } else {
-        // Fetch from database
+        //  from database
         $sql = "SELECT community_id, name, description, image_url, category FROM communities ORDER BY community_id DESC";
         $result = mysqli_query($conn, $sql);
         
@@ -162,7 +162,7 @@ try {
         
         echo $temp_xml_fragment;
         
-        // Store in cache for 1 hour
+        // store in cache for 1 hour
         if ($memcache) {
             $memcache->set($cache_key, $temp_xml_fragment, 3600);
         }
@@ -178,7 +178,7 @@ try {
     echo '</response>';
 }
 
-// Close database connection
+
 if (isset($conn) && $conn) {
     mysqli_close($conn);
 }

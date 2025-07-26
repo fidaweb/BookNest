@@ -252,7 +252,7 @@
         </div>
 
         <div class="row" id="communitiesGrid">
-            <!-- Communities will be loaded here -->
+            <!-- Communities ekhane load kori -->
         </div>
     </div>
 
@@ -403,13 +403,13 @@
 
             let html = '';
             communities.forEach(community => {
-                // Handle image URL - use your existing WebP images
+                //webp optimization
                 let imageUrl = community.image_url;
                 if (!imageUrl || imageUrl.trim() === '') {
-                    // If no image URL, use a default pattern
+                    
                     imageUrl = '../assets/images/default-community.webp';
                 } else if (!imageUrl.startsWith('http') && !imageUrl.startsWith('../') && !imageUrl.startsWith('/')) {
-                    // If it's just a filename, prepend the assets path
+                    
                     imageUrl = '../assets/images/' + imageUrl;
                 }
                 

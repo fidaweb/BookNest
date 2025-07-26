@@ -376,7 +376,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr -->
     <footer class="footer">
         <div class="container py-5">
             <div class="row">
@@ -425,11 +425,11 @@
         var currentCommunityId = null;
         var currentUserId = parseInt(localStorage.getItem("user_id"));  
         
-        // Input sanitization function
+        
         function sanitizeInput(input) {
             if (typeof input !== 'string') return '';
             
-            // Remove potential XSS characters
+           
             input = input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
             input = input.replace(/javascript:/gi, '');
             input = input.replace(/on\w+\s*=/gi, '');
@@ -475,7 +475,7 @@
                 }
             });
 
-            // Refresh messages
+            // rrefresh messages
             setInterval(function() {
                 if (!$('#sendBtn').prop('disabled')) {
                     loadChatMessages(currentCommunityId);
@@ -527,7 +527,7 @@
                 var displayName = isOwn ? 'Me' : username;
                 var timeAgo = formatTime(sentAt);
                 
-                // Escape HTML to prevent XSS
+                // escape HTML to prevent XSS
                 var safeMessage = escapeHtml(message);
                 var safeDisplayName = escapeHtml(displayName);
                 var safeAvatar = escapeHtml(avatar);
@@ -564,7 +564,7 @@
                 return;
             }
             
-            // Sanitize input
+            
             var sanitizedMessage = sanitizeInput(messageText);
             
             $('#sendBtn').prop('disabled', true);

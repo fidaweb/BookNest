@@ -2,18 +2,23 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Configure Memcached for session storage BEFORE session_start()
-ini_set('session.save_handler', 'memcached');
-ini_set('session.save_path', 'localhost:11211'); // Assuming Memcached runs on localhost:11211
 
-require 'session.php'; // Assuming session.php calls session_start()
+include "../config/connection.php";
+
+//if memcached available
+if (extension_loaded('memcached')) {
+    ini_set('session.save_handler', 'memcached');
+    ini_set('session.save_path', 'localhost:11211');
+}
+
+require 'session.php'; 
 
 header('Content-Type: application/json');
 
-// Basic XSS Prevention Headers
+//  XSS prevention header
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;");
 
-// Input sanitization function for XSS prevention
+// input sanitization function for XSS prevention
 function sanitizeOutput($data) {
     if (is_array($data)) {
         return array_map('sanitizeOutput', $data);
@@ -21,18 +26,25 @@ function sanitizeOutput($data) {
     return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 }
 
-// Memcached server details
-$memcached_host = "localhost";
-$memcached_port = 11211;
-
-// Create Memcached connection
-$memcache = new Memcached();
-$memcache->addServer($memcached_host, $memcached_port);
-
-// Check for Memcached connection errors (optional)
-if ($memcache->getStats() === false) {
-    error_log("Memcached connection failed in mybooks.php. Falling back to database.");
-    $memcache = null; // Set to null to indicate Memcached is not available
+// initialize Memcached 
+$memcache = null;
+if (extension_loaded('memcached')) {
+    try {
+        $memcache = new Memcached();
+        $memcache->addServer('localhost', 11211);
+        
+        
+        $stats = $memcache->getStats();
+        if (empty($stats) || $stats === false) {
+            error_log("Memcached connection failed in mybooks.php. Falling back to database only.");
+            $memcache = null;
+        }
+    } catch (Exception $e) {
+        error_log("Memcached error in mybooks.php: " . $e->getMessage());
+        $memcache = null;
+    }
+} else {
+    error_log("Memcached extension not found. Using database only.");
 }
 
 if (!function_exists('checkSession') || !checkSession($conn)) {
@@ -45,7 +57,7 @@ if (!isset($_SESSION["user_id"])) {
     exit();
 }
 
-// SQL Injection Prevention: Cast to integer
+// SQL injection prevention
 $user_id = (int)$_SESSION["user_id"];
 $books = [];
 
@@ -53,19 +65,28 @@ try {
     $cache_key = 'user_books_' . $user_id;
     $cached_books = false;
 
-    // Try to get data from Memcached
+    // try to get data from Memcached
     if ($memcache) {
-        $cached_books = $memcache->get($cache_key);
+        try {
+            $cached_books = $memcache->get($cache_key);
+            if ($cached_books !== false) {
+                error_log("Serving books from Memcached for user: " . $user_id);
+            }
+        } catch (Exception $e) {
+            error_log("Memcached get error: " . $e->getMessage());
+            $cached_books = false;
+        }
     }
 
     if ($cached_books !== false) {
-        // Data found in Memcached
-        echo $cached_books; // Output cached JSON string
+        // data found in Memcached
+        echo $cached_books; 
     } else {
-        // Data not found in Memcached, fetch from database
+        //  fetch from database
+        error_log("Fetching books from database for user: " . $user_id);
         
-        // SQL Injection Prevention: Use prepared statements
-        $stmt_payments = $conn->prepare("SELECT book_id FROM payments WHERE user_id = ?");
+        // SQL Injection Prevention
+        $stmt_payments = $conn->prepare("SELECT DISTINCT book_id FROM payments WHERE user_id = ?");
         if (!$stmt_payments) {
             throw new Exception("Failed to prepare payments statement: " . $conn->error);
         }
@@ -74,21 +95,27 @@ try {
         $result_payments = $stmt_payments->get_result();
         $book_ids = [];
         while ($row = $result_payments->fetch_assoc()) {
-            $book_ids[] = (int)$row['book_id']; // Cast to integer for SQL injection prevention
+            $book_ids[] = (int)$row['book_id'];
         }
         $stmt_payments->close();
 
         if (empty($book_ids)) {
             $response = ['message' => 'No books found for this user.'];
             $json_response = json_encode($response);
+            
+            // cache"no books" 
             if ($memcache) {
-                $memcache->set($cache_key, $json_response, 300); // Cache for 5 minutes
+                try {
+                    $memcache->set($cache_key, $json_response, 300); // Cache for 5 minutes
+                } catch (Exception $e) {
+                    error_log("Memcached set error: " . $e->getMessage());
+                }
             }
             echo $json_response;
             exit();
         }
 
-        // SQL Injection Prevention: Use prepared statements with placeholders
+        
         $placeholders = implode(',', array_fill(0, count($book_ids), '?'));
         $types = str_repeat('i', count($book_ids));
 
@@ -101,7 +128,7 @@ try {
         $result_books = $stmt_books->get_result();
         
         while ($row = $result_books->fetch_assoc()) {
-            // XSS Prevention: Sanitize output data
+            //  sanitize output data
             $sanitized_row = [
                 'id' => (int)$row['id'],
                 'Book_Title' => htmlspecialchars($row['Book_Title'], ENT_QUOTES, 'UTF-8'),
@@ -115,14 +142,22 @@ try {
         $stmt_books->close();
 
         $json_response = json_encode($books);
-        if ($memcache) {
-            $memcache->set($cache_key, $json_response, 300); // Cache for 5 minutes
+        
+        // cache results 
+        if ($memcache && !empty($books)) {
+            try {
+                $memcache->set($cache_key, $json_response, 300); // Cache for 5 minutes
+                error_log("Cached books in Memcached for user: " . $user_id);
+            } catch (Exception $e) {
+                error_log("Memcached set error: " . $e->getMessage());
+            }
         }
+        
         echo $json_response;
     }
 } catch (Exception $e) {
     error_log("Error in mybooks.php: " . $e->getMessage());
-    echo json_encode(['error' => 'An internal server error occurred.']);
+    echo json_encode(['error' => 'An internal server error occurred: ' . $e->getMessage()]);
 } finally {
     if ($conn) {
         $conn->close();
