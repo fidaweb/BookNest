@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
+    />
     <title>Book Nest</title>
     <!-- Defer jQuery script -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
-    
+
     <style>
       :root {
         --primary: #f4b400;
@@ -225,17 +227,19 @@
         </div>
       </div>
     </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
       // XSS Prevention: Basic input sanitization function
       function sanitizeInput(input) {
-        if (typeof input !== 'string') return '';
-        return input.replace(/[<>\"'&]/g, function(match) {
+        if (typeof input !== "string") return "";
+        return input.replace(/[<>\"'&]/g, function (match) {
           const escapeMap = {
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#x27;',
-            '&': '&amp;'
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#x27;",
+            "&": "&amp;",
           };
           return escapeMap[match];
         });
@@ -262,7 +266,10 @@
         let booksCache = {}; // Client-side cache for books
 
         function fetchAndDisplayBooks() {
-          const userId = getCookie("user_id");
+          // const userId = getCookie("user_id");
+          const userId = localStorage.getItem("user_id");
+          console.log(userId);
+
           if (!userId) {
             booksContainer.html(
               '<p style="text-align: center; width: 100%; color: red;">User not logged in. Please ensure user_id cookie is set.</p>'
@@ -274,13 +281,16 @@
           const cachedData = booksCache[cacheKey];
 
           // Check if data is in cache and not expired
-          if (cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRATION_TIME)) {
-            console.log('Loading books from client-side cache.');
+          if (
+            cachedData &&
+            Date.now() - cachedData.timestamp < CACHE_EXPIRATION_TIME
+          ) {
+            console.log("Loading books from client-side cache.");
             renderBooks(cachedData.data);
             return;
           }
 
-          console.log('Fetching books from server...');
+          console.log("Fetching books from server...");
           $.ajax({
             url: "../../api/mybooks.php",
             method: "GET",
@@ -305,9 +315,10 @@
                 );
               } else if (Array.isArray(data) && data.length > 0) {
                 console.log("Books found, attempting to render.");
-                booksCache[cacheKey] = { // Store data in cache
-                    data: data,
-                    timestamp: Date.now()
+                booksCache[cacheKey] = {
+                  // Store data in cache
+                  data: data,
+                  timestamp: Date.now(),
                 };
                 renderBooks(data);
               } else {
@@ -331,17 +342,25 @@
         }
 
         function renderBooks(books) {
-            booksContainer.empty();
-            books.forEach(function (book) {
-                // XSS Prevention: Sanitize book data before rendering
-                const sanitizedTitle = sanitizeInput(book.Book_Title || 'Unknown Title');
-                const sanitizedAuthor = sanitizeInput(book.Book_Author || 'Unknown Author');
-                const sanitizedPrice = book.PRICE || '0.00';
-                
-                const imageUrl = book.Image_URL_L || "/placeholder.jpg?height=200&width=150&query=book+cover";
-                const webpImageUrl = imageUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp') || "/placeholder.webp?height=200&width=150&query=book+cover";
+          booksContainer.empty();
+          books.forEach(function (book) {
+            // XSS Prevention: Sanitize book data before rendering
+            const sanitizedTitle = sanitizeInput(
+              book.Book_Title || "Unknown Title"
+            );
+            const sanitizedAuthor = sanitizeInput(
+              book.Book_Author || "Unknown Author"
+            );
+            const sanitizedPrice = book.PRICE || "0.00";
 
-                const bookCard = `
+            const imageUrl =
+              book.Image_URL_L ||
+              "/placeholder.jpg?height=200&width=150&query=book+cover";
+            const webpImageUrl =
+              imageUrl.replace(/\.(jpg|jpeg|png)$/i, ".webp") ||
+              "/placeholder.webp?height=200&width=150&query=book+cover";
+
+            const bookCard = `
                     <div class="book-card">
                         <picture>
                             <source srcset="${webpImageUrl}" type="image/webp">
@@ -356,12 +375,12 @@
                         <p>${sanitizedAuthor}</p>
                         <p>$${sanitizedPrice}</p>
                         <button onclick="window.open('../../api/download.php?book_name=${encodeURIComponent(
-                            sanitizedTitle.trim()
+                          sanitizedTitle.trim()
                         )}', '_blank')">Download Books</button>
                     </div>
                 `;
-                booksContainer.append(bookCard);
-            });
+            booksContainer.append(bookCard);
+          });
         }
 
         fetchAndDisplayBooks();

@@ -4,10 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Communities - BookNest</title>
+
+    <link rel="preload" href="bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="bootstrap.min.css"></noscript>
+
+    <link rel="preload" href="../style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../style.css"></noscript>
+
+
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Defer jQuery and Bootstrap scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
-    <script src="../assets/bootstrap.bundle.min.js" defer></script>
+    <!-- <link rel="preload" as="script" href="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script> -->
+    
+    <!-- Defer jQuery and Bootstrap scripts
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script> -->
+    <script src="bootstrap.bundle.min.js" defer></script>
     
     <style>
         body {
@@ -384,7 +396,10 @@
     </style>
 </head>
 <body>
-    <my-navbar></my-navbar>
+    <!-- <my-navbar></my-navbar> -->
+    <script src="./utility.js">
+
+    </script>
 
     <div class="main-content">
         <div class="page-header">
@@ -474,7 +489,7 @@
                     <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <img src="/placeholder.jpg?height=30&width=50&query=visa+logo" alt="Visa" class="payment-logo">
+                    <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
                     <img src="/placeholder.png?height=30&width=50&query=mastercard+logo" alt="Mastercard" class="payment-logo">
                     <img src="/placeholder.jpg?height=30&width=50&query=bkash+logo" alt="Bkash" class="payment-logo">
                     <img src="/placeholder.png?height=30&width=50&query=nagad+logo" alt="Nagad" class="payment-logo">
@@ -484,7 +499,10 @@
         </div>
     </footer>
 
-    <script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script defer>
+        navbar()
         var allCommunities = [];
         var filteredCommunities = [];
         var communityCache = {}; // Client-side cache object

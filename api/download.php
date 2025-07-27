@@ -19,8 +19,9 @@ if (isset($_GET['book_name'])) {
     $fileName = basename($bookName) . '.txt';
     $fileName='Book.txt';
     
-    
-    $filePath = __DIR__ . '/files/' . $fileName;
+    echo __DIR__;
+    // $filePath = __DIR__ . '/files/' . $fileName;
+    $filePath='/opt/lampp/book.txt';
     echo $filePath;
 
     if (file_exists($filePath)) {

@@ -30,6 +30,27 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         
         }
 
+        if($action=="update"){
+
+        $book_id=$xmlr->id;
+      
+      
+
+        $sql="UPDATE `books` SET `Book_Title`=?,`Book_Author`=?,`Image_URL_L`=?,`PRICE`=?,`Category`=?,`description`=?,`book_url`=? WHERE id=?";
+        
+        $stmt=mysqli_prepare($conn,$sql);
+        mysqli_stmt_bind_param($stmt,'sssdsssi',$title,$author,$url,$price,$category,$description,$bookurl,$book_id);
+        if(mysqli_stmt_execute($stmt)){
+            if(mysqli_stmt_affected_rows($stmt) > 0){
+                 echo "{\"msg\":\"success\"}";
+            }
+           
+        }
+        
+     
+        
+        }
+
     }
     else{
         echo "{\"msg\":\"Must be admin\"}";

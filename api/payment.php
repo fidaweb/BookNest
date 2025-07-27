@@ -13,12 +13,10 @@ $user_id=$_SESSION["user_id"];
 $flag=true;
 for($i=0;$i<count($xmlr->bookid);$i++){
     $book=(int)$xmlr->bookid[$i];
-    echo $book;
-    // $sql="INSERT INTO payments (payment_id,user_id, book_id,price, bought_at) SELECT '$payment_id',$user_id,b.id,b.PRICE,CURRENT_TIMESTAMP() FROM books b WHERE b.id=$book";
     $sql="INSERT INTO payments (payment_id,user_id, book_id,price, bought_at) SELECT ?,?,b.id,b.PRICE,CURRENT_TIMESTAMP() FROM books b WHERE b.id=?";
     $stmt=mysqli_prepare($conn,$sql);
     mysqli_stmt_bind_param($stmt,'sii',$payment_id,$user_id,$book);
-    echo json_encode(["error" => mysqli_error($conn)]);
+   
     if(!mysqli_stmt_execute($stmt)){
         $flag=false;
         break;

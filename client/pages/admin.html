@@ -111,7 +111,7 @@
         margin-left: 220px;
       }
 
-      .card {
+      .cardm {
         background: #1a1a1a;
         border-left: 5px solid var(--primary);
         color: white;
@@ -121,7 +121,7 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       }
 
-      .card h2 {
+      .cardm h2 {
         margin-top: 0;
         border-bottom: 1px solid #444;
         padding-bottom: 0.5rem;
@@ -315,7 +315,7 @@
     </div>
 
     <div class="main">
-      <div class="card">
+      <div class="cardm">
         <h2>Add New Book</h2>
         <div class="form-group">
           <label>Book Title</label>
@@ -346,7 +346,47 @@
           ></textarea>
         </div>
         <div class="form-group">
-          <button class="addbook">Add Book</button>
+          <button id="add" class="addbook">Add Book</button>
+        </div>
+      </div>
+
+
+      <div class="update cardm">
+        <h2>Update Book</h2>
+        <div class="form-group">
+          <label>Book Id</label>
+          <input class="book_id" type="number" placeholder="Enter book id to update" />
+        </div>
+        <div class="form-group">
+          <label>Book Title</label>
+          <input class="title" type="text" placeholder="Enter book title" />
+        </div>
+        <div class="form-group">
+          <label>Author</label>
+          <input class="author" type="text" placeholder="Enter author name" />
+        </div>
+        <div class="form-group">
+          <label>Price ($)</label>
+          <input class="price" type="number" placeholder="Enter price" />
+        </div>
+        <div class="form-group">
+          <label>Cover Image URL</label>
+          <input class="url" type="text" placeholder="Enter image URL" />
+        </div>
+        <div class="form-group">
+          <label>Book URL</label>
+          <input class="bookurl" type="text" placeholder="Enter book URL" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea
+            class="description"
+            rows="4"
+            placeholder="Enter book description"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <button id="update" class="addbook">Add Book</button>
         </div>
       </div>
 
@@ -367,14 +407,7 @@
             <div class="book-container">
 
             </div>
-            <!-- <div class="book-item">
-                <img src="../assets/images/scu.jpg" alt="Book" class="book-image">
-                <div>
-                    <h6 class="book-title">To Kill a Mockingbird</h6>
-                    <p class="book-author">by Harper Lee</p>
-                    <span class="book-price">$50</span>
-                </div>
-            </div>  -->
+            
             
             </div>
         </div>
@@ -382,10 +415,7 @@
 </div>
 </div>
 
-      <!-- <div class="card">
-        <h2>Latest Orders</h2>
-        <p>No orders yet.</p>
-      </div> -->
+      
     </div>
 
     <footer>
@@ -461,8 +491,11 @@
       import "../components/navbar.js";
     </script>
     <script>
+       if(getCookie("session_id")===""){
+            window.location.href="home.html"
+          }
       $(document).ready(function () {
-        $(".addbook").click(function () {
+        $("#add").click(function () {
           title = $(".title")[0].value;
           author = $(".author")[0].value;
           price = $(".price")[0].value;
@@ -492,6 +525,43 @@
             },
           });
         });
+
+
+
+        $("#update").click(function () {
+          book_id= $(".update .book_id")[0].value;
+          title = $(".update .title")[0].value;
+          author = $(".update .author")[0].value;
+          price = $(".update .price")[0].value;
+          url = $(".update .url")[0].value;
+          description = $(".update .description")[0].value;
+          bookurl = $(".update .bookurl")[0].value;
+          action = "update";
+          console.log(url);
+          $.ajax({
+            url: "../../api/admin.php",
+            method: "POST",
+            contentType: "application/xml",
+            data: `<?xml version='1.0' encoding='UTF-8'?>
+            <body>
+            <id>${book_id}</id>
+            <title>${title}</title>
+            <author>${author}</author>
+            <price>${price}</price>
+            <url>${url}</url>
+            <bookurl>${bookurl}</bookurl>
+            <description>${description}</description>
+            <action>${action}</action>
+            </body>`,
+            success: function (data) {
+              console.log(data)
+             res=JSON.parse(data);
+              alert(res['msg'])
+            },
+          });
+        });
+
+
       });
 
       function deleteBook(id){
