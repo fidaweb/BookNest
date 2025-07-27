@@ -7,7 +7,7 @@ function createCard(book) {
 
   //append child elements to card embedded with data fetched from database
   card.append(
-    `<img class="cardimage" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+    `<img class="cardimage" loading="lazy"  src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
   );
 
   let card2 = $(document.createElement("div"));
@@ -49,6 +49,85 @@ function navbar() {
       </div>
     </div>
   </div>`);
+}
+
+function footer() {
+  $("body").append(`
+     <footer class="footer">
+      <div class="container py-5">
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <h5><i class="fas fa-book"></i> BookNest</h5>
+            <p>
+              Your trusted online bookstore for all genres. Discover, read, and
+              grow with our vast collection of books.
+            </p>
+            <div class="social-links">
+              <a href="https://www.facebook.com/"
+                ><i class="fab fa-facebook"></i
+              ></a>
+              <a href="https://x.com/?lang=en"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="https://www.instagram.com/"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="https://www.linkedin.com/"
+                ><i class="fab fa-linkedin"></i
+              ></a>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6 mb-4">
+            <h6>Quick Links</h6>
+            <ul>
+              <li><a href="home.html">Home</a></li>
+              <li><a href="communities.html">Communities</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 mb-4">
+            <h6>Contact Us</h6>
+            <p><span>&#9993;</span> Email: booknest@gmail.com</p>
+            <p><span>&#9743;</span> Phone: 01824673890</p>
+            <p><span>&#8962;</span> Address: Block A Dhaka, Bangladesh</p>
+          </div>
+        </div>
+        <hr style="border-color: #495057" />
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <img
+              src="../assets/images/visa.webp"
+              alt="Visa"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/mastercard.webp"
+              alt="Mastercard"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/bkash.webp"
+              alt="Bkash"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/nagad.webp"
+              alt="Nagad"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/upay.webp"
+              alt="Upay"
+              class="payment-logo"
+            />
+          </div>
+        </div>
+      </div>
+    </footer>
+    `);
 }
 
 function deleteCookie(cname, cvalue, exdays) {

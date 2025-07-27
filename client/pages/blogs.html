@@ -112,6 +112,24 @@
         margin-left: 0.5rem;
         opacity: 1;
       }
+
+      .filters {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+      }
+      .filters a {
+        background-color: var(--accent);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
     </style>
   </head>
 
@@ -124,9 +142,11 @@
         <a href="communities.html">Communities</a>
       </nav>
     </header>
+    <div class="filters">
+      <a href="add_blog.html">Add Blog</a>
+    </div>
 
     <div class="container py-4">
-      <a style="color: #f9f9f9" href="add_blog.html">Add Blog</a>
       <h2 class="mb-4">Latest Blogs</h2>
       <div class="blog-grid"></div>
     </div>

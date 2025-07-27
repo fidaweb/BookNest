@@ -16,9 +16,6 @@
     
 
   
-    <!-- <link rel="preload" as="script" href="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
-     -->
      <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
@@ -43,7 +40,7 @@
             left: -10px;
             right: -10px;
             bottom: -10px;
-            background: url('../assets/images/background.jpg') center/cover no-repeat;
+            background: url('../assets/images/background.webp') center/cover no-repeat;
             filter: blur(5px);
             z-index: -1;
         }
@@ -256,87 +253,17 @@ the category button is attached to function on click event that renders a bootst
 
 
 
-    <footer class="footer">
-      <div class="container py-5">
-          <div class="row">
-              <div class="col-lg-4 mb-4">
-                  <h5><i class="fas fa-book"></i> BookNest</h5>
-                  <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
-                  <div class="social-links">
-                      <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
-                      <a href="https://x.com/?lang=en"><i class="fab fa-twitter"></i></a>
-                      <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
-                      <a href="https://www.linkedin.com/"><i class="fab fa-linkedin"></i></a>
-                  </div>
-              </div>
-              <div class="col-lg-1 col-md-6 mb-4">
-                  <h6>Quick Links</h6>
-                  <ul>
-                      <li><a href="#">Home</a></li>
-                      <li><a href="#">Books</a></li>
-                      <li><a href="#">Categories</a></li>
-                      <li><a href="#">Authors</a></li>
-                  </ul>
-              </div>
-              <div class="col-lg-3 col-md-6 mb-4">
-                  <h6>Contact Us</h6>
-                  <p><span>&#9993</span>Email:booknest@gmail.com</p>
-                  <p><span>&#9743</span>Phone: 01824673890</p>
-                  <p><span>&#8962</span> Address: Block A Dhaka,Bangladesh</p>
-                  
-              </div>
-              
-              
-          </div>
-          <hr style="border-color: #495057;">
-          <div class="row align-items-center">
-              <div class="col-md-6">
-                  <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
-              </div>
-              <div class="col-md-6 text-md-end">
-                  <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
-                  <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
-                  <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
-                  <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
-                  <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
-              </div>
-          </div>
-      </div>
-  </footer>
-
-
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- This is the javascript imported from my-card.js and navbar.js needed to create a template shadow element that is cloned each time the component is
-     used in the project and then append as child element of  the shadow root -->
-    <script type="module">
-      import "../components/my-card.js";
-      import "../components/navbar.js";
-      import "./utility.js"
-    </script>
+    
     
 
 
 <!-- this is the load books functions that will fetch from database but currently using a static array for the fetched data -->
-<script>
-// const data = null;
+<script defer>
 
-// const xhr = new XMLHttpRequest();
-// xhr.withCredentials = true;
-
-// xhr.addEventListener('readystatechange', function () {
-// 	if (this.readyState === this.DONE) {
-// 		console.log(this.responseText);
-// 	}
-// });
-
-// xhr.open('GET', 'https://wordsapiv1.p.rapidapi.com/words/lovely/synonyms');
-// xhr.setRequestHeader('x-rapidapi-key', 'e5dbf24a77mshd598aeca8a06396p123a7fjsne6f60fe25108');
-// xhr.setRequestHeader('x-rapidapi-host', 'wordsapiv1.p.rapidapi.com');
-
-// xhr.send(data);
 function wordsearch(word){
   $.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,function(data,res){
     
@@ -375,18 +302,7 @@ $('#dict').on('input',function(){
 
     <script >
       navbar()
-//       fetch("http://huggingface.co/meta-llama/Llama-3.2-3B-Instruct", {
-//   method: "POST",
-//   headers: {
-//     "Authorization": "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",
-//     "Content-Type": "application/json"
-//   },
-//   body: JSON.stringify({
-//     inputs: "The future of AI is"
-//   })
-// })
-// .then(res => res.json())
-// .then(data => console.log(data));
+
 
 
 
@@ -570,12 +486,11 @@ $('#dict').on('input',function(){
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
         })
-
+        footer()
         });
       }
   
 
-//this is the add cart function attached to each card during the  loop for populating the main element with cards after fetching data from database
       
       // loadBooks is called only after document reloads
       $(document).ready(function () {

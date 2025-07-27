@@ -77,7 +77,7 @@ function handleLeaveCommunity($conn) {
         
         $community_id = intval($_POST['community_id']);
         
-        $check_sql = "SELECT cm.id, c.name FROM community_member cm 
+        $check_sql = "SELECT * FROM community_members cm 
                       INNER JOIN communities c ON cm.community_id = c.community_id 
                       WHERE cm.user_id = ? AND cm.community_id = ?";
         
@@ -97,7 +97,7 @@ function handleLeaveCommunity($conn) {
         $membership_data = mysqli_fetch_assoc($check_result);
         $community_name = $membership_data['name'];
         
-        $delete_sql = "DELETE FROM community_member WHERE user_id = ? AND community_id = ?";
+        $delete_sql = "DELETE FROM community_members WHERE user_id = ? AND community_id = ?";
         $delete_stmt = mysqli_prepare($conn, $delete_sql);
         
         if (!$delete_stmt) {

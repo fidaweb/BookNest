@@ -297,8 +297,8 @@
     </style>
   </head>
   <body>
+    <script src="utility.js"></script>
     
-    <my-navbar></my-navbar>
     <div style="background-color:var(--primary);align-items: center;justify-content: center;display: flex;">
       <button
       class="menu-toggle"
@@ -418,82 +418,13 @@
       
     </div>
 
-    <footer>
-      <div class="footer-container">
-        <div
-          style="display: flex; flex-wrap: wrap; justify-content: space-around"
-        >
-          <div style="max-width: 300px">
-            <h5>BookNest</h5>
-            <p>
-              Your trusted online bookstore for all genres. Discover, read, and
-              grow with our vast collection of books.
-            </p>
-          </div>
-          <div>
-            <h6>Quick Links</h6>
-            <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">Books</a></li>
-              <li><a href="#">Categories</a></li>
-              <li><a href="#">Authors</a></li>
-            </ul>
-          </div>
-          <div>
-            <h6>Contact Us</h6>
-            <p>&#9993; Email: booknest@gmail.com</p>
-            <p>&#9743; Phone: 01824673890</p>
-            <p>&#8962; Address: Block A Dhaka, Bangladesh</p>
-          </div>
-        </div>
-        <hr style="margin: 2rem 0; border-color: #495057" />
-        <div
-          style="
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-          "
-        >
-          <p>&copy; 2025 BookNest. All rights reserved.</p>
-          <div>
-            <img
-              src="../assets/images/visa.jpg"
-              alt="Visa"
-              class="payment-logo"
-            />
-            <img
-              src="../assets/images/mastercard.png"
-              alt="Mastercard"
-              class="payment-logo"
-            />
-            <img
-              src="../assets/images/bkash.jpg"
-              alt="Bkash"
-              class="payment-logo"
-            />
-            <img
-              src="../assets/images/nagad.png"
-              alt="Nagad"
-              class="payment-logo"
-            />
-            <img
-              src="../assets/images/upay.png"
-              alt="Upay"
-              class="payment-logo"
-            />
-          </div>
-        </div>
-      </div>
-    </footer>
-    <script type="module">
-      import "../components/my-card.js";
-      import "../components/navbar.js";
-    </script>
+    
+    
     <script>
        if(getCookie("session_id")===""){
             window.location.href="home.html"
           }
+          navbar()
       $(document).ready(function () {
         $("#add").click(function () {
           title = $(".title")[0].value;
@@ -560,7 +491,8 @@
             },
           });
         });
-
+        footer()
+        
 
       });
 
@@ -606,7 +538,6 @@ $(".book-container").empty()
            
           });
           
-        
 
 
 
