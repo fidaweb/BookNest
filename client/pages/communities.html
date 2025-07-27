@@ -1,760 +1,609 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Communities - BookNest</title>
 
-    <link rel="preload" href="bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="bootstrap.min.css"></noscript>
+    <link
+      rel="preload"
+      href="bootstrap.min.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript><link rel="stylesheet" href="bootstrap.min.css" /></noscript>
 
-    <link rel="preload" href="../style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="../style.css"></noscript>
+    <link
+      rel="preload"
+      href="../style.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript><link rel="stylesheet" href="../style.css" /></noscript>
 
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Defer jQuery and Bootstrap scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+    <script src="../assets/bootstrap.bundle.min.js" defer></script>
 
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- <link rel="preload" as="script" href="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script> -->
-    
-    <!-- Defer jQuery and Bootstrap scripts
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script> -->
-    <script src="bootstrap.bundle.min.js" defer></script>
-    
     <style>
-        body {
-            background: url("/placeholder.webp?height=1080&width=1920&query=abstract+book+background") center / cover no-repeat; /* Default WebP background */
-            min-height: 100vh;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            position: relative;
-            overflow-x: hidden;
-        }
+      body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
 
-        /* Use image-set for WebP and JPG fallback for the background */
-        @supports (
-            background-image: -webkit-image-set(
-            url("/placeholder.webp?height=1080&width=1920&query=abstract+book+background") 1x
-            )
-        ) {
-            body {
-                background-image: -webkit-image-set(
-                    url("/placeholder.webp?height=1080&width=1920&query=abstract+book+background") 1x,
-                    url("/placeholder.webp?height=2160&width=3840&query=abstract+book+background") 2x
-                );
-                background-image: image-set(
-                    url("/placeholder.webp?height=1080&width=1920&query=abstract+book+background") 1x,
-                    url("/placeholder.webp?height=2160&width=3840&query=abstract+book+background") 2x
-                );
-            }
-        }
+      .page-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 3rem 0;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
 
-        /* Fallback for browsers that don't support image-set or WebP */
-        body {
-            background-image: url("/placeholder.jpg?height=1080&width=1920&query=abstract+book+background");
-        }
+      .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
 
-        body::before {
-            content: "";
-            position: fixed;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: url("/placeholder.webp?height=1080&width=1920&query=abstract+book+background") center / cover no-repeat;
-            filter: blur(5px);
-            z-index: -1;
-        }
+      .page-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
 
-        /* Use image-set for WebP and JPG fallback for the blurred background */
-        @supports (
-            background-image: -webkit-image-set(
-            url("/placeholder.webp?height=1080&width=1920&query=abstract+book+background") 1x
-            )
-        ) {
-            body::before {
-                background-image: -webkit-image-set(
-                    url("/placeholder.webp?height=1080&width=1920&query=abstract+book+background") 1x,
-                    url("/placeholder.webp?height=2160&width=3840&query=abstract+book+background") 2x
-                );
-                background-image: image-set(
-                    url("/placeholder.webp?height=1080&width=1920&query=abstract+book+background") 1x,
-                    url("/placeholder.webp?height=2160&width=3840&query=abstract+book+background") 2x
-                );
-            }
-        }
+      .community-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        height: 100%;
+      }
 
-        /* Fallback for browsers that don't support image-set or WebP */
-        body::before {
-            background-image: url("/placeholder.jpg?height=1080&width=1920&query=abstract+book+background");
-        }
+      .community-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
 
-        .main-content {
-            position: relative;
-            z-index: 1;
-            padding: 2rem 0;
-            background: rgba(255, 255, 255, 0.9);
-            min-height: 100vh;
-        }
+      .community-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background-color: #e9ecef;
+      }
 
-        .page-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 0;
-        }
+      .community-content {
+        padding: 1.5rem;
+      }
 
-        .page-title {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 1rem;
-        }
+      .community-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-        .page-subtitle {
-            font-size: 1.2rem;
-            color: #6c757d;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+      .community-icon {
+        color: #007bff;
+      }
 
-        .communities-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
+      .community-description {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
 
-        .community-card {
-            background: white;
-            border-radius: 15px;
-            padding: 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            height: 100%;
-            margin-bottom: 2rem;
-        }
+      .join-btn {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s ease;
+      }
 
-        .community-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
+      .join-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      }
 
-        .community-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background-color: #f8f9fa;
-        }
+      .filter-section {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
 
-        .community-content {
-            padding: 1.5rem;
-        }
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        border: 2px solid #dee2e6;
+        border-radius: 20px;
+        background: white;
+        color: #6c757d;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin: 0.25rem;
+        transition: all 0.3s ease;
+      }
 
-        .community-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      .filter-btn:hover,
+      .filter-btn.active {
+        border-color: #007bff;
+        background: #007bff;
+        color: white;
+      }
 
-        .community-icon {
-            color: #007bff;
-            font-size: 1.2rem;
-        }
+      .loading-spinner {
+        text-align: center;
+        padding: 3rem;
+      }
 
-        .community-description {
-            color: #6c757d;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            height: 60px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-        }
+      .spinner-border {
+        width: 3rem;
+        height: 3rem;
+      }
 
-        .community-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding: 0.5rem 0;
-            border-top: 1px solid #e9ecef;
-            border-bottom: 1px solid #e9ecef;
-        }
+      .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 2rem 0;
+        text-align: center;
+      }
 
-        .stat-item {
-            text-align: center;
-            flex: 1;
-        }
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+      }
 
-        .stat-number {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #007bff;
-            display: block;
-        }
+      .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
 
-        .stat-label {
-            font-size: 0.8rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+      /* Footer Styles */
+      .footer {
+        background: rgba(215, 128, 40, 0.95);
+        color: white;
+        padding: 3rem 0 1rem 0;
+        margin-top: 3rem;
+      }
 
-        .join-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            border: none;
-            padding: 0.875rem 1.5rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
+      .footer h5,
+      .footer h6 {
+        color: #fff;
+        margin-bottom: 1rem;
+      }
 
-        .join-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-        }
+      .footer ul {
+        list-style: none;
+        padding: 0;
+      }
 
-        .search-filter-section {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+      .footer ul li {
+        margin-bottom: 0.5rem;
+      }
 
-        .search-box {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
+      .footer ul li a {
+        color: #fff;
+        text-decoration: none;
+      }
 
-        .search-input {
-            width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: white;
-            transition: all 0.3s ease;
-        }
+      .footer ul li a:hover {
+        color: #fff;
+        text-decoration: underline;
+      }
 
-        .search-input:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-            outline: none;
-        }
+      .social-links a {
+        color: #fff;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        text-decoration: none;
+      }
 
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-            font-size: 1.1rem;
-        }
+      .social-links a:hover {
+        color: #fff;
+        opacity: 0.8;
+      }
 
-        .filter-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            border: 2px solid #dee2e6;
-            border-radius: 20px;
-            background: white;
-            color: #6c757d;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            border-color: #007bff;
-            background: #007bff;
-            color: white;
-        }
-
-        .footer {
-            background: rgba(215, 128, 40, 0.95);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 3rem 0 1rem 0;
-            margin-top: auto;
-        }
-
-        .footer h5,
-        .footer h6 {
-            color: #fff;
-            margin-bottom: 1rem;
-        }
-
-        .footer ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer ul li a {
-            color: #fff;
-        }
-
-        .footer ul li a:hover {
-            color: #fff;
-        }
-
-        .payment-logo {
-            height: 30px;
-            margin-left: 0.5rem;
-            opacity: 1;
-        }
-
-        .loading-spinner {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #007bff;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .error-message {
-            text-align: center;
-            color: #dc3545;
-            padding: 2rem;
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-radius: 8px;
-            margin: 2rem 0;
-        }
-
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 2rem;
-            }
-
-            .page-subtitle {
-                font-size: 1rem;
-            }
-
-            .search-filter-section {
-                padding: 1.5rem;
-            }
-
-            .filter-buttons {
-                justify-content: center;
-            }
-
-            .community-stats {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .stat-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                text-align: left;
-            }
-        }
+      .payment-logo {
+        height: 30px;
+        margin-left: 0.5rem;
+        opacity: 1;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- <my-navbar></my-navbar> -->
-    <script src="./utility.js">
+    <script src="./utility.js"></script>
 
-    </script>
-
-    <div class="main-content">
-        <div class="page-header">
-            <h1 class="page-title">
-                <i class="fas fa-users"></i>
-                Join Our Communities
-            </h1>
-            <p class="page-subtitle">
-                Connect with fellow book lovers, share your thoughts, and discover new perspectives in our vibrant reading communities.
-            </p>
-        </div>
-
-        <div class="communities-container">
-            <div class="search-filter-section">
-                <div class="search-box">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search communities..." id="searchInput">
-                </div>
-                
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all">All Communities</button>
-                    <button class="filter-btn" data-filter="fiction">Fiction</button>
-                    <button class="filter-btn" data-filter="non-fiction">Non-Fiction</button>
-                    <button class="filter-btn" data-filter="mystery">Mystery</button>
-                    <button class="filter-btn" data-filter="romance">Romance</button>
-                    <button class="filter-btn" data-filter="sci-fi">Sci-Fi</button>
-                    <button class="filter-btn" data-filter="biography">Biography</button>
-                    <button class="filter-btn" data-filter="fantasy">Fantasy</button>
-                    <button class="filter-btn" data-filter="history">History</button>
-                    <button class="filter-btn" data-filter="poetry">Poetry</button>
-                </div>
-                <div class="p-3">
-                    <button class="addcom btn btn-outline-dark">Add Communities</button>
-                </div>
-                
-            </div>
-
-            <div id="loadingSpinner" class="loading-spinner">
-                <div class="spinner"></div>
-            </div>
-
-            <div id="errorMessage" class="error-message" style="display: none;">
-                <h4>Error Loading Communities</h4>
-                <p id="errorText">Unable to load communities</p>
-                <button class="btn btn-primary" onclick="loadCommunities()">Retry</button>
-            </div>
-
-            <!-- Communities grid -->
-            <div class="row" id="communitiesGrid">
-                <!--dynamically ekhane communities load kori-->
-            </div>
-        </div>
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">
+          <i class="fas fa-users"></i>
+          Join Our Communities
+        </h1>
+        <p class="page-subtitle">
+          Connect with fellow book lovers and discover new perspectives
+        </p>
+      </div>
     </div>
 
-    <!-- Footerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr -->
-    <footer class="footer">
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <h5><i class="fas fa-book"></i> BookNest</h5>
-                    <p>Your trusted online bookstore for all genres. Discover, read, and grow with our vast collection of books.</p>
-                    <div class="social-links">
-                        <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
-                        <a href="https://x.com/?lang=en"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.linkedin.com/"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-1 col-md-6 mb-4">
-                    <h6>Quick Links</h6>
-                    <ul>
-                        <li><a href="../client/pages/home.html">Home</a></li>
-                        <li><a href="../client/pages/communities.html">Communities</a></li>
-                    </ul>
-                </div>
-                
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h6>Contact Us</h6>
-                    <p><span>&#9993</span>Email:booknest@gmail.com</p>
-                    <p><span>&#9743</span>Phone: 01824673890</p>
-                    <p><span>&#8962</span> Address: Block A Dhaka,Bangladesh</p>
-                </div>
-            </div>
-            <hr style="border-color: #495057;">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
-                    <img src="/placeholder.png?height=30&width=50&query=mastercard+logo" alt="Mastercard" class="payment-logo">
-                    <img src="/placeholder.jpg?height=30&width=50&query=bkash+logo" alt="Bkash" class="payment-logo">
-                    <img src="/placeholder.png?height=30&width=50&query=nagad+logo" alt="Nagad" class="payment-logo">
-                    <img src="/placeholder.png?height=30&width=50&query=upay+logo" alt="Upay" class="payment-logo">
-                </div>
-            </div>
+    <div class="container">
+      <div class="filter-section">
+        <div class="d-flex flex-wrap justify-content-center">
+          <button class="filter-btn active" data-filter="all">
+            All Communities
+          </button>
+          <button class="filter-btn" data-filter="fiction">Fiction</button>
+          <button class="filter-btn" data-filter="non-fiction">
+            Non-Fiction
+          </button>
+          <button class="filter-btn" data-filter="mystery">Mystery</button>
+          <button class="filter-btn" data-filter="romance">Romance</button>
+          <button class="filter-btn" data-filter="sci-fi">Sci-Fi</button>
+          <button class="filter-btn" data-filter="fantasy">Fantasy</button>
         </div>
+      </div>
+
+      <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <p class="mt-2">Loading communities...</p>
+      </div>
+
+      <div id="errorMessage" class="error-message" style="display: none">
+        <h5>
+          <i class="fas fa-exclamation-triangle"></i> Error Loading Communities
+        </h5>
+        <p id="errorText">Unable to load communities</p>
+        <button class="btn btn-primary" onclick="loadCommunities()">
+          <i class="fas fa-redo"></i> Try Again
+        </button>
+      </div>
+
+      <div class="row" id="communitiesGrid">
+        <!-- Communities ekhane load kori -->
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container py-5">
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <h5><i class="fas fa-book"></i> BookNest</h5>
+            <p>
+              Your trusted online bookstore for all genres. Discover, read, and
+              grow with our vast collection of books.
+            </p>
+            <div class="social-links">
+              <a href="https://www.facebook.com/"
+                ><i class="fab fa-facebook"></i
+              ></a>
+              <a href="https://x.com/?lang=en"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="https://www.instagram.com/"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="https://www.linkedin.com/"
+                ><i class="fab fa-linkedin"></i
+              ></a>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6 mb-4">
+            <h6>Quick Links</h6>
+            <ul>
+              <li><a href="home.html">Home</a></li>
+              <li><a href="communities.html">Communities</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 mb-4">
+            <h6>Contact Us</h6>
+            <p><span>&#9993;</span> Email: booknest@gmail.com</p>
+            <p><span>&#9743;</span> Phone: 01824673890</p>
+            <p><span>&#8962;</span> Address: Block A Dhaka, Bangladesh</p>
+          </div>
+        </div>
+        <hr style="border-color: #495057" />
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <img
+              src="/placeholder.jpg?height=30&width=50&query=visa+logo"
+              alt="Visa"
+              class="payment-logo"
+            />
+            <img
+              src="/placeholder.png?height=30&width=50&query=mastercard+logo"
+              alt="Mastercard"
+              class="payment-logo"
+            />
+            <img
+              src="/placeholder.jpg?height=30&width=50&query=bkash+logo"
+              alt="Bkash"
+              class="payment-logo"
+            />
+            <img
+              src="/placeholder.png?height=30&width=50&query=nagad+logo"
+              alt="Nagad"
+              class="payment-logo"
+            />
+            <img
+              src="/placeholder.png?height=30&width=50&query=upay+logo"
+              alt="Upay"
+              class="payment-logo"
+            />
+          </div>
+        </div>
+      </div>
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      var allCommunities = [];
+      var filteredCommunities = [];
+      var communityCache = {}; // Client-side cache object
+      const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-    <script defer>
-        navbar()
-        var allCommunities = [];
-        var filteredCommunities = [];
-        var communityCache = {}; // Client-side cache object
-        const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+      $(document).ready(function () {
+        // Check if user is logged in
+        if (getCookie("session_id") === "") {
+          showError("Please log in to view communities.");
+          return;
+        }
 
-        $(document).ready(function() {
-            loadCommunities();
-            setupEventListeners();
-            $('.addcom').click(function(){
-                window.location.href="add_community.html"
-            })
-            $('.delcom').click(function(){
-                window.location.href="delete_community.html"
-            })
+        loadCommunities();
+        setupEventListeners();
+      });
+
+      function setupEventListeners() {
+        $(".filter-btn").click(function () {
+          $(".filter-btn").removeClass("active");
+          $(this).addClass("active");
+          currentFilter = $(this).data("filter");
+          filterCommunities(currentFilter);
+        });
+      }
+
+      function loadCommunities() {
+        showLoading();
+
+        $.ajax({
+          url: "../../api/communities.php",
+          type: "GET",
+          dataType: "xml",
+          timeout: 10000,
+          success: function (data) {
+            try {
+              const success = $(data).find("success").text();
+
+              if (success === "true") {
+                parseAndDisplayCommunities(data);
+              } else {
+                const error = $(data).find("error").text();
+                showError("Server Error: " + error);
+              }
+            } catch (e) {
+              console.error("Error parsing response:", e);
+              showError("Error parsing server response");
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error("AJAX Error:", xhr.responseText);
+            let errorMsg = "Failed to load communities. ";
+
+            if (xhr.status === 0) {
+              errorMsg += "Please check your internet connection.";
+            } else if (xhr.status === 404) {
+              errorMsg += "API endpoint not found.";
+            } else if (xhr.status === 500) {
+              errorMsg += "Server error occurred.";
+            } else {
+              errorMsg += `Error ${xhr.status}: ${error}`;
+            }
+
+            showError(errorMsg);
+          },
+        });
+      }
+
+      function parseAndDisplayCommunities(xml) {
+        allCommunities = [];
+
+        $(xml)
+          .find("community")
+          .each(function () {
+            const community = {
+              community_id: $(this).find("community_id").text(),
+              name: $(this).find("name").text(),
+              description: $(this).find("description").text(),
+              image_url: $(this).find("image_url").text(),
+              category: $(this).find("category").text(),
+            };
+            allCommunities.push(community);
+          });
+
+        hideLoading();
+        displayCommunities(allCommunities);
+      }
+
+      function displayCommunities(communities) {
+        const grid = $("#communitiesGrid");
+
+        if (communities.length === 0) {
+          grid.html(`
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <h4>No Communities Found</h4>
+                            <p>There are no communities available at the moment.</p>
+                        </div>
+                    </div>
+                `);
+          return;
+        }
+
+        let html = "";
+        communities.forEach((community) => {
+          //webp optimization
+          let imageUrl = community.image_url;
+          if (!imageUrl || imageUrl.trim() === "") {
+            imageUrl = "../assets/images/default-community.webp";
+          } else if (
+            !imageUrl.startsWith("http") &&
+            !imageUrl.startsWith("../") &&
+            !imageUrl.startsWith("/")
+          ) {
+            imageUrl = "../assets/images/" + imageUrl;
+          }
+
+          const description =
+            community.description ||
+            "Join this amazing community of book lovers.";
+          const categoryIcon = getCommunityIcon(community.category);
+
+          html += `
+                    <div class="col-lg-4 col-md-6 community-item" data-category="${community.category}">
+                        <div class="community-card">
+                            <img src="${imageUrl}" 
+                                 alt="${community.name}" 
+                                 class="community-image" 
+                                 loading="lazy"
+                                 onerror="this.style.display='none'">
+                            <div class="community-content">
+                                <h3 class="community-name">
+                                    <i class="${categoryIcon} community-icon"></i>
+                                    ${community.name}
+                                </h3>
+                                <p class="community-description">
+                                    ${description}
+                                </p>
+                                <button class="join-btn" onclick="joinCommunity('${community.name}', ${community.community_id})">
+                                    <i class="fas fa-plus"></i>
+                                    Join Community
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
         });
 
-        function loadCommunities() {
-            const cacheKey = 'all_communities_data';
-            const cachedData = communityCache[cacheKey];
+        grid.html(html);
+      }
 
-            // Check if data is in cache and not expired
-            if (cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRATION_TIME)) {
-                console.log('Loading communities from cache.');
-                parseXMLResponse(cachedData.data);
-                hideLoading();
-                return;
-            }
-
-            console.log('Fetching communities from server...');
-            $.ajax({
-                url: '../../api/communities.php',
-                type: 'GET',
-                dataType: 'xml',
-                timeout: 10000,
-                success: function(data, status, xhr) {
-                    var success = $(data).find('success').text();
-                    
-                    if (success === 'true') {
-                        communityCache[cacheKey] = { // Store data in cache
-                            data: data,
-                            timestamp: Date.now()
-                        };
-                        parseXMLResponse(data);
-                        hideLoading();
-                    } else {
-                        var error = $(data).find('error').text();
-                        showError('Server Error: ' + error);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    var errorMsg = 'Network Error: ';
-                    if (xhr.status === 0) {
-                        errorMsg += 'Cannot connect to server. Please check your connection.';
-                    } else if (xhr.status === 404) {
-                        errorMsg += 'API endpoint not found.';
-                    } else if (xhr.status === 500) {
-                        errorMsg += 'Server error. Please try again later.';
-                    } else {
-                        errorMsg += 'An unexpected error occurred.';
-                    }
-                    
-                    showError(errorMsg);
-                }
-            });
+      function filterCommunities(category) {
+        if (category === "all") {
+          displayCommunities(allCommunities);
+        } else {
+          const filtered = allCommunities.filter(
+            (community) => community.category === category
+          );
+          displayCommunities(filtered);
         }
+      }
 
-        function parseXMLResponse(xml) {
-            allCommunities = [];
-            
-            $(xml).find('community').each(function() {
-                var community = {
-                    community_id: $(this).find('community_id').text(),
-                    name: $(this).find('name').text(),
-                    description: $(this).find('description').text(),
-                    image_url: $(this).find('image_url').text(),
-                    category: $(this).find('category').text()
-                };
-                allCommunities.push(community);
-            });
-            
-            filteredCommunities = allCommunities.slice();
-            displayCommunities(allCommunities);
-        }
+      function getCommunityIcon(category) {
+        const icons = {
+          fiction: "fas fa-book-open",
+          "non-fiction": "fas fa-chart-line",
+          mystery: "fas fa-search",
+          romance: "fas fa-heart",
+          "sci-fi": "fas fa-rocket",
+          biography: "fas fa-user-circle",
+          fantasy: "fas fa-dragon",
+          history: "fas fa-landmark",
+          poetry: "fas fa-feather-alt",
+        };
+        return icons[category] || "fas fa-users";
+      }
 
-        function displayCommunities(communities) {
-            var grid = $('#communitiesGrid');
-            
-            if (communities.length === 0) {
-                grid.html('<div class="col-12 text-center"><p>No communities found.</p></div>');
-                return;
-            }
+      function joinCommunity(communityName, communityId) {
+        const button = event.target;
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Joining...';
 
-            var html = '';
-            for (var i = 0; i < communities.length; i++) {
-                var community = communities[i];
-                
-                var imageUrl = community.image_url;
-                if (!imageUrl || imageUrl.trim() === '') {
-                    imageUrl = '/placeholder.jpg?height=200&width=400&query=BookNest+Community';
-                }
-                // Create a WebP version URL, assuming a .webp extension or similar conversion
-                const webpImageUrl = imageUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp') || '/placeholder.webp?height=200&width=400&query=BookNest+Community';
-
-                var description = community.description || 'Join this amazing community of book lovers.';
-                var categoryIcon = getCommunityIcon(community.category);
-                
-                html += '<div class="col-lg-4 col-md-6 community-item" data-category="' + community.category + '">';
-                html += '    <div class="community-card">';
-                html += '        <picture>';
-                html += '            <source srcset="' + webpImageUrl + '" type="image/webp">';
-                html += '            <img src="' + imageUrl + '" alt="' + community.name + '" class="community-image" loading="lazy" '; // Added loading="lazy"
-                html += '                 onerror="this.onerror=null; this.src=\'/placeholder.jpg?height=200&width=400&query=Image+Not+Found\'">';
-                html += '        </picture>';
-                html += '        <div class="community-content">';
-                html += '            <h3 class="community-name">';
-                html += '                <i class="' + categoryIcon + ' community-icon"></i>';
-                html += '                ' + community.name;
-                html += '            </h3>';
-                html += '            <p class="community-description">';
-                html += '                ' + description;
-                html += '            </p>';
-                html += '            <div class="community-stats">';
-                html += '                <div class="stat-item">';
-                html += '                    <span class="stat-number">Active</span>';
-                html += '                    <span class="stat-label">Status</span>';
-                html += '                </div>';
-                html += '                <div class="stat-item">';
-                html += '                    <span class="stat-number">Open</span>';
-                html += '                    <span class="stat-label">Join</span>';
-                html += '                </div>';
-                html += '            </div>';
-                html += '            <button class="join-btn" onclick="joinCommunity(\'' + community.name + '\', ' + community.community_id + ')">';
-                html += '                <i class="fas fa-plus"></i>';
-                html += '                Join Community';
-                html += '            </button>';
-                html += '        </div>';
-                html += '    </div>';
-                html += '</div>';
-            }
-            
-            grid.html(html);
-        }
-
-        function getCommunityIcon(category) {
-            var icons = {
-                'fiction': 'fas fa-book-open',
-                'non-fiction': 'fas fa-chart-line',
-                'mystery': 'fas fa-search',
-                'romance': 'fas fa-heart',
-                'sci-fi': 'fas fa-rocket',
-                'biography': 'fas fa-user-circle',
-                'fantasy': 'fas fa-dragon',
-                'history': 'fas fa-landmark',
-                'poetry': 'fas fa-feather-alt',
-                'science': 'fas fa-flask',
-                'business': 'fas fa-chart-bar'
-            };
-            return icons[category] || 'fas fa-users';
-        }
-
-        function setupEventListeners() {
-            $('.filter-btn').click(function() {
-                var filter = $(this).attr('data-filter');
-                handleFilter(filter);
-                $('.filter-btn').removeClass('active');
-                $(this).addClass('active');
-            });
-
-            $('#searchInput').keyup(function() {
-                var searchTerm = $(this).val().toLowerCase();
-                handleSearch(searchTerm);
-            });
-        }
-
-        function handleFilter(category) {
-            if (category === 'all') {
-                filteredCommunities = allCommunities.slice();
+        $.ajax({
+          url: "../../api/communities.php",
+          type: "POST",
+          data: {
+            community_id: communityId,
+          },
+          dataType: "json",
+          success: function (response) {
+            if (response.success) {
+              alert("Successfully joined " + communityName + "!");
+              button.innerHTML = '<i class="fas fa-check"></i> Joined';
+              button.style.background = "#28a745";
             } else {
-                filteredCommunities = [];
-                for (var i = 0; i < allCommunities.length; i++) {
-                    if (allCommunities[i].category === category) {
-                        filteredCommunities.push(allCommunities[i]);
-                    }
-                }
+              alert(response.message);
+              button.disabled = false;
+              button.innerHTML = '<i class="fas fa-plus"></i> Join Community';
             }
-            displayCommunities(filteredCommunities);
-        }
+          },
+          error: function (xhr, status, error) {
+            console.error("Join error:", xhr.responseText);
+            alert("Failed to join community. Please try again.");
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-plus"></i> Join Community';
+          },
+        });
+      }
 
-        function handleSearch(searchTerm) {
-            var searchResults = [];
-            var searchSource = filteredCommunities.length > 0 ? filteredCommunities : allCommunities;
-            
-            if (searchTerm === '') {
-                displayCommunities(searchSource);
-                return;
-            }
-            
-            for (var i = 0; i < searchSource.length; i++) {
-                var community = searchSource[i];
-                if (community.name.toLowerCase().indexOf(searchTerm) !== -1 || 
-                    (community.description && community.description.toLowerCase().indexOf(searchTerm) !== -1)) {
-                    searchResults.push(community);
-                }
-            }
-            displayCommunities(searchResults);
-        }
+      function showLoading() {
+        $("#loadingSpinner").show();
+        $("#errorMessage").hide();
+        $("#communitiesGrid").empty();
+      }
 
-        //join communityyyyyy
-        function joinCommunity(communityName, communityId) {
-            event.target.disabled = true;
-            event.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Joining...';
-            
-            $.ajax({
-                url: '../../api/communities.php',
-                type: 'POST',
-                data: {
-                    community_id: communityId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                    
-                        window.location.href = '../pages/mycommunities.html?name=' + encodeURIComponent(communityName) + '&id=' + communityId;
-                    } else {
-                        
-                        alert(response.message); 
-                        event.target.disabled = false;
-                        event.target.innerHTML = '<i class="fas fa-plus"></i> Join Community';
-                    }
-                },
-                error: function(xhr, status, error) {
-                    
-                    alert('Failed to join community. Please try again.');
-                    event.target.disabled = false;
-                    event.target.innerHTML = '<i class="fas fa-plus"></i> Join Community';
-                }
-            });
-        }
-        
+      function hideLoading() {
+        $("#loadingSpinner").hide();
+      }
 
-        function hideLoading() {
-            $('#loadingSpinner').hide();
-        }
+      function showError(message) {
+        hideLoading();
+        $("#errorText").text(message);
+        $("#errorMessage").show();
+      }
 
-        function showError(message) {
-            $('#loadingSpinner').hide();
-            $('#errorText').text(message);
-            $('#errorMessage').show();
+      function getCookie(cname) {
+        const name = cname + "=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const ca = decodedCookie.split(";");
+        for (let i = 0; i < ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == " ") {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
         }
+        return "";
+      }
     </script>
     <script type="module">
-        import '../components/navbar.js';
+      import "../components/navbar.js";
     </script>
-</body>
+  </body>
 </html>

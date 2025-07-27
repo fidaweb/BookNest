@@ -1,50 +1,51 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
-// Configure Memcached for session storage BEFORE session_start()
-ini_set('session.save_handler', 'memcached');
-ini_set('session.save_path', 'localhost:11211'); // Assuming Memcached runs on localhost:11211
+error_reporting(0);
+ini_set('display_errors', 0);
 
 include("../config/connection.php");
-include("session.php"); // Assuming session.php calls session_start()
+include("session.php");
 
-// Memcached server details
-$memcached_host = "localhost";
-$memcached_port = 11211; // Use the same port as session.save_path
 
-// Create Memcached connection
-$memcache = new Memcached();
-$memcache->addServer($memcached_host, $memcached_port);
-
-// Check for Memcached connection errors (optional, but good for debugging)
-if ($memcache->getStats() === false) {
-    // Handle Memcached connection failure gracefully
-    // For production, you might log this and fall back to database directly
-    // For now, we'll just log a message.
-    error_log("Memcached connection failed. Falling back to database for data fetching.");
-    $memcache = null; // Set to null to indicate Memcached is not available
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
+} else {
+    header('Content-Type: text/xml; charset=utf-8');
 }
 
+//   if memcached not available
+$memcache = null;
+if (class_exists('Memcached')) {
+    try {
+        $memcache = new Memcached();
+        $memcache->addServer('localhost', 11211);
+
+        if ($memcache->getStats() === false) {
+            $memcache = null;
+        }
+    } catch (Exception $e) {
+        $memcache = null;
+    }
+}
 
 if (!$conn) {
-    // connection fail
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'message' => 'Database connection failed: ' . mysqli_connect_error()]);
+        echo json_encode(['success' => false, 'message' => 'Database connection failed']);
     } else {
-        header('Content-Type: text/xml');
-        echo '<?xml version="1.0" encoding="UTF-8"?><response><success>false</success><error>Database connection failed: ' . htmlspecialchars(mysqli_connect_error()) . '</error></response>';
+        echo '<?xml version="1.0" encoding="UTF-8"?>';
+        echo '<response>';
+        echo '<success>false</success>';
+        echo '<error>Database connection failed</error>';
+        echo '</response>';
     }
     exit;
 }
 
-//  joining community 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
-    
     try {
-        if (!function_exists('checkSession') || !checkSession($conn)) {
+
+        if (!checkSession($conn)) {
             echo json_encode([
                 'success' => false,
                 'message' => 'Please log in to join communities.'
@@ -52,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
        
-        // user_id from cookie 
         $user_id = (int)$_SESSION["user_id"]; 
         
         if (!isset($_POST['community_id']) || empty($_POST['community_id'])) {
@@ -65,13 +65,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $community_id = (int)$_POST['community_id'];
         
-        // check user already  member
-        $check_stmt = $conn->prepare("SELECT 1 FROM community_members WHERE community_id = ? AND user_id = ?");
-        $check_stmt->bind_param("ii", $community_id, $user_id);
-        $check_stmt->execute();
-        $check_result = $check_stmt->get_result();
+        // check if user is already a member
+        $check_sql = "SELECT 1 FROM community_members WHERE community_id = ? AND user_id = ?";
+        $check_stmt = mysqli_prepare($conn, $check_sql);
         
-        if ($check_result->num_rows > 0) {
+        if (!$check_stmt) {
+            throw new Exception("Database error: " . mysqli_error($conn));
+        }
+        
+        mysqli_stmt_bind_param($check_stmt, "ii", $community_id, $user_id);
+        mysqli_stmt_execute($check_stmt);
+        $check_result = mysqli_stmt_get_result($check_stmt);
+        
+        if (mysqli_num_rows($check_result) > 0) {
             echo json_encode([
                 'success' => false,
                 'message' => 'You are already a member of this community.'
@@ -79,11 +85,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         
-        // insert to community_member 
-        $insert_stmt = $conn->prepare("INSERT INTO community_members (community_id, user_id) VALUES (?, ?)");
-        $insert_stmt->bind_param("ii", $community_id, $user_id);
+        //  new member
+        $insert_sql = "INSERT INTO community_members (community_id, user_id) VALUES (?, ?)";
+        $insert_stmt = mysqli_prepare($conn, $insert_sql);
         
-        if ($insert_stmt->execute()) {
+        if (!$insert_stmt) {
+            throw new Exception("Database error: " . mysqli_error($conn));
+        }
+        
+        mysqli_stmt_bind_param($insert_stmt, "ii", $community_id, $user_id);
+        
+        if (mysqli_stmt_execute($insert_stmt)) {
             echo json_encode([
                 'success' => true,
                 'message' => 'Successfully joined the community!'
@@ -91,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo json_encode([
                 'success' => false,
-                'message' => 'Failed to join community: ' . $insert_stmt->error
+                'message' => 'Failed to join community: ' . mysqli_stmt_error($insert_stmt)
             ]);
         }
         
@@ -100,37 +112,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'success' => false,
             'message' => 'Server error: ' . $e->getMessage()
         ]);
-    } finally {
-        if (isset($conn) && $conn) {
-            mysqli_close($conn);
-        }
     }
     exit; 
 }
 
-//  fetching communities 
-
-header('Content-Type: text/xml');
-echo '<?xml version="1.0" encoding="UTF-8"?>';
-echo '<response>';
-
+// fetching communities
 try {
+    
+    echo '<?xml version="1.0" encoding="UTF-8"?>';
+    echo '<response>';
+    
     $cache_key = 'all_communities_xml';
     $xml_data = false;
 
-    // Try to get data from Memcached
+    // get data from cache
     if ($memcache) {
         $xml_data = $memcache->get($cache_key);
     }
 
     if ($xml_data) {
-        // Data found in Memcached
         echo '<success>true</success>';
         echo '<communities>';
-        echo $xml_data; // Output cached XML fragment
+        echo $xml_data;
         echo '</communities>';
     } else {
-        // Data not found in Memcached, fetch from database
+        //  from database
         $sql = "SELECT community_id, name, description, image_url, category FROM communities ORDER BY community_id DESC";
         $result = mysqli_query($conn, $sql);
         
@@ -145,18 +151,18 @@ try {
         if (mysqli_num_rows($result) > 0) {
             while($row = mysqli_fetch_assoc($result)) {
                 $temp_xml_fragment .= '<community>';
-                $temp_xml_fragment .= '<community_id>' . htmlspecialchars($row['community_id']) . '</community_id>';
-                $temp_xml_fragment .= '<name>' . htmlspecialchars($row['name']) . '</name>';
-                $temp_xml_fragment .= '<description>' . htmlspecialchars($row['description']) . '</description>';
-                $temp_xml_fragment .= '<image_url>' . htmlspecialchars($row['image_url']) . '</image_url>';
-                $temp_xml_fragment .= '<category>' . htmlspecialchars($row['category']) . '</category>';
+                $temp_xml_fragment .= '<community_id>' . htmlspecialchars($row['community_id'], ENT_XML1, 'UTF-8') . '</community_id>';
+                $temp_xml_fragment .= '<name>' . htmlspecialchars($row['name'], ENT_XML1, 'UTF-8') . '</name>';
+                $temp_xml_fragment .= '<description>' . htmlspecialchars($row['description'], ENT_XML1, 'UTF-8') . '</description>';
+                $temp_xml_fragment .= '<image_url>' . htmlspecialchars($row['image_url'], ENT_XML1, 'UTF-8') . '</image_url>';
+                $temp_xml_fragment .= '<category>' . htmlspecialchars($row['category'], ENT_XML1, 'UTF-8') . '</category>';
                 $temp_xml_fragment .= '</community>';
             }
         }
         
-        echo $temp_xml_fragment; // Output to client
+        echo $temp_xml_fragment;
         
-        // Store in Memcached for 1 hour (3600 seconds)
+        // store in cache for 1 hour
         if ($memcache) {
             $memcache->set($cache_key, $temp_xml_fragment, 3600);
         }
@@ -164,14 +170,16 @@ try {
         echo '</communities>';
     }
     
+    echo '</response>';
+    
 } catch (Exception $e) {
     echo '<success>false</success>';
-    echo '<error>' . htmlspecialchars($e->getMessage()) . '</error>';
-} finally {
-    if (isset($conn) && $conn) {
-        mysqli_close($conn);
-    }
+    echo '<error>' . htmlspecialchars($e->getMessage(), ENT_XML1, 'UTF-8') . '</error>';
+    echo '</response>';
 }
 
-echo '</response>';
+
+if (isset($conn) && $conn) {
+    mysqli_close($conn);
+}
 ?>

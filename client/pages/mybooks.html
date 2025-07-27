@@ -8,7 +8,7 @@
       content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
     />
     <title>Book Nest</title>
-    <!-- Defer jQuery script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <style>
       :root {
@@ -94,18 +94,32 @@
         text-align: center;
         color: white;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+      }
+      .book-card:hover {
+        transform: translateY(-5px);
       }
       .book-card img {
         width: 100%;
         height: 200px;
         object-fit: cover;
         border-radius: 6px;
+        margin-bottom: 1rem;
       }
       .book-card h3 {
         margin: 0.8rem 0 0.2rem;
+        font-size: 1.1rem;
+        line-height: 1.3;
       }
       .book-card p {
         margin: 0.3rem 0;
+        color: #ccc;
+      }
+      .book-card .price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--primary);
+        margin: 0.5rem 0;
       }
       .book-card button {
         margin-top: 0.5rem;
@@ -115,31 +129,108 @@
         color: white;
         border-radius: 6px;
         cursor: pointer;
+        transition: background-color 0.3s ease;
       }
+      .book-card button:hover {
+        background-color: #00a0b0;
+      }
+
+      /* Footer Styles */
       footer {
         background: rgba(215, 128, 40, 0.95);
         color: white;
-        padding: 3rem 1rem 1rem 1rem;
+        padding: 3rem 0 1rem 0;
+        margin-top: 3rem;
       }
+
+      .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
       footer h5,
       footer h6 {
         color: #fff;
         margin-bottom: 1rem;
       }
+
       footer ul {
         list-style: none;
         padding: 0;
       }
+
       footer ul li {
         margin-bottom: 0.5rem;
       }
+
       footer ul li a {
         color: #fff;
         text-decoration: none;
       }
-      footer .payment-logo {
+
+      footer ul li a:hover {
+        color: #fff;
+        text-decoration: underline;
+      }
+
+      .social-links a {
+        color: #fff;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        text-decoration: none;
+      }
+
+      .social-links a:hover {
+        color: #fff;
+        opacity: 0.8;
+      }
+
+      .payment-logo {
         height: 30px;
         margin-left: 0.5rem;
+        opacity: 1;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 250px;
+        max-width: 300px;
+      }
+
+      .footer-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid #495057;
+      }
+
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-bottom {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+
+        .book-grid {
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          padding: 1rem;
+        }
       }
     </style>
   </head>
@@ -155,71 +246,80 @@
     <div class="filters">
       <a href="mycommunities.html">My Communities</a>
     </div>
+
     <div id="books-container" class="book-grid">
-      <!-- books load kori -->
       <p style="text-align: center; width: 100%">Loading your books...</p>
     </div>
+
+    <!-- Footerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr -->
     <footer>
       <div class="footer-container">
-        <div
-          style="display: flex; flex-wrap: wrap; justify-content: space-around"
-        >
-          <div style="max-width: 300px">
-            <h5>BookNest</h5>
+        <div class="footer-content">
+          <div class="footer-section">
+            <h5><i class="fas fa-book"></i> BookNest</h5>
             <p>
               Your trusted online bookstore for all genres. Discover, read, and
               grow with our vast collection of books.
             </p>
+            <div class="social-links">
+              <a href="https://www.facebook.com/"
+                ><i class="fab fa-facebook"></i
+              ></a>
+              <a href="https://x.com/?lang=en"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="https://www.instagram.com/"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="https://www.linkedin.com/"
+                ><i class="fab fa-linkedin"></i
+              ></a>
+            </div>
           </div>
-          <div>
+
+          <div class="footer-section">
             <h6>Quick Links</h6>
             <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">Books</a></li>
-              <li><a href="#">Categories</a></li>
-              <li><a href="#">Authors</a></li>
+              <li><a href="home.html">Home</a></li>
+              <li><a href="communities.html">Communities</a></li>
+              <li><a href="mybooks.html">My Books</a></li>
+              <li><a href="blogs.html">Blogs</a></li>
             </ul>
           </div>
-          <div>
+
+          <div class="footer-section">
             <h6>Contact Us</h6>
-            <p>&#9993; Email: booknest@gmail.com</p>
-            <p>&#9743; Phone: 01824673890</p>
-            <p>&#8962; Address: Block A Dhaka, Bangladesh</p>
+            <p><span>&#9993;</span> Email: booknest@gmail.com</p>
+            <p><span>&#9743;</span> Phone: 01824673890</p>
+            <p><span>&#8962;</span> Address: Block A Dhaka, Bangladesh</p>
           </div>
         </div>
-        <hr style="margin: 2rem 0; border-color: #495057" />
-        <div
-          style="
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-          "
-        >
+
+        <div class="footer-bottom">
           <p>&copy; 2025 BookNest. All rights reserved.</p>
           <div>
             <img
-              src="/placeholder.jpg?height=30&width=50&query=visa+logo"
+              src="../assets/images/visa.webp"
               alt="Visa"
               class="payment-logo"
             />
             <img
-              src="/placeholder.png?height=30&width=50&query=mastercard+logo"
+              src="../assets/images/mastercard.webp"
               alt="Mastercard"
               class="payment-logo"
             />
             <img
-              src="/placeholder.jpg?height=30&width=50&query=bkash+logo"
+              src="../assets/images/bkash.webp"
               alt="Bkash"
               class="payment-logo"
             />
             <img
-              src="/placeholder.png?height=30&width=50&query=nagad+logo"
+              src="../assets/images/nagad.webp"
               alt="Nagad"
               class="payment-logo"
             />
             <img
-              src="/placeholder.png?height=30&width=50&query=upay+logo"
+              src="../assets/images/upay.webp"
               alt="Upay"
               class="payment-logo"
             />
@@ -227,10 +327,7 @@
         </div>
       </div>
     </footer>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-      // XSS Prevention: Basic input sanitization function
       function sanitizeInput(input) {
         if (typeof input !== "string") return "";
         return input.replace(/[<>\"'&]/g, function (match) {
@@ -262,17 +359,12 @@
 
       $(document).ready(function () {
         const booksContainer = $("#books-container");
-        const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
-        let booksCache = {}; // Client-side cache for books
 
         function fetchAndDisplayBooks() {
-          // const userId = getCookie("user_id");
-          const userId = localStorage.getItem("user_id");
-          console.log(userId);
-
+          const userId = getCookie("user_id");
           if (!userId) {
             booksContainer.html(
-              '<p style="text-align: center; width: 100%; color: red;">User not logged in. Please ensure user_id cookie is set.</p>'
+              '<p style="text-align: center; width: 100%; color: red;">Please log in to view your books.</p>'
             );
             return;
           }
@@ -294,19 +386,17 @@
           $.ajax({
             url: "../../api/mybooks.php",
             method: "GET",
-            dataType: "json", // Expect JSON directly
+            dataType: "json",
             success: function (data) {
               booksContainer.empty();
               if (data.error) {
-                // XSS Prevention: Sanitize error message
                 const sanitizedError = sanitizeInput(data.error);
                 booksContainer.html(
-                  '<p style="text-align: center; width: 100%; color: red;">Error from PHP: ' +
+                  '<p style="text-align: center; width: 100%; color: red;">Error: ' +
                     sanitizedError +
                     "</p>"
                 );
               } else if (data.message) {
-                // XSS Prevention: Sanitize message
                 const sanitizedMessage = sanitizeInput(data.message);
                 booksContainer.html(
                   '<p style="text-align: center; width: 100%;">' +
@@ -362,18 +452,15 @@
 
             const bookCard = `
                     <div class="book-card">
-                        <picture>
-                            <source srcset="${webpImageUrl}" type="image/webp">
-                            <img
-                                src="${imageUrl}"
-                                alt="${sanitizedTitle}"
-                                loading="lazy"
-                                onerror="this.onerror=null; this.src='/placeholder.jpg?height=200&width=150&query=book+cover+not+found';"
-                            />
-                        </picture>
+                        <img
+                            src="${imageUrl}"
+                            alt="${sanitizedTitle}"
+                            loading="lazy"
+                            onerror="this.onerror=null; this.src='/placeholder.jpg?height=200&width=150&query=book+cover+not+found';"
+                        />
                         <h3>${sanitizedTitle}</h3>
-                        <p>${sanitizedAuthor}</p>
-                        <p>$${sanitizedPrice}</p>
+                        <p>by ${sanitizedAuthor}</p>
+                        <p class="price">$${sanitizedPrice}</p>
                         <button onclick="window.open('../../api/download.php?book_name=${encodeURIComponent(
                           sanitizedTitle.trim()
                         )}', '_blank')">Download Books</button>

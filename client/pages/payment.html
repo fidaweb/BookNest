@@ -354,7 +354,7 @@
 </head>
 <body>
     <my-navbar></my-navbar>
-cvv
+
     <div class="container my-5">
         <div class="row">
             
@@ -447,14 +447,7 @@ cvv
                     <div class="book-container">
 
                     </div>
-                    <!-- <div class="book-item">
-                        <img src="../assets/images/scu.jpg" alt="Book" class="book-image">
-                        <div>
-                            <h6 class="book-title">To Kill a Mockingbird</h6>
-                            <p class="book-author">by Harper Lee</p>
-                            <span class="book-price">$50</span>
-                        </div>
-                    </div>  -->
+                    <!--------------------------dynamically load book of cart------------------------->
                     <div class="price-row total">
                         <span>Total Amount</span>
                         <span class="tot">$70</span>
@@ -500,11 +493,11 @@ cvv
                     <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <img src="../assets/images/visa.jpg" alt="Visa" class="payment-logo">
-                    <img src="../assets/images/mastercard.png" alt="Mastercard" class="payment-logo">
-                    <img src="../assets/images/bkash.jpg" alt="Bkash" class="payment-logo">
-                    <img src="../assets/images/nagad.png" alt="Nagad" class="payment-logo">
-                    <img src="../assets/images/upay.png" alt="Upay" class="payment-logo">
+                    <img src="../assets/images/visa.webp" alt="Visa" class="payment-logo">
+                    <img src="../assets/images/mastercard.webp" alt="Mastercard" class="payment-logo">
+                    <img src="../assets/images/bkash.webp" alt="Bkash" class="payment-logo">
+                    <img src="../assets/images/nagad.webp" alt="Nagad" class="payment-logo">
+                    <img src="../assets/images/upay.webp" alt="Upay" class="payment-logo">
                 </div>
             </div>
         </div>
@@ -521,9 +514,6 @@ cvv
                     <p><strong>Amount Paid:</strong> $28.17</p>
                     <p><strong>Date:</strong> <span id="paymentDate">Today</span></p>
                     <div class="mt-4">
-                        <button type="button" class="btn btn-primary me-2" onclick="downloadReceipt()">
-                            <i class="fas fa-download"></i> Download Receipt
-                        </button>
                         <button type="button" class="btn btn-outline-primary" onclick="goHome()">
                             <i class="fas fa-home"></i> Back to Home
                         </button>
@@ -549,10 +539,10 @@ if(getCookie("session_id")===""){
             if(localStorage.getItem('books')){
                 $.get(`../../api/cart.php?books=${localStorage.getItem('books')}`, function (data) {
 console.log(data)
-  //get books array as string populated from home and categories pages then get real array from string by parsing it
+  
   let books=JSON.parse(data)
 let total=0
-  //iterate over the array embedding the id as argument to the removefromcart function for each id
+  
           books.forEach((book) => {
             
             const item=`
@@ -572,14 +562,9 @@ let total=0
           
           $('.tot').text("$"+total)
 
-
-
 })
             }
 
-
-            
-            
             if (bankBtn) {
                 bankBtn.addEventListener('click', () => switchTab('bank'));
             }
@@ -658,7 +643,7 @@ let total=0
             if (mobileNumber) {
                 mobileNumber.addEventListener('input', function() {
                     this.value = this.value.replace(/\D/g, '');
-                    validateMobileNumber(this.value);
+                    
                 });
             }
         }
@@ -713,11 +698,7 @@ let total=0
                 alert('Card number must be between 13-19 digits!');
                 setFieldInvalid(field);
                 return false;
-            
-            // } else if (!luhnCheck(cleanNumber)) {
-            //     alert('Invalid card number!');
-            //     setFieldInvalid(field);
-            //     return false;
+        
             } else {
                 setFieldValid(field);
                 return true;
@@ -851,7 +832,7 @@ let total=0
                 const cardholderName = document.getElementById('cardholderName').value;
                 const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
                 const expiryDate = document.getElementById('expiryDate').value;
-                // const cvv = document.getElementById('cvv').value;
+               
                 
                 if (!validateCardholderName(cardholderName)) {
                     document.getElementById('cardholderName').focus();
@@ -865,10 +846,7 @@ let total=0
                     document.getElementById('expiryDate').focus();
                     return false;
                 }
-                // if (!validateCVV(cvv)) {
-                //     document.getElementById('cvv').focus();
-                //     return false;
-                // }
+                
                 
             } else if (activeTab === 'mobile') {
                 const mobileService = document.getElementById('mobileService').value;
@@ -916,12 +894,23 @@ let total=0
                     ${xmln}
             `,
                success:function(result){
-                console.log(result)
+                console.log('Server response:', result)
+                
+                let cleanResult = result.trim();
+                
+                let jsonStart = cleanResult.lastIndexOf('{');
+                if (jsonStart !== -1) {
+                    cleanResult = cleanResult.substring(jsonStart);
+                }
+                
                 try{
                    
-                    res=JSON.parse(result)
-                    console.log(res)
+                    res=JSON.parse(cleanResult)
+                    console.log('Parsed response:', res)
                     if(res['msg']=='success'){
+                        // clear cart after successful payment
+                        localStorage.removeItem('books');
+                        
                         const button = document.getElementById('proceedPayment');
             
                         button.disabled = true;
@@ -943,10 +932,16 @@ let total=0
                         alert(res['msg'])
                     }
 
-                }catch{
-                    alert("Try again")
+                }catch(error){
+                    console.error('JSON Parse Error:', error);
+                    console.error('Server Response:', result);
+                    alert("Server returned invalid response. Please try again.");
                 }
               
+               },
+               error: function(xhr, status, error) {
+                   console.error('AJAX Error:', xhr.responseText);
+                   alert('Connection failed. Please check your internet connection and try again.');
                }
             })
             
@@ -954,9 +949,6 @@ let total=0
             
         }
         
-        function downloadReceipt() {
-            alert('Receipt download started! (Demo functionality)');
-        }
         
         function goHome() {
             window.location.href = '../pages/home.html';

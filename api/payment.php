@@ -2,12 +2,10 @@
 include "../config/connection.php";
 include("session.php");
 
-
 $xml=file_get_contents("php://input");
 
 if(checkSession($conn)){
     $xmlr=simplexml_load_string($xml);
-// echo count($xmlr->bookid);
 $payment_id=bin2hex(random_bytes(16));
 $user_id=$_SESSION["user_id"];
 $flag=true;
@@ -22,20 +20,15 @@ for($i=0;$i<count($xmlr->bookid);$i++){
         break;
      } 
 }
-   
 
-if($flag){
-    echo "{\"msg\":\"success\"}";
-}
-else{
-    echo "{\"msg\":\"erro\"}";
-}
-
+    if($flag){
+        echo "{\"msg\":\"success\"}";
+    }
+    else{
+        echo "{\"msg\":\"error\"}";
+    }
 }
 else{
     echo "{\"msg\":\"session invalid\"}";
 }
-
-
-
 ?>
