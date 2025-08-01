@@ -136,8 +136,14 @@
         color: var(--primary);
         margin: 0.5rem 0;
       }
-      .book-card button {
+      .book-card .button-group {
+        display: flex;
+        justify-content: space-around;
+        gap: 10px; /* Space between buttons */
         margin-top: 0.5rem;
+      }
+      .book-card button {
+        flex: 1; /* Make buttons take equal width */
         padding: 0.5rem 1rem;
         background-color: var(--accent);
         border: none;
@@ -148,6 +154,12 @@
       }
       .book-card button:hover {
         background-color: #00a0b0;
+      }
+      .book-card button.read-button {
+        background-color: #27ae60; /* A different color for Read button */
+      }
+      .book-card button.read-button:hover {
+        background-color: #229954;
       }
 
       /* Footer Styles */
@@ -293,7 +305,10 @@
           }
         }
         return "";
-      }
+        }
+        
+        // Define CACHE_EXPIRATION_TIME if not already defined in utility.js
+        const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
       $(document).ready(function () {
         navbar();
@@ -307,7 +322,8 @@
             );
             return;
           }
-          const booksCache = {};
+          // Using a simple object for client-side cache
+          const booksCache = {}; 
           const cacheKey = `user_books_${userId}`;
           const cachedData = booksCache[cacheKey];
 
@@ -401,9 +417,10 @@
                         <h3>${sanitizedTitle}</h3>
                         <p>by ${sanitizedAuthor}</p>
                         <p class="price">$${sanitizedPrice}</p>
-                        <button onclick="window.open('../../api/download.php?book_name=${encodeURIComponent(
-                          sanitizedTitle.trim()
-                        )}', '_blank')">Download Books</button>
+                        <div class="button-group">
+                            <button class="read-button" onclick="window.location.href='pdf-viewer.html?book_id=${book.id}'">Read</button>
+                            <button onclick="window.open('../../api/download.php?book_id=${book.id}', '_blank')">Download</button>
+                        </div>
                     </div>
                 `;
             booksContainer.append(bookCard);
