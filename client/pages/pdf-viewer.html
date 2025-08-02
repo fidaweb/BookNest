@@ -367,7 +367,7 @@
                     
                     <div style="border-left: 1px solid #555; height: 30px; margin: 0 10px;"></div>
                     
-                    <button id="zoom-out">Zoom Out</button>
+                    <button id="zoom-out">🔍-</button>
                     <select id="zoom-select">
                         <option value="0.5">50%</option>
                         <option value="0.75">75%</option>
@@ -376,10 +376,12 @@
                         <option value="1.5">150%</option>
                         <option value="2">200%</option>
                     </select>
-                    <button id="zoom-in">Zoom In</button>
+                    <button id="zoom-in">🔍+</button>
                 </div>
                 
-                
+                <div class="toolbar-right">
+                    <!-- Removed Scroll Mode text -->
+                </div>
             </div>
             
             <div class="pdf-container" id="pdf-container">
@@ -441,7 +443,7 @@
         let isRendering = false;
         let pageElements = [];
         let userId = null;
-        let bookId = null; // This will still be used for bookmarking
+        let bookId = null; // This will be used for bookmarking and PDF access
 
         // Dictionary functionality (same as test version)
         function wordsearch(word) {
@@ -547,8 +549,17 @@
             }, 500);
         });
 
-        // Get user session
+        // Get user session and book ID from URL
         function getUserSession() {
+            const urlParams = new URLSearchParams(window.location.search);
+            bookId = urlParams.get('book_id'); // Get book_id from URL
+
+            if (!bookId) {
+                alert('Error: Book ID is missing. Please select a book from My Books.');
+                window.location.href = '../mybooks.html'; // Redirect if no book ID
+                return;
+            }
+
             $.ajax({
                 url: '../../api/pdf-handler.php?action=get_session',
                 type: 'GET',
@@ -556,30 +567,25 @@
                 success: function(response) {
                     if (response.success) {
                         userId = response.user_id;
-                        // Even if PDF is hardcoded, we still need bookId for bookmarking
-                        // We'll try to get it from URL, or default to a generic ID for 'books.pdf'
-                        const urlParams = new URLSearchParams(window.location.search);
-                        bookId = urlParams.get('book_id') || 'default_books_pdf'; // Use a default if not provided
-                        
                         loadBookmark(); // Load bookmark before loading PDF
-                        loadPDF(); // Load the hardcoded PDF
+                        loadPDF(bookId); // Load the PDF using the bookId
                     } else {
-                        console.error('Failed to get user session');
-                        alert('Please login to access this book');
+                        console.error('Failed to get user session:', response.message);
+                        alert('Please login to access this book: ' + response.message);
                         window.location.href = '../login.html';
                     }
                 },
-                error: function() {
-                    console.error('Error getting user session');
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('Error getting user session:', textStatus, errorThrown, xhr.responseText);
                     alert('Session error. Please login again.');
                     window.location.href = '../login.html';
                 }
             });
         }
 
-        // Modified loadPDF to use a fixed relative path
-        function loadPDF() {
-            const pdfUrl = '../../pdfs/book.pdf'; // Hardcoded relative PDF path
+        // Modified loadPDF to use pdf-handler.php for secure PDF access
+        function loadPDF(bookId) {
+            const pdfUrl = `../../api/pdf-handler.php?action=get_pdf&book_id=${bookId}`;
             
             pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
                 pdfDoc = pdfDoc_;
@@ -604,12 +610,31 @@
                     setTimeout(() => scrollToPage(bookmarkedPage), 1000);
                 }
                 
-                console.log('PDF loaded successfully');
+                console.log('PDF loaded successfully from handler.');
             }).catch(function(error) {
                 console.error('Error loading PDF:', error);
-                alert('Error loading PDF. Please ensure "../../pdfs/books.pdf" is accessible.');
-                // Optionally redirect or show a more user-friendly error
-                // window.location.href = 'mybooks.html'; 
+                let errorMessage = 'Error loading PDF. Please try again.';
+
+                // Attempt to parse JSON error response from pdf-handler.php
+                if (error.xhr && error.xhr.responseText) {
+                    try {
+                        const errorResponse = JSON.parse(error.xhr.responseText);
+                        if (errorResponse.message) {
+                            errorMessage = errorResponse.message;
+                        }
+                    } catch (e) {
+                        // Not a JSON response, use generic error
+                        console.warn('PDF handler did not return JSON error:', error.xhr.responseText);
+                    }
+                }
+                
+                alert(errorMessage);
+                // Redirect to mybooks.html or login.html based on error type
+                if (error.xhr && (error.xhr.status === 401 || error.xhr.status === 403)) {
+                    window.location.href = '../mybooks.html'; // Or login.html if session expired
+                } else {
+                    window.location.href = '../mybooks.html'; // Generic redirect
+                }
             });
         }
 
