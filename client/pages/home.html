@@ -16,11 +16,7 @@
     
 
   
-     <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-      crossorigin="anonymous"
-    ></script>
+   
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
@@ -45,21 +41,7 @@
             z-index: -1;
         }
 
-      /* .flip {
-        transform: rotateY(360deg);
-        transition: transform 0.8s;
-        
-      } */
-
-      /* .card {
-        transition: transform 0.8s;
-        background: transparent;
-        height: 25rem;
-        color: black;
-    
-        background-color: rgba(255, 255, 255, 0.3);
-       
-      } */
+     
 
       h2 {
         width: 20rem;
@@ -136,7 +118,7 @@
     </style>
   </head>
   <body>
-    <script src="./utility.js">
+    <script src="./utility.js" >
 
     </script>
 
@@ -229,7 +211,7 @@ the category button is attached to function on click event that renders a bootst
       </div>
       
     </div>
-    <div style="background: transparent; background-color: rgba(255, 255, 255, 0.3);" class="p-3 container-fluid   d-flex  align-center justify-content-center  flex-wrap  rounded-1">
+    <!-- <div style="background: transparent; background-color: rgba(255, 255, 255, 0.3);" class="p-3 container-fluid   d-flex  align-center justify-content-center  flex-wrap  rounded-1">
       <div class="d-flex flex-column flex-wrap">
         <h1 class="text-center">Your Words of the Day!</h1>
        
@@ -238,7 +220,7 @@ the category button is attached to function on click event that renders a bootst
         
         <div id="meaning" class="d-flex flex-column"></div>
       </div>
-    </div>
+    </div> -->
    
 <!-- This is the main container that is initially empty and then populated by cards using javascript below -->
     <div
@@ -262,8 +244,7 @@ the category button is attached to function on click event that renders a bootst
 
 
 <!-- this is the load books functions that will fetch from database but currently using a static array for the fetched data -->
-<script defer>
-
+<!-- <script defer>
 function wordsearch(word){
   $.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,function(data,res){
     
@@ -297,63 +278,67 @@ wordsearch(words[Math.floor(Math.random()*words.length)])
 $('#dict').on('input',function(){
   wordsearch(this.value)
 })
-
-</script>
-
-    <script >
-      navbar()
+</script> -->
 
 
+<script >
 
+navbar()
+let count=0
 
-      books_a=[]
-      function load(count){
-        $.get(`../../api/category.php?page=home&offset=${count}`, function (data) {
-        //   this is data array representing what will be fetched from database
+    function populateMain(books){
+      books.forEach((book) => {
+      card = createCard(book);
+      //append or populate main element with newly embedded card
+      $("#main").append(card);
+      });
+    }
 
-
-
- //since database echos an array of JSON format objects as string  and send it as data
-//JSON.parse parses the string into an array of JSON objects
-          const books = JSON.parse(data);
-          
-          
-          //iterate over the array and for each object get data from object create a card
-          //embed the data[url,name,ISBN,Book Title,Author] in the card html element 
-          //append or populate the main element with the newly embedded card
-          books.forEach((book) => {
-            books_a.push(book)
-
-            card=createCard(book)
-            
-            
-            //append or populate main element with newly embedded card
-            $("#main").append(card);
-          });
-        })
-
-      }
+     
       function loadBooks(count) {
-        return $.get(`../../api/category.php?page=home&offset=${count}`, function (data) {
-        //   this is data array representing what will be fetched from database
+   $.get(`../../api/category.php?page=home&offset=${count}`, function (data) {
+    //   this is data array representing what will be fetched from database
+    console.log("new");
+
+    //since database echos an array of JSON format objects as string  and send it as data
+    //JSON.parse parses the string into an array of JSON objects
+    const books = JSON.parse(data);
+    let home_arr=[]
+    local_array=localStorage.getItem('home_array')
+    if(local_array!==null){
+        home_arr=JSON.parse(local_array)
+    }
+    if(home_arr.length<200){
+       localStorage.setItem('home_array',JSON.stringify([...home_arr,...books]))
+    }
+   
+    populateMain(books)
+    
+  });
+}
 
 
+      // loadBooks is called only after document reloads
+      $(document).ready(function () {
+      
+        if((new Date(localStorage.getItem('expiration')-new Date()))/(24*60*60*1000)>30){
+         localStorage.removeItem('home_array')
+        }
+        
 
- //since database echos an array of JSON format objects as string  and send it as data
-//JSON.parse parses the string into an array of JSON objects
-          const books = JSON.parse(data);
-          
-          //iterate over the array and for each object get data from object create a card
-          //embed the data[url,name,ISBN,Book Title,Author] in the card html element 
-          //append or populate the main element with the newly embedded card
-          books.forEach((book) => {
-            books_a.push(book)
-           card=createCard(book)
-            $("#main").append(card);
-          });
-        }).then(function () {
-          //.then is used to make sure below code executes only after populating main elements with card
-
+        if(localStorage.getItem('home_array')==null){
+          console.log('url')
+          loadBooks(0)
+          localStorage.setItem('expiration',new Date().toISOString())
+        }
+        else{
+          console.log('local')
+          data=localStorage.getItem('home_array')
+          const books = JSON.parse(data).slice(0,20);
+          populateMain(books)
+        }
+        
+      
 
           
           //attach a flip function to cards
@@ -385,7 +370,18 @@ $('#dict').on('input',function(){
 
           $(".more").click(function(){
             count+=20
-            load(count);
+            local_array=localStorage.getItem('home_array')
+            if(local_array!==null&& JSON.parse(local_array).length>count){
+              console.log('more local')
+              data=localStorage.getItem('home_array')
+              const books = JSON.parse(data).slice(count,count+20);
+              populateMain(books)
+            }
+            else{
+              console.log('more url')
+              loadBooks(count);
+            }
+           
           })
           $(".logout").click(function(){
             // deleteCookie("user_id",1,1);
@@ -412,53 +408,29 @@ $('#dict').on('input',function(){
 
           $(".search").on('input',function(e){
            
-            var books
-            
+            var books=[]
+            let local_books=localStorage.getItem('home_array')
             if(this.value!=undefined){
               console.log(this.value)
               $('#main').empty()
               let search=this.value.toLowerCase()
-             books=books_a.filter((book,index)=>{
-              
-              return (book['Book_Title'].toLowerCase().includes(search)||book['Book_Author'].toLowerCase().includes(search))
-            })
+              if(local_books!==null){
+                local_books=JSON.parse(local_books)
+                 books=local_books.filter((book,index)=>{
+                return (book['Book_Title'].toLowerCase().includes(search)||book['Book_Author'].toLowerCase().includes(search))
+                })
+              }
             
-
             if(books.length==0){
-              console.log('request')
+             console.log('search url')
               $.get(`../../api/search.php?term=${this.value}&&category=home`, function (data) {
-              console.log(data)
-              //get books array as string populated from home and categories pages then get real array from string by parsing it
-              
                books=books.concat(JSON.parse(data))
-               books_a=books_a.concat(JSON.parse(data))
-               
-
-               books.forEach(book=>{
-            
-              card=createCard(book)
-             
-              $('#main').append(card)
-            })
-             
-            })
-            
-            }
+               populateMain(books)
+            })}
 
             if(books.length!=0){
-              books.forEach(book=>{
-            card=createCard(book)
-            $('#main').append(card)
-          })
-            }
-
-            if(books_a.length>250){
-              books_a=books_a.slice(0,250)
-            }
-           
-
-
-            }
+             populateMain(books.slice(0,20))
+            }}
             
           })
 
@@ -487,14 +459,8 @@ $('#dict').on('input',function(){
         return new bootstrap.Tooltip(tooltipTriggerEl)
         })
         footer()
-        });
-      }
-  
-
       
-      // loadBooks is called only after document reloads
-      $(document).ready(function () {
-        loadBooks(0);
+
       });
     </script>
   </body>

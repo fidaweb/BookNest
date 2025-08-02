@@ -9,13 +9,11 @@ function createCard(book) {
   card.append(
     `<img class="cardimage" loading="lazy"  src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
   );
-
   let card2 = $(document.createElement("div"));
   card2.addClass("sinfo");
   card2.append(
     `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
   );
-
   card2.append(`<p  class='author' slot="author">${book["Book_Author"]}</p>`);
   card2.append(
     `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
@@ -26,7 +24,6 @@ function createCard(book) {
     `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
   );
   card.append(card2);
-
   return card;
 }
 
@@ -175,14 +172,3 @@ function addToCart(event, bookID) {
     alert("Login to add to cart");
   }
 }
-
-// function addToCart(event, bookID) {
-//   let books = [];
-//   if (localStorage.getItem("books")) {
-//     books = JSON.parse(localStorage.getItem("books"));
-//   }
-
-//   books.push(bookID);
-//   localStorage.setItem("books", JSON.stringify(books));
-//   new bootstrap.Modal($("#mymodal")).show();
-// }

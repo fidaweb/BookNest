@@ -1,5 +1,5 @@
 <?php
-// require '../config/connection.php';
+require '../config/connection.php';
 require 'session.php';
 
 $xml=file_get_contents("php://input");

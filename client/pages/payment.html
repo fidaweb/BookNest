@@ -353,7 +353,8 @@
     </style>
 </head>
 <body>
-    <my-navbar></my-navbar>
+    <!-- <my-navbar></my-navbar> -->
+     <script src="utility.js"></script>
 
     <div class="container my-5">
         <div class="row">
@@ -382,17 +383,32 @@
                             <form id="bankPaymentForm">
                                 <div class="form-group">
                                     <label for="cardholderName" class="form-label">Cardholder Name *</label>
-                                    <input type="text" class="form-control" id="cardholderName" placeholder="John Doe" required>
+                                    <input type="text" class="form-control" id="cardholderName" value="John Doe" placeholder="John Doe" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cardholderEmail" class="form-label">Cardholder Email *</label>
+                                    <input type="email" class="form-control" id="cardholderEmail" value="you@example.com" placeholder="John@gmail.com" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="mobileNumber" class="form-label">Mobile Number *</label>
+                                    <input type="tel" class="form-control" id="mobileNumber" value="01711xxxxxx" placeholder="01XXXXXXXXX" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cardholderAddress" class="form-label">Cardholder Address *</label>
+                                    <input type="text" class="form-control" id="cardholderAddress" value="John Doe" placeholder="John Doe" required>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="cardNumber" class="form-label">Card Number *</label>
-                                    <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                    <input type="text" class="form-control" id="cardNumber" value="1234 5678 9012 3456" placeholder="1234 5678 9012 3456" maxlength="19" required>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="expiryDate" class="form-label">Expiry Date *</label>
-                                    <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
+                                    <input type="text" class="form-control" id="expiryDate" value="10/29" placeholder="MM/YY" maxlength="5" required>
                                 </div>
                                 
                                 
@@ -428,7 +444,12 @@
                     </div>
 
                     <div class="text-center mt-4">
-                        <button type="button" class="btn-pay" id="proceedPayment">
+                        <button
+                         token="if you have any token validation"
+                        postdata="your javascript arrays or objects which requires in backend"
+                        order="If you already have the transaction generated for current order"
+                        endpoint="../../api/sslcommerz/checkout_ajax.php"
+                        type="button" class="btn-pay" id="sslczPayBtn">
                             <i class="fas fa-lock"></i>
                             <span>Proceed to Pay</span>
                         </button>
@@ -531,17 +552,18 @@ if(getCookie("session_id")===""){
           }
         
         document.addEventListener('DOMContentLoaded', function() {
+            navbar()
             const bankBtn = document.getElementById('bankTabBtn');
             const mobileBtn = document.getElementById('mobileTabBtn');
-            const proceedBtn = document.getElementById('proceedPayment');
+            const proceedBtn = document.getElementById('sslczPayBtn');
 
-
+total=0
             if(localStorage.getItem('books')){
                 $.get(`../../api/cart.php?books=${localStorage.getItem('books')}`, function (data) {
 console.log(data)
   
   let books=JSON.parse(data)
-let total=0
+
   
           books.forEach((book) => {
             
@@ -572,7 +594,7 @@ let total=0
                 mobileBtn.addEventListener('click', () => switchTab('mobile'));
             }
             if (proceedBtn) {
-                proceedBtn.addEventListener('click', processPayment);
+                proceedBtn.addEventListener('click',()=> processPayment(total));
             }
             
             switchTab('bank');
@@ -585,6 +607,7 @@ let total=0
             const invoiceElement = document.getElementById('invoiceNumber');
             if (dateElement) dateElement.textContent = new Date().toLocaleDateString();
             if (invoiceElement) invoiceElement.textContent = 'INV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            footer()
         });
         
         function switchTab(tabName) {
@@ -650,7 +673,7 @@ let total=0
         /////////////////////////////////////////////validation (check korbe)
         function setupFormValidation() {
 
-            const cardholderName = document.getElementById('cardholderName');
+            const cardholderAddress = document.getElementById('cardholderName');
             if (cardholderName) {
                 cardholderName.addEventListener('blur', function() {
                     validateCardholderName(this.value);
@@ -865,85 +888,98 @@ let total=0
             return true;
         }
         
-        function processPayment() {
+        function processPayment(total) {
             console.log('Processing payment...');
             
             if (!validateCurrentForm()) {
                 return;
             }
-            let xml=`<root></root>`
-            let parser=new DOMParser()
-            xmln=parser.parseFromString(xml,'application/xml')
-            root=xmln.querySelector("root")
-            let arr=JSON.parse(localStorage.getItem('books'))
-            let temp='<bookid></bookid>'
-            arr.forEach(id=>{
-                temp=xmln.createElement('bookid')
-                temp.textContent=id
-                root.appendChild(temp)
-            })
-            xmln=new XMLSerializer().serializeToString(xmln)
+            // let xml=`<root></root>`
+            // let parser=new DOMParser()
+            // xmln=parser.parseFromString(xml,'application/xml')
+            // root=xmln.querySelector("root")
+             let arr=JSON.parse(localStorage.getItem('books'))
+            // let temp='<bookid></bookid>'
+            // arr.forEach(id=>{
+            //     temp=xmln.createElement('bookid')
+            //     temp.textContent=id
+            //     root.appendChild(temp)
+            // })
+            // xmln=new XMLSerializer().serializeToString(xmln)
+            let obj = {};
+   
+       
+    obj.cus_name = $('#cardholderName').val();
+    obj.cus_phone = $('#mobileNumber').val();
+    obj.cus_email = $('#cardholderEmail').val();
+    obj.cus_addr1 = $('#cardholderAddress').val();
+    obj.amount = total;
+    obj.cart=arr;
+    console.log(obj)
+     $('#sslczPayBtn').prop('postdata', obj);
 
             
-            $.ajax({
-               url:"../../api/payment.php",
-               method:"POST",
-               contentType:"application/xml",
+            // $.ajax({
+            //    url:"../../api/payment.php",
+            //    method:"POST",
+            // //    contentType:"application/xml",
+            // contentType:"application/json",
         
-            data:`<?xml version='1.0' encoding='UTF-8'?>
-                    ${xmln}
-            `,
-               success:function(result){
-                console.log('Server response:', result)
+            // // data:`<?xml version='1.0' encoding='UTF-8'?>
+            // //         ${xmln}
+            // // `,
+            // data:JSON.encode(arr),
+            //    success:function(result){
+            //     console.log('Server response:', result)
                 
-                let cleanResult = result.trim();
+            //     let cleanResult = result.trim();
                 
-                let jsonStart = cleanResult.lastIndexOf('{');
-                if (jsonStart !== -1) {
-                    cleanResult = cleanResult.substring(jsonStart);
-                }
+            //     let jsonStart = cleanResult.lastIndexOf('{');
+            //     if (jsonStart !== -1) {
+            //         cleanResult = cleanResult.substring(jsonStart);
+            //     }
                 
-                try{
+            //     try{
                    
-                    res=JSON.parse(cleanResult)
-                    console.log('Parsed response:', res)
-                    if(res['msg']=='success'){
-                        // clear cart after successful payment
-                        localStorage.removeItem('books');
+            //         res=JSON.parse(cleanResult)
+            //         console.log('Parsed response:', res)
+            //         if(res['msg']=='success'){
+            //             // clear cart after successful payment
+            //             localStorage.removeItem('books');
                         
-                        const button = document.getElementById('proceedPayment');
+            //             const button = document.getElementById('sslczPayBtn');
             
-                        button.disabled = true;
-                        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            //             button.disabled = true;
+            //             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
                         
-                        setTimeout(() => {
-                            button.disabled = false;
-                            button.innerHTML = '<i class="fas fa-lock"></i> <span>Proceed to Pay</span>';
+            //             setTimeout(() => {
+            //                 button.disabled = false;
+            //                 button.innerHTML = '<i class="fas fa-lock"></i> <span>Proceed to Pay</span>';
                 
-                            if (window.bootstrap && document.getElementById('successModal')) {
-                                const modal = new bootstrap.Modal(document.getElementById('successModal'));
-                                modal.show();
-                            } else {
-                                alert('Payment successful! Your order has been placed.');
-                            }
-                        }, 2000);
+            //                 if (window.bootstrap && document.getElementById('successModal')) {
+            //                     const modal = new bootstrap.Modal(document.getElementById('successModal'));
+            //                     modal.show();
+            //                 } else {
+            //                     alert('Payment successful! Your order has been placed.');
+            //                 }
+            //             }, 2000);
 
-                    }else{
-                        alert(res['msg'])
-                    }
+            //         }else{
+            //             alert(res['msg'])
+            //         }
 
-                }catch(error){
-                    console.error('JSON Parse Error:', error);
-                    console.error('Server Response:', result);
-                    alert("Server returned invalid response. Please try again.");
-                }
+            //     }catch(error){
+            //         console.error('JSON Parse Error:', error);
+            //         console.error('Server Response:', result);
+            //         alert("Server returned invalid response. Please try again.");
+            //     }
               
-               },
-               error: function(xhr, status, error) {
-                   console.error('AJAX Error:', xhr.responseText);
-                   alert('Connection failed. Please check your internet connection and try again.');
-               }
-            })
+            //    },
+            //    error: function(xhr, status, error) {
+            //        console.error('AJAX Error:', xhr.responseText);
+            //        alert('Connection failed. Please check your internet connection and try again.');
+            //    }
+            // })
             
             
             
@@ -953,20 +989,31 @@ let total=0
         function goHome() {
             window.location.href = '../pages/home.html';
         }
-        function getCookie(cname){
-        cname=cname+"="
-        let cookie=decodeURIComponent(document.cookie).split(";")
-        for(let i=0;i<cookie.length;i++){
-          c=cookie[i]
-          while(c.charAt(0)==" "){
-            c=c.substring(1)
-          }
-          if(c.indexOf(cname)==0){
-            return c.substring(cname.length,c.length)
-          }
-        }
-        return ""
-      }
+    //     function getCookie(cname){
+    //     cname=cname+"="
+    //     let cookie=decodeURIComponent(document.cookie).split(";")
+    //     for(let i=0;i<cookie.length;i++){
+    //       c=cookie[i]
+    //       while(c.charAt(0)==" "){
+    //         c=c.substring(1)
+    //       }
+    //       if(c.indexOf(cname)==0){
+    //         return c.substring(cname.length,c.length)
+    //       }
+    //     }
+    //     return ""
+    //   }
+    (function (window, document) {
+        var loader = function () {
+            var script = document.createElement("script"), 
+            tag = document.getElementsByTagName("script")[0];
+            //script.src = "https://seamless-epay.sslcommerz.com/embed.min.js?" + Math.random().toString(36).substring(7); // NOTE: USE THIS FOR LIVE
+            script.src = "https://sandbox.sslcommerz.com/embed.min.js?" + Math.random().toString(36).substring(7); // NOTE: USE THIS FOR SANDBOX
+            tag.parentNode.insertBefore(script, tag);
+        };
+
+        window.addEventListener ? window.addEventListener("load", loader, false) : window.attachEvent("onload", loader);
+    })(window, document);
     </script>
     <script type="module">
         import '../components/navbar.js';

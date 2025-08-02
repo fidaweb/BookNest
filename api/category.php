@@ -1,6 +1,6 @@
 <?php
 require '../config/connection.php';
-
+require 'session.php';
 
 
 

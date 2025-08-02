@@ -1,5 +1,5 @@
 <?php
-require '../config/connection.php';
+// require '../config/connection.php';
 
 
 function checkSession($conn){
@@ -45,7 +45,7 @@ function checkAdminSession($conn){
     
         
         if(!isset($_SESSION['admin_id'])){
-            echo $_SESSION['session_id'];
+            // echo $_SESSION['session_id'];
             $session_id=$_SESSION['session_id'];
             $stmt=$conn->prepare("SELECT * FROM admin WHERE session=?");
             $stmt->bind_param("s",$session_id);
@@ -54,6 +54,7 @@ function checkAdminSession($conn){
 
            
             if($result->num_rows>0){
+                
                 $_SESSION['admin_id']=$session_id;
                 return true;
             }

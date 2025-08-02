@@ -5,6 +5,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo '<response>';
 
 try {
+    include("../config/connection.php");
     include("session.php");
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("Only POST requests are allowed");

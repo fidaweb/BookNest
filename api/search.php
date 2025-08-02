@@ -1,4 +1,5 @@
 <?php
+include("../config/connection.php");
 require 'session.php';
 $term="%".$_GET["term"]."%";
 $category=$_GET["category"];
