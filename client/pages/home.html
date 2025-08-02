@@ -40,7 +40,7 @@
             filter: blur(5px);
             z-index: -1;
         }
-
+       
      
 
       h2 {
@@ -211,16 +211,7 @@ the category button is attached to function on click event that renders a bootst
       </div>
       
     </div>
-    <!-- <div style="background: transparent; background-color: rgba(255, 255, 255, 0.3);" class="p-3 container-fluid   d-flex  align-center justify-content-center  flex-wrap  rounded-1">
-      <div class="d-flex flex-column flex-wrap">
-        <h1 class="text-center">Your Words of the Day!</h1>
-       
-          <div><input id="dict"  class="btn-outline-light rounded-3 "  style="width:100%;"  type="text" /></div>
-        
-        
-        <div id="meaning" class="d-flex flex-column"></div>
-      </div>
-    </div> -->
+  
    
 <!-- This is the main container that is initially empty and then populated by cards using javascript below -->
     <div
@@ -231,11 +222,7 @@ the category button is attached to function on click event that renders a bootst
     <div class="d-flex align-center justify-content-center p-3">
       <button class="more btn btn-dark">More...</button>
     </div>
-   
-
-
-
-
+  
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -243,42 +230,7 @@ the category button is attached to function on click event that renders a bootst
     
 
 
-<!-- this is the load books functions that will fetch from database but currently using a static array for the fetched data -->
-<!-- <script defer>
-function wordsearch(word){
-  $.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,function(data,res){
-    
-  if(res=='success'){
-    const m=$('#meaning')
-  m.empty()
-  m.append(`<h1 class='text-center'>${data[0]['word']}</h1>`)
-  for(i=0;i<data[0]['meanings'].length&&i<3;i++){
-    m.append(`<div class="p-3">
-    <div class="text-center">${data[0]['meanings'][i]['partOfSpeech']}</div>
-     <div class="text-center">${data[0]['meanings'][i]['definitions'][0]['definition']}<</div>
-    </div>`)
-  }
-  }
-})
-}
-const words = [
-"Luminous",
-  "Zephyr",
-  "Serendipity",
-  "Effervescent",
-  "Mellifluous",
-  "Ethereal",
-  "Solace",
-  "Ruminate",
-  "Ephemeral",
-  "Vellichor"
-];
-wordsearch(words[Math.floor(Math.random()*words.length)])
 
-$('#dict').on('input',function(){
-  wordsearch(this.value)
-})
-</script> -->
 
 
 <script >

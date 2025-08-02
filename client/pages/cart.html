@@ -32,7 +32,7 @@
         filter: blur(5px);
         z-index: -1;
       }
-        .card.flip {
+        /* .card.flip {
           transform: rotateY(360deg);
           transition: transform 0.8s;
         }
@@ -42,10 +42,9 @@
         background: transparent;
        
         color: black;
-        /* background: var(--main-background) */
         background-color: rgba(255, 255, 255, 0.3);
          
-        }
+        } */
   
         h2 {
           width: 20rem;
@@ -98,7 +97,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         padding: 0.5rem;
         width: 30rem;
         gap: 1rem;
@@ -106,8 +105,10 @@
        
        }
        .book-item{
+       
         display: flex;
         align-items: center;
+        width: 30rem;
         justify-content: space-between;
        
         gap: 3rem;
@@ -119,7 +120,8 @@
         width: 50%;
        }
        .content{
-        /* background-color: green; */
+       
+        width: 30rem;
 
        }
        
@@ -130,8 +132,9 @@
         justify-content: space-between;
        }
        .pay-img{
-        width: 5rem;
-        height: 5rem;
+        width: 60px;
+        height: 90px;
+        object-fit: cover;
         
        }
        .disc{
@@ -175,14 +178,7 @@
                 <h3 >Subtotal</h3>
                 <h3 class="break sub-total">$0</h3>
               </div>
-              <!-- <div class="cost">
-                <h3 >Delivery</h3>
-                <h3 class="break">$45</h3>
-              </div> -->
-              <div class="cost">
-                <h3 >Discount</h3>
-                <h3 class="break disc">$0</h3>
-              </div>
+             
               <div class="cost">
                 <h3 >Total</h3>
                 <h3 class="break tot">$0</h3>
@@ -281,10 +277,7 @@
           <!-- Load the JavaScript that defines the custom element -->
            <!-- This is the javascript imported from my-card.js and navbar.js needed to create a template shadow element that is cloned each time the component is
      used in the project and then append as child element of  the shadow root -->
-          <script type="module">
-            import '../components/my-card.js';
-            import '../components/navbar.js';
-          </script>
+         
           <script>
             navbar()
              if(getCookie("session_id")===""){
@@ -304,31 +297,8 @@ $.get(`../../api/cart.php?books=${localStorage.getItem('books')}`, function (dat
 
   //iterate over the array embedding the id as argument to the removefromcart function for each id
           books.forEach((book) => {
-            // console.log(book);
-            const card = $("<my-card></my-card>");
-            card.addClass("card");
-
-            card.append(
-              `<img slot="image"style="width: 100%;
-            height: 200px;
-            object-fit: cover;" src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
-            );
-
-            card.append(
-              `<h2 class="title" data-bs-toggle="tooltip" data-bs-placement="top" title="${book["Book_Title"]}"  slot="title">${book["Book_Title"]}</h2>`
-            );
-
-            card.append(
-              `<p  class='author' slot="author">${book["Book_Author"]}</p>`
-            );
-            card.append(
-              `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
-            );
-            card.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
-            card.append(
-              `<button slot="button" class='btn btn-outline-dark' " onclick={removeFromCart(event,${book['id']})}>Remove From Cart</button>`
-            );
-//also populate the book item list for each book id present in local storage
+           
+            card=createCard(book)
             const item=`
                             <div class="book-item">
                               <img class="pay-img" src="${book["Image_URL_L"]}" alt="">
@@ -379,8 +349,8 @@ $.get(`../../api/cart.php?books=${localStorage.getItem('books')}`, function (dat
           
           
           $('.order-summary .break-down .sub-total').text(`${total}`)
-          $('.order-summary .break-down .disc').text(`${total*0.1}`)
-          $('.order-summary .break-down .tot').text(`${total*0.9}`)
+         
+          $('.order-summary .break-down .tot').text(`${total}`)
          
             //get array of elements with data-bs-toggle="tooltip"
           var tooltipTriggerList =

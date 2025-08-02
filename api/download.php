@@ -3,6 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require 'session.php';
+require '../config/connection.php';
 
 // Include database connection if needed for user/book validation,
 // but for now, we're just serving a generic PDF.
