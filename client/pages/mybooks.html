@@ -399,12 +399,19 @@
             );
             const sanitizedPrice = book.PRICE || "0.00";
 
-            const imageUrl =
-              book.Image_URL_L ||
-              "/placeholder.jpg?height=200&width=150&query=book+cover";
-            const webpImageUrl =
-              imageUrl.replace(/\.(jpg|jpeg|png)$/i, ".webp") ||
-              "/placeholder.webp?height=200&width=150&query=book+cover";
+            let imageUrl;
+            // Check if Image_URL_L is a full URL (starts with http or https)
+            if (book.Image_URL_L && (book.Image_URL_L.startsWith('http://') || book.Image_URL_L.startsWith('https://'))) {
+                imageUrl = book.Image_URL_L;
+            } else if (book.Image_URL_L) {
+                // If it's not a full URL, assume it's a relative path/filename
+                // and prepend the local assets path.
+                imageUrl = `../assets/images/${book.Image_URL_L}`;
+            } else {
+                // Fallback to a local default image if no image URL is provided.
+                imageUrl = '../assets/images/default.webp'; // Changed to default.webp
+            }
+            console.log(`Final image URL being used: ${imageUrl}`);
 
             const bookCard = `
                     <div class="book-card">
@@ -412,7 +419,7 @@
                             src="${imageUrl}"
                             alt="${sanitizedTitle}"
                             loading="lazy"
-                            onerror="this.onerror=null; this.src='/placeholder.jpg?height=200&width=150&query=book+cover+not+found';"
+                            onerror="this.onerror=null; this.src='../assets/images/default.webp';" // Changed to default.webp
                         />
                         <h3>${sanitizedTitle}</h3>
                         <p>by ${sanitizedAuthor}</p>
