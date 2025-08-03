@@ -13,12 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: text/xml; charset=utf-8');
 }
 
-//   if memcached not available
+//   memcached judi na thake
 $memcache = null;
 if (class_exists('Memcached')) {
     try {
         $memcache = new Memcached();
-        $memcache->addServer('localhost', 11211);
+        $memcache->addServer('localhost', 11211);//eta port number
 
         if ($memcache->getStats() === false) {
             $memcache = null;
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $community_id = (int)$_POST['community_id'];
         
-        // check if user is already a member
+        // jodi user oi cummunity member agei
         $check_sql = "SELECT 1 FROM community_members WHERE community_id = ? AND user_id = ?";
         $check_stmt = mysqli_prepare($conn, $check_sql);
         

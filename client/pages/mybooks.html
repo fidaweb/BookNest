@@ -139,11 +139,11 @@
       .book-card .button-group {
         display: flex;
         justify-content: space-around;
-        gap: 10px; /* Space between buttons */
+        gap: 10px; 
         margin-top: 0.5rem;
       }
       .book-card button {
-        flex: 1; /* Make buttons take equal width */
+        flex: 1; 
         padding: 0.5rem 1rem;
         background-color: var(--accent);
         border: none;
@@ -156,7 +156,7 @@
         background-color: #00a0b0;
       }
       .book-card button.read-button {
-        background-color: #27ae60; /* A different color for Read button */
+        background-color: #27ae60; 
       }
       .book-card button.read-button:hover {
         background-color: #229954;
@@ -261,14 +261,7 @@
   </head>
   <body>
     <script src="utility.js"></script>
-    <!-- <header>
-      <h1>Book Nest</h1>
-      <nav>
-        <a href="home.html">Home</a>
-        <a href="blogs.html">Blogs</a>
-        <a href="communities.html">Communities</a>
-      </nav>
-    </header> -->
+    
     <div class="filters">
       <a href="mycommunities.html">My Communities</a>
     </div>
@@ -307,8 +300,8 @@
         return "";
         }
         
-        // Define CACHE_EXPIRATION_TIME if not already defined in utility.js
-        const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+        
+        const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; 
 
       $(document).ready(function () {
         navbar();
@@ -327,7 +320,7 @@
           const cacheKey = `user_books_${userId}`;
           const cachedData = booksCache[cacheKey];
 
-          // Check if data is in cache and not expired
+          // Checking if data is in cache and not expired
           if (
             cachedData &&
             Date.now() - cachedData.timestamp < CACHE_EXPIRATION_TIME
@@ -390,7 +383,7 @@
         function renderBooks(books) {
           booksContainer.empty();
           books.forEach(function (book) {
-            // XSS Prevention: Sanitize book data before rendering
+            //  Sanitize book data 
             const sanitizedTitle = sanitizeInput(
               book.Book_Title || "Unknown Title"
             );
@@ -398,18 +391,17 @@
               book.Book_Author || "Unknown Author"
             );
             const sanitizedPrice = book.PRICE || "0.00";
-
+            //book card er image error ekhane handle korechi
             let imageUrl;
-            // Check if Image_URL_L is a full URL (starts with http or https)
+            //  if Image_URL_L is a full URL 
             if (book.Image_URL_L && (book.Image_URL_L.startsWith('http://') || book.Image_URL_L.startsWith('https://'))) {
                 imageUrl = book.Image_URL_L;
             } else if (book.Image_URL_L) {
-                // If it's not a full URL, assume it's a relative path/filename
-                // and prepend the local assets path.
+                //relative path/filename and prepending the local assets path.
                 imageUrl = `../assets/images/${book.Image_URL_L}`;
             } else {
-                // Fallback to a local default image if no image URL is provided.
-                imageUrl = '../assets/images/default.webp'; // Changed to default.webp
+                // default image as amazon is blocking the image paths for tjis page
+                imageUrl = '../assets/images/default.webp'; 
             }
             console.log(`Final image URL being used: ${imageUrl}`);
 

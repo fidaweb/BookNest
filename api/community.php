@@ -53,7 +53,7 @@ try {
             case 'string':
                 
                 $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
-                // additional XSS prevention
+                // additional XSS prevention(lab manual er bahire korechi from net). eta just script tags replace kore so malicious code na dey
                 $input = preg_replace('/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/mi', '', $input);
                 $input = preg_replace('/javascript:/i', '', $input);
                 $input = preg_replace('/on\w+\s*=/i', '', $input);
@@ -85,7 +85,7 @@ try {
             throw new Exception("Message too long (maximum 500 characters)");
         }
         
-        // sql injection prevention 
+        // sql injection  
         $check_sql = "SELECT community_id FROM communities WHERE community_id = ?";
         $check_stmt = mysqli_prepare($conn, $check_sql);
         

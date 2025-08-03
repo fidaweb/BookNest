@@ -116,7 +116,7 @@
             margin-bottom: 10px;
         }
 
-        /* Sidebar */
+        /* side er tool bar */
         .sidebar {
             width: 400px;
             background: white;
@@ -149,7 +149,7 @@
             border-bottom: 2px solid #3498db;
         }
 
-        /* Dictionary Section */
+        /* Dictionary api */
         .dictionary-container {
             background: rgba(255, 255, 255, 0.9);
             padding: 20px;
@@ -317,7 +317,7 @@
             transition: opacity 0.3s;
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -379,9 +379,7 @@
                     <button id="zoom-in">🔍+</button>
                 </div>
                 
-                <div class="toolbar-right">
-                    <!-- Removed Scroll Mode text -->
-                </div>
+                
             </div>
             
             <div class="pdf-container" id="pdf-container">
@@ -424,28 +422,27 @@
         </div>
     </div>
 
-    <!-- Load jQuery first -->
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <!-- Main application script, now as a module -->
     <script type="module">
-        // Import pdfjsLib from the module
+        // import pdfjsLib from module
         import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@4.4.168/build/pdf.mjs';
 
-        // Set PDF.js worker
+        // setting PDF.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.mjs';
         console.log('PDF.js loaded successfully and worker set.');
 
-        // Global variables
+        // eigulo global var
         let pdfDoc = null;
         let currentPage = 1;
         let scale = 1;
         let isRendering = false;
         let pageElements = [];
         let userId = null;
-        let bookId = null; // This will be used for bookmarking and PDF access
+        let bookId = null; // eta bookmark page access kore
 
-        // Dictionary functionality (same as test version)
+        // Dictionary api free version use korechi
         function wordsearch(word) {
             if (!word || word.trim() === '') {
                 $('#meaning').empty();
@@ -523,7 +520,7 @@
             console.log('jQuery loaded successfully');
             
             setupEventListeners();
-            getUserSession(); // This will call loadBookmark and then loadPDF
+            getUserSession(); //eta loadbookmark and loadpdf kore
             
             setTimeout(function() {
                 const randomWord = words[Math.floor(Math.random() * words.length)];
@@ -549,14 +546,14 @@
             }, 500);
         });
 
-        // Get user session and book ID from URL
+        
         function getUserSession() {
             const urlParams = new URLSearchParams(window.location.search);
-            bookId = urlParams.get('book_id'); // Get book_id from URL
+            bookId = urlParams.get('book_id'); 
 
             if (!bookId) {
                 alert('Error: Book ID is missing. Please select a book from My Books.');
-                window.location.href = '../mybooks.html'; // Redirect if no book ID
+                window.location.href = '../mybooks.html'; // judi book id na available
                 return;
             }
 
@@ -567,8 +564,8 @@
                 success: function(response) {
                     if (response.success) {
                         userId = response.user_id;
-                        loadBookmark(); // Load bookmark before loading PDF
-                        loadPDF(bookId); // Load the PDF using the bookId
+                        loadBookmark(); 
+                        loadPDF(bookId); 
                     } else {
                         console.error('Failed to get user session:', response.message);
                         alert('Please login to access this book: ' + response.message);
@@ -583,7 +580,7 @@
             });
         }
 
-        // Modified loadPDF to use pdf-handler.php for secure PDF access
+        //age book id dekhe then book view kore
         function loadPDF(bookId) {
             const pdfUrl = `../../api/pdf-handler.php?action=get_pdf&book_id=${bookId}`;
             
@@ -598,14 +595,14 @@
                     currentPage = bookmarkedPage;
                     document.getElementById('page-num').value = currentPage;
                 } else {
-                    currentPage = 1; // Default to page 1 if no bookmark or expired
+                    currentPage = 1; // default page 1
                     document.getElementById('page-num').value = currentPage;
                 }
                 
                 renderAllPages();
                 setupScrollListener();
                 
-                // Scroll to bookmarked page after rendering
+                // scroll kore bookmarked page a jabe
                 if (bookmarkedPage) {
                     setTimeout(() => scrollToPage(bookmarkedPage), 1000);
                 }
@@ -615,7 +612,7 @@
                 console.error('Error loading PDF:', error);
                 let errorMessage = 'Error loading PDF. Please try again.';
 
-                // Attempt to parse JSON error response from pdf-handler.php
+                // pdf handler.php json error parse kori
                 if (error.xhr && error.xhr.responseText) {
                     try {
                         const errorResponse = JSON.parse(error.xhr.responseText);
@@ -623,17 +620,17 @@
                             errorMessage = errorResponse.message;
                         }
                     } catch (e) {
-                        // Not a JSON response, use generic error
+                        // judi json error na hoy 
                         console.warn('PDF handler did not return JSON error:', error.xhr.responseText);
                     }
                 }
                 
                 alert(errorMessage);
-                // Redirect to mybooks.html or login.html based on error type
+                
                 if (error.xhr && (error.xhr.status === 401 || error.xhr.status === 403)) {
-                    window.location.href = '../mybooks.html'; // Or login.html if session expired
+                    window.location.href = '../mybooks.html'; 
                 } else {
-                    window.location.href = '../mybooks.html'; // Generic redirect
+                    window.location.href = '../mybooks.html'; 
                 }
             });
         }
@@ -795,7 +792,7 @@
             });
         }
 
-        // Bookmark functions
+        // bookmark functions
         function updateBookmark(page) {
             if (!userId || !bookId) {
                 $('#bookmark-result').html('<div class="error">User session or book ID not found.</div>');
@@ -822,7 +819,7 @@
             const bookmarkData = {
                 page: page,
                 timestamp: Date.now(),
-                expires: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days expiration
+                expires: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days bookmark thakeee
             };
             localStorage.setItem(bookmarkKey, JSON.stringify(bookmarkData));
         }
@@ -838,7 +835,7 @@
                 if (Date.now() < data.expires) {
                     return data.page;
                 } else {
-                    localStorage.removeItem(bookmarkKey); // Remove expired bookmark
+                    localStorage.removeItem(bookmarkKey); // if 30 days er beshi bookmark remove
                 }
             }
             return null;
@@ -853,7 +850,7 @@
 
         $(document).keydown(function(e) {
             if (e.target.tagName.toLowerCase() === 'input') return;
-            
+            //toolbox er functions using keypad
             switch(e.which) {
                 case 37: // Left arrow
                     document.getElementById('prev-page').click();
