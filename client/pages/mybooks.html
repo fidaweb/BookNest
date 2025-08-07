@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
+    <!-- <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
-    />
+    /> -->
     <link
       rel="preload"
       href="../style.css"
@@ -298,10 +298,10 @@
           }
         }
         return "";
-        }
-        
-        // Define CACHE_EXPIRATION_TIME if not already defined in utility.js
-        const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+      }
+
+      // Define CACHE_EXPIRATION_TIME if not already defined in utility.js
+      const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
       $(document).ready(function () {
         navbar();
@@ -316,7 +316,7 @@
             return;
           }
           // Using a simple object for client-side cache
-          const booksCache = {}; 
+          const booksCache = {};
           const cacheKey = `user_books_${userId}`;
           const cachedData = booksCache[cacheKey];
 
@@ -394,17 +394,17 @@
 
             let imageUrl;
             // Check if Image_URL_L is a full URL (starts with http or https)
-            if (book.Image_URL_L && (book.Image_URL_L.startsWith('http://') || book.Image_URL_L.startsWith('https://'))) {
-                imageUrl = book.Image_URL_L;
-            } else if (book.Image_URL_L) {
-                // If it's not a full URL, assume it's a relative path/filename
-                // and prepend the local assets path.
-                imageUrl = `../assets/images/${book.Image_URL_L}`;
+            if (
+              book.Image_URL_L &&
+              (book.Image_URL_L.startsWith("http://") ||
+                book.Image_URL_L.startsWith("https://"))
+            ) {
+              imageUrl = book.Image_URL_L;
             } else {
-                // Fallback to a local default image if no image URL is provided.
-                imageUrl = '../assets/images/default.webp'; // Changed to default.webp
+              // Fallback to a local default image if no image URL is provided.
+              imageUrl = "../assets/images/default.webp"; // Changed to default.webp
             }
-            console.log(`Final image URL being used: ${imageUrl}`);
+            // console.log(`Final image URL being used: ${imageUrl}`);
 
             const bookCard = `
                     <div class="book-card">

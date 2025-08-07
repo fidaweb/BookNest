@@ -1,5 +1,6 @@
-function createCard(book) {
+function createCard(book, clickfunction, action) {
   //create my card
+
   let card = $(document.createElement("div"));
 
   // add class card to enforce page specific styling
@@ -7,7 +8,7 @@ function createCard(book) {
 
   //append child elements to card embedded with data fetched from database
   card.append(
-    `<img class="cardimage" loading="lazy"  src="${book["Image_URL_L"]}" alt="Great Gatsby" style="height: 10rem;">`
+    `<img class="cardimage" loading="lazy"  src="${book["Image_URL_L"]}" alt="${book["Book_Title"]}" style="height: 10rem;">`
   );
   let card2 = $(document.createElement("div"));
   card2.addClass("sinfo");
@@ -19,14 +20,20 @@ function createCard(book) {
     `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
   );
   card2.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
+  if (clickfunction !== undefined) {
+    card2.append(
+      `<button slot="button" class='btn btn-outline-dark' " onclick={${clickfunction}(event,${book["id"]})}>${action}</button>`
+    );
+  } else {
+    card2.append(
+      `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
+    );
+  }
 
-  card2.append(
-    `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
-  );
   card.append(card2);
   return card;
 }
-
+//Dark mode icons created by mpanicon - Flaticon
 function navbar() {
   $("body").prepend(`<div class="navbar">
     <div class="logo-holder">
@@ -34,6 +41,11 @@ function navbar() {
     </div>
 
     <div class="menu">
+      <div class="wrap">
+      <img onclick="theme()" class="payment-logo" src='../assets/night-mode.png'/>
+    
+     
+      </div>
       <div class="wrap">
         <a href="home.html">Home</a>
       </div>
@@ -46,6 +58,17 @@ function navbar() {
       </div>
     </div>
   </div>`);
+}
+
+function theme() {
+  // $("body")[0].style.background = "none";
+  if ($("body")[0].style.background.match("libr3")) {
+    $("body")[0].style.background =
+      "url('../assets/library1.jpg') center/cover no-repeat";
+  } else if ($("body")[0].style.background.match("library1")) {
+    $("body")[0].style.background =
+      "url('../assets/libr3.jpg') center/cover no-repeat";
+  }
 }
 
 function footer() {

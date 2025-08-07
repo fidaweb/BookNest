@@ -67,7 +67,8 @@ function handleGetPDF($conn) {
             echo json_encode(['success' => false, 'message' => 'Invalid request: Missing book ID.']);
             exit();
         }
-        
+        echo json_encode($user_id);
+        echo json_encode($book_id);
         // Check if user has access to this book via the payments table
         $has_access = false;
         $stmt = $conn->prepare("SELECT COUNT(*) FROM payments WHERE user_id = ? AND book_id = ?");
@@ -89,15 +90,27 @@ function handleGetPDF($conn) {
             echo json_encode(['success' => false, 'message' => 'Access denied: You do not have permission to view this book.']);
             exit();
         }
+        $sql='SELECT `book_title` FROM books WHERE id=?';
+        $stmt=mysqli_prepare($conn,$sql);
+        mysqli_stmt_bind_param($stmt,"i",$book_id);
+        $stmt->execute();
+        $book_row=$stmt->get_result();
         
-        // If access is granted, serve the single 'book.pdf' file
+        $title=mysqli_fetch_assoc($book_row)['book_title'];
+        //Dynamic book implementation
+        $pdf_filename=$title.'.pdf';
+        
+        // If access is granted, serve the single hardcoded 'book.pdf' file
         $pdf_filename = 'book.pdf';
         $full_pdf_file_path = __DIR__ . '/../pdfs/' . $pdf_filename;
-
+       
         if (!file_exists($full_pdf_file_path)) {
             http_response_code(404); // Not Found
             echo json_encode(['success' => false, 'message' => 'PDF file not found on server.']);
             exit();
+        }
+        else{
+             echo json_encode(['success' => true, 'message' => 'PDF file found on server.']);
         }
         
         // If all checks pass, serve the PDF

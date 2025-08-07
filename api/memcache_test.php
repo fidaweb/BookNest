@@ -1,4 +1,5 @@
 <?php
+phpinfo();
 echo ini_get('session.save_handler'); // Should return 'memcached'
 echo '<br>';
 echo ini_get('session.save_path');    // Should contain Memcached server addresses

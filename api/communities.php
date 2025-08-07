@@ -131,6 +131,7 @@ try {
     }
 
     if ($xml_data) {
+        echo '<mem>true</mem>';
         echo '<success>true</success>';
         echo '<communities>';
         echo $xml_data;

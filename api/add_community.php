@@ -16,6 +16,11 @@ $category = $_POST['category'];
 if(checkSession($conn)){
     $stmt = $conn->prepare("INSERT INTO communities (name, description, image_url,category) VALUES (?, ?, ?,?)");
     $stmt->bind_param("ssss", $name, $description, $image_url,$category);
+
+    $memcache=new memcached();
+    $memcache->addServer('localhost',11211);
+    $keyname='all_communities_xml';
+    $memcache->delete($keyname);
     
     if ($stmt->execute()) {
         echo "  Community created";

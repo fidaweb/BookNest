@@ -27,7 +27,7 @@
     />
     <!-- Defer jQuery and Bootstrap scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../assets/bootstrap.bundle.min.js" defer></script>
+    <script src="bootstrap.bundle.min.js" defer></script>
 
     <style>
       body {
@@ -331,6 +331,7 @@
           timeout: 10000,
           success: function (data) {
             try {
+              console.log(data);
               const success = $(data).find("success").text();
 
               if (success === "true") {
@@ -521,24 +522,21 @@
         $("#errorMessage").show();
       }
 
-      function getCookie(cname) {
-        const name = cname + "=";
-        const decodedCookie = decodeURIComponent(document.cookie);
-        const ca = decodedCookie.split(";");
-        for (let i = 0; i < ca.length; i++) {
-          let c = ca[i];
-          while (c.charAt(0) == " ") {
-            c = c.substring(1);
-          }
-          if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-          }
-        }
-        return "";
-      }
-    </script>
-    <script type="module">
-      import "../components/navbar.js";
+      // function getCookie(cname) {
+      //   const name = cname + "=";
+      //   const decodedCookie = decodeURIComponent(document.cookie);
+      //   const ca = decodedCookie.split(";");
+      //   for (let i = 0; i < ca.length; i++) {
+      //     let c = ca[i];
+      //     while (c.charAt(0) == " ") {
+      //       c = c.substring(1);
+      //     }
+      //     if (c.indexOf(name) == 0) {
+      //       return c.substring(name.length, c.length);
+      //     }
+      //   }
+      //   return "";
+      // }
     </script>
   </body>
 </html>

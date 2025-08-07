@@ -41,11 +41,17 @@ ini_set('display_errors', 0);
                 $sql = $ot->getRecordQuery($tran_id);
                 $result = $conn_integration->query($sql);
                 $row = $result->fetch_array(MYSQLI_ASSOC);
+                
+                echo json_encode($row);
+                echo $row['status'];
 
                 if ($row['status'] == 'Pending' || $row['status'] == 'Processing') {
+                    echo 'pending';
                     $validated = $sslc->orderValidate($_POST, $tran_id, $amount, $currency);
+                    echo 'validate';
 
                     if ($validated&&checkSession($conn_integration)) {
+                        echo 'session';
                         $books=$_SESSION['cart'];
                         $user_id=$_SESSION['user_id'];
                         $sql = $ot->updateTransactionQuery($tran_id, 'Processing');
@@ -60,8 +66,15 @@ ini_set('display_errors', 0);
                             if(!mysqli_stmt_execute($stmt)){
                                 $flag=false;
                                 break;
-                            } 
-}
+                            }}
+                        echo json_encode($flag);
+                        
+                        $memcache=new memcached();
+                        $memcache->addServer('localhost',11211);
+    
+                        $cache_key = 'user_books_' . $user_id;
+                        $memcache->delete($cache_key);
+    
 
 
                         if ($flag) { ?>

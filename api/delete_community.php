@@ -53,6 +53,11 @@ try {
     } else {
         throw new Exception("Failed to delete community");
     }
+
+    $memcache=new memcached();
+    $memcache->addServer('localhost',11211);
+    $keyname='all_communities_xml';
+    $memcache->delete($keyname);
     
     mysqli_stmt_close($delete_stmt);
     mysqli_stmt_close($check_stmt);

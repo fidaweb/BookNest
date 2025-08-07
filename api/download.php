@@ -52,6 +52,16 @@ if (!$has_access) {
     exit();
 }
 
+$sql='SELECT `book_title` FROM books WHERE id=?';
+$stmt=mysqli_prepare($conn,$sql);
+mysqli_stmt_bind_param($stmt,"i",$book_id);
+$stmt->execute();
+$book_row=$stmt->get_result();
+
+$title=mysqli_fetch_assoc($book_row)['book_title'];
+
+$pdf_filename=$title.'pdf';
+
 // If access is granted, proceed with file download
 // The user wants to download 'book.pdf' regardless of the book card clicked.
 $fileName = 'book.pdf';

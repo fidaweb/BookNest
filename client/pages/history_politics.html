@@ -20,17 +20,6 @@
         overflow-x: hidden;
       }
 
-      /* body::before {
-        content: "";
-        position: fixed;
-        top: -10px;
-        left: -10px;
-        right: -10px;
-        bottom: -10px;
-        background:linear-gradient(to right, rgb(161, 108, 108),rgb(82, 82, 179));
-        filter: blur(5px);
-        z-index: -1;
-      } */
 
       .card.flip {
         transform: rotateY(360deg);
@@ -179,8 +168,8 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
 
 >
 <div class="search align-center ">
-  <input  class="search rounded-3" style="height: 100%"  type="text" />
-  <button class="btn btn-outline-light ">Search</button>
+  <input  class="search rounded-3" style="height: 100%" placeholder="Search" type="text" />
+ 
 </div>
 <div>
   <button class="category btn btn-secondary">Category</button>
@@ -244,6 +233,8 @@ class="d-flex p-3 align-center justify-content-between flex-wrap gap-3"
    
 
     <script>
+       $("body")[0].style.background =
+    "url('../assets/library1.jpg') center/cover no-repeat";
       navbar()
 let count=0
 

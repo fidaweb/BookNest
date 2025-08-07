@@ -103,14 +103,7 @@ try {
             $response = ['message' => 'No books found for this user.'];
             $json_response = json_encode($response);
             
-            // cache"no books" 
-            if ($memcache) {
-                try {
-                    $memcache->set($cache_key, $json_response, 300); // Cache for 5 minutes
-                } catch (Exception $e) {
-                    error_log("Memcached set error: " . $e->getMessage());
-                }
-            }
+           
             echo $json_response;
             exit();
         }
