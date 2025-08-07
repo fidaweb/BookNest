@@ -614,14 +614,12 @@
             } catch {
               console.error("Failed to get user session");
               alert("Please login to access this book");
-              // window.location.href = "../pages/login.html";
             }
           },
           error: function (er) {
             console.log(er);
             console.error("Error getting user session");
             alert("Session error. Please login again.");
-            // window.location.href = "../pages/login.html";
           },
         });
       }
