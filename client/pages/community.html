@@ -405,7 +405,7 @@
         return input.trim();
       }
 
-      // HTML escaping function
+      // HTML escaping function(outside of lab manual)
       function escapeHtml(text) {
         var map = {
           "&": "&amp;",
@@ -501,7 +501,7 @@
             var displayName = isOwn ? "Me" : username;
             var timeAgo = formatTime(sentAt);
 
-            // escape HTML to prevent XSS
+            // escape HTML to prevent XSS jate keu html kono tag diye dom or something na change kore
             var safeMessage = escapeHtml(message);
             var safeDisplayName = escapeHtml(displayName);
             var safeAvatar = escapeHtml(avatar);

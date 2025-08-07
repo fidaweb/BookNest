@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 
 include "../config/connection.php";
 
-//if memcached available
+//memcached ache or na 
 if (extension_loaded('memcached')) {
     ini_set('session.save_handler', 'memcached');
     ini_set('session.save_path', 'localhost:11211');
@@ -15,10 +15,10 @@ require 'session.php';
 
 header('Content-Type: application/json');
 
-//  XSS prevention header
+//  XSS cdn
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;");
 
-// input sanitization function for XSS prevention
+// sanitize for xss
 function sanitizeOutput($data) {
     if (is_array($data)) {
         return array_map('sanitizeOutput', $data);
@@ -26,12 +26,12 @@ function sanitizeOutput($data) {
     return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 }
 
-// initialize Memcached 
+// notun memcached object banay store kore data
 $memcache = null;
 if (extension_loaded('memcached')) {
     try {
         $memcache = new Memcached();
-        $memcache->addServer('localhost', 11211);
+        $memcache->addServer('localhost', 11211);//eta port number
         
         
         $stats = $memcache->getStats();
@@ -57,7 +57,7 @@ if (!isset($_SESSION["user_id"])) {
     exit();
 }
 
-// SQL injection prevention
+
 $user_id = (int)$_SESSION["user_id"];
 $books = [];
 
@@ -65,7 +65,7 @@ try {
     $cache_key = 'user_books_' . $user_id;
     $cached_books = false;
 
-    // try to get data from Memcached
+    // memcached a data jodi thake okhane theke nibo 
     if ($memcache) {
         try {
             $cached_books = $memcache->get($cache_key);
@@ -85,7 +85,7 @@ try {
         //  fetch from database
         error_log("Fetching books from database for user: " . $user_id);
         
-        // SQL Injection Prevention
+        // sql injection
         $stmt_payments = $conn->prepare("SELECT DISTINCT book_id FROM payments WHERE user_id = ?");
         if (!$stmt_payments) {
             throw new Exception("Failed to prepare payments statement: " . $conn->error);
@@ -111,7 +111,7 @@ try {
         
         $placeholders = implode(',', array_fill(0, count($book_ids), '?'));
         $types = str_repeat('i', count($book_ids));
-
+        //book ante sql
         $stmt_books = $conn->prepare("SELECT id, Book_Title, Book_Author, description, PRICE, Image_URL_L FROM books WHERE id IN ($placeholders)");
         if (!$stmt_books) {
             throw new Exception("Failed to prepare books statement: " . $conn->error);

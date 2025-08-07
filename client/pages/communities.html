@@ -25,7 +25,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
-    <!-- Defer jQuery and Bootstrap scripts -->
+    <!-- Defer jQuery and Bootstrap scripts (from class and lab) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="bootstrap.bundle.min.js" defer></script>
 
@@ -230,7 +230,7 @@
     </style>
   </head>
   <body>
-    <!-- <my-navbar></my-navbar> -->
+    
     <script src="./utility.js"></script>
 
     <div class="page-header">
@@ -290,7 +290,7 @@
       </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer ashbe utility.js thekeee -->
 
     <script defer>
       var allCommunities = [];
@@ -309,7 +309,7 @@
         loadCommunities();
         setupEventListeners();
 
-        footer();
+        footer();//utility.js te define korechi 
       });
 
       function setupEventListeners() {
@@ -407,7 +407,7 @@
           if (!imageUrl || imageUrl.trim() === "") {
             imageUrl = "../assets/images/default-community.webp";
           } else if (
-            !imageUrl.startsWith("http") &&
+            !imageUrl.startsWith("http") &&//url check kore relative path banai
             !imageUrl.startsWith("../") &&
             !imageUrl.startsWith("/")
           ) {

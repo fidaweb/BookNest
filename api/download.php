@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require 'session.php';
-include "../config/connection.php"; // Include database connection
+include "../config/connection.php"; 
 
 if (!checkSession($conn)) {
     http_response_code(401);
@@ -11,10 +11,10 @@ if (!checkSession($conn)) {
     exit();
 }
 
-// Get user_id from session
+// user id session er
 $user_id = isset($_SESSION["user_id"]) ? (int)$_SESSION["user_id"] : 0;
 
-// Get book_id from GET request
+// book id ney from book card click kore j get request otate
 $book_id = isset($_GET['book_id']) ? (int)$_GET['book_id'] : 0;
 
 if ($user_id === 0 || $book_id === 0) {
@@ -23,7 +23,7 @@ if ($user_id === 0 || $book_id === 0) {
     exit();
 }
 
-// Check if the user has paid for this book in the payments table
+//payment table check koree
 $has_access = false;
 try {
     $stmt = $conn->prepare("SELECT COUNT(*) FROM payments WHERE user_id = ? AND book_id = ?");
@@ -47,7 +47,7 @@ try {
 }
 
 if (!$has_access) {
-    http_response_code(403); // Forbidden
+    http_response_code(403); //churi kore book access
     echo "Access denied: You do not have permission to download this book.";
     exit();
 }
@@ -65,13 +65,12 @@ $pdf_filename=$title.'pdf';
 // If access is granted, proceed with file download
 // The user wants to download 'book.pdf' regardless of the book card clicked.
 $fileName = 'book.pdf';
-// Assuming download.php is in 'api/' and book.pdf is in 'pdfs/'
 $filePath = __DIR__ . '/../pdfs/' . $fileName;
 
 if (file_exists($filePath)) {
-    // Set headers for download
+    //  headers for download
     header('Content-Description: File Transfer');
-    header('Content-Type: application/pdf'); // Set content type to PDF
+    header('Content-Type: application/pdf'); //  content type PDF
     header('Content-Disposition: attachment; filename="' . $fileName . '"');
     header('Expires: 0');
     header('Cache-Control: must-revalidate');
@@ -86,7 +85,6 @@ if (file_exists($filePath)) {
     echo "File not found at: " . htmlspecialchars($filePath, ENT_QUOTES, 'UTF-8');
 }
 
-// Close the database connection
 if ($conn) {
     $conn->close();
 }
