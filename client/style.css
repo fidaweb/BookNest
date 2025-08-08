@@ -12,24 +12,18 @@
   
 
   .card {
-    transition: transform 0.8s;
+   
     background: transparent;
     height: 25rem;
     color: black;
     width: 20rem;
 
     background-color: rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
+    transition: all 0.8s ease;
    
   }
 
-  .card.flip {
-    transform: rotateY(360deg);
-    /* transform: translateY(20px); */
-    transition: transform 0.8s;
-    
-    
-  }
+
 
   .card:hover {
     transform: translateY(-10px);
@@ -91,15 +85,7 @@
         }
 
 
-  /* .card {
-    transition: transform 0.8s;
-    background: transparent;
-    height: 25rem;
-    color: black;
 
-    background-color: rgba(255, 255, 255, 0.3);
-   
-  } */
 
 
   .navbar {
@@ -133,9 +119,6 @@
     text-decoration: none;
     color: black;
   }
-  /* h2 {
-    margin: 0 0 9px;
-  } */
-
+ 
 
  

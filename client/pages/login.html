@@ -696,6 +696,7 @@
                 // setCookie("user_id",result["userid"],3)
                 console.log(result["userid"])
                 localStorage.setItem("user_id",JSON.stringify(result["userid"]))
+                localStorage.setItem('theme','light')
                 if(parseInt(result['admin'])==1){
                     window.location.href='admin.html'
                 }[]

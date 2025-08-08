@@ -17,16 +17,16 @@ function createCard(book, clickfunction, action) {
   );
   card2.append(`<p  class='author' slot="author">${book["Book_Author"]}</p>`);
   card2.append(
-    `<p class='desc' slot="desc">This book is the bestseller with a very interesting story to tell ...</p>`
+    `<p class='desc' >This book is the bestseller with a very interesting story to tell ...</p>`
   );
   card2.append(`<p class='price' slot="price">$${book["PRICE"]}</p>`);
   if (clickfunction !== undefined) {
     card2.append(
-      `<button slot="button" class='btn btn-outline-dark' " onclick={${clickfunction}(event,${book["id"]})}>${action}</button>`
+      `<button slot="button" class='btn btn-outline-dark' " onclick={${clickfunction}(${book["id"]})}>${action}</button>`
     );
   } else {
     card2.append(
-      `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(event,${book["id"]})}>Add to Cart</button>`
+      `<button slot="button" class='btn btn-outline-dark' " onclick={addToCart(${book["id"]})}>Add to Cart</button>`
     );
   }
 
@@ -41,8 +41,8 @@ function navbar() {
     </div>
 
     <div class="menu">
-      <div class="wrap">
-      <img onclick="theme()" class="payment-logo" src='../assets/night-mode.png'/>
+      <div id='theme_change' class="wrap">
+      
     
      
       </div>
@@ -58,17 +58,44 @@ function navbar() {
       </div>
     </div>
   </div>`);
+
+  if (
+    window.location.href.match("home") ||
+    window.location.href.match("history_politics") ||
+    window.location.href.match("education") ||
+    window.location.href.match("fiction") ||
+    window.location.href.match("kids")
+  ) {
+    $("#theme_change").append(
+      `<img onclick="changetheme()" class="payment-logo" src='../assets/night-mode.png'/>`
+    );
+  }
 }
 
 function theme() {
-  // $("body")[0].style.background = "none";
-  if ($("body")[0].style.background.match("libr3")) {
-    $("body")[0].style.background =
-      "url('../assets/library1.jpg') center/cover no-repeat";
-  } else if ($("body")[0].style.background.match("library1")) {
-    $("body")[0].style.background =
-      "url('../assets/libr3.jpg') center/cover no-repeat";
+  body = $("body")[0];
+
+  theme_current = localStorage.getItem("theme");
+  if (theme_current == "light" || theme_current == undefined) {
+    if (theme_current == undefined) {
+      localStorage.setItem("theme", "light");
+    }
+    body.style.background =
+      "url('../assets/library1.webp') center/cover no-repeat";
+  } else {
+    body.style.background =
+      "url('../assets/libr3.webp') center/cover no-repeat";
   }
+}
+
+function changetheme() {
+  theme_temp = localStorage.getItem("theme");
+  if (theme_temp == "light") {
+    localStorage.setItem("theme", "dark");
+  } else {
+    localStorage.setItem("theme", "light");
+  }
+  theme();
 }
 
 function footer() {
@@ -190,7 +217,7 @@ function addToCart(event, bookID) {
     localStorage.setItem("books", JSON.stringify(books));
 
     //create new modal based on styled modal above and then show it
-    new bootstrap.Modal($("#mymodal")).show();
+    new bootstrap.Modal($("#mymodal")[0]).show();
   } else {
     alert("Login to add to cart");
   }

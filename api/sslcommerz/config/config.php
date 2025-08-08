@@ -1,8 +1,8 @@
 <?php
 
 
-$STORE_ID="nsu688a021c3b73d";
-$STORE_PASSWORD="nsu688a021c3b73d@ssl";
+$STORE_ID="";
+$STORE_PASSWORD="";
 
 
 if (!defined('PROJECT_PATH')) {

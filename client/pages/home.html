@@ -14,6 +14,7 @@
     
     <script src="bootstrap.bundle.min.js.js"></script>
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   
    
@@ -22,16 +23,14 @@
     <style>
       
       body {
-        background-color: red;
-            background: url('../assets/images/background.webp') center/cover no-repeat;
-            background-image: url('../assets/images/background.webp') center/cover no-repeat;;
+       
             min-height: 100vh;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             position: relative;
             overflow-x: hidden;
         }
         
-       
+      
        
      
 
@@ -92,9 +91,7 @@ the addtocart button is attached to function on click event that renders a boots
 
     <div class="container">
       <div
-        aria-labelledby="modtitle"
-        aria-hidden="true"
-        tabindex="-1"
+       
         class="modal fade"
         id="mymodal"
       >
@@ -112,6 +109,7 @@ the addtocart button is attached to function on click event that renders a boots
         </div>
       </div>
     </div>
+    
 
 
 
@@ -120,8 +118,7 @@ the category button is attached to function on click event that renders a bootst
 -->
     <div
         
-        aria-hidden="true"
-        tabindex="-1"
+      
         class="modal fade"
         id="categorymodal"
       >
@@ -147,8 +144,7 @@ the category button is attached to function on click event that renders a bootst
 
 
     <div
-    aria-hidden="true"
-    tabindex="-1"
+   
     id="llmr"
      class="modal fade">
      <div class="modal-dialog p-3">
@@ -208,7 +204,7 @@ the category button is attached to function on click event that renders a bootst
 <!-- This is the main container that is initially empty and then populated by cards using javascript below -->
     <div
       id="main"
-      class="p-3 gap-5 align-center d-flex justify-content-center flex-wrap"
+      class="p-3 gap-5  d-flex justify-content-center flex-wrap"
      
     ></div>
     <div class="d-flex align-center justify-content-center p-3">
@@ -226,8 +222,8 @@ the category button is attached to function on click event that renders a bootst
 
 
 <script >
-    $("body")[0].style.background =
-    "url('../assets/library1.jpg') center/cover no-repeat";
+   
+   theme()
 
 navbar()
 let count=0
@@ -314,19 +310,20 @@ let count=0
           //this is where the category button is attached to the function that creates a bootstrap modal element based on the modal styled above
           //then shows the modal
           $(".category").click(function(){
-            new bootstrap.Modal($("#categorymodal")).show();
+            new bootstrap.Modal($("#categorymodal")[0]).show();
           });
 
           $("#llms").click(function(){
            
-              new bootstrap.Modal($('#llmr')).show()
+              new bootstrap.Modal($('#llmr')[0]).show()
            
           })
           $('#sendllm').click(function(){
              mesg=$("#search_in")[0].value
             
              $.ajax({
-                url: "../../api/llmapi.php",
+                // url: "../../api/llmapi.php",
+                url:"https://fidaullah.test/Project/api/llmapi.php",
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ msg: mesg }),
@@ -337,6 +334,10 @@ let count=0
                   $('#llmtext').empty()
                   $('#llmtext').append(`<p>${data}</p>`)
                 },
+                error:function(a,status,text){
+                  console.log(text)
+                }
+                
               });
           })
 
@@ -356,7 +357,7 @@ let count=0
            
           })
           $(".logout").click(function(){
-            // deleteCookie("user_id",1,1);
+            
             deleteCookie("session_id",1,1);
             window.location.reload()
           })
@@ -370,6 +371,7 @@ let count=0
             $(".user-nav").css({display:"none"})
             console.log($(".user-nav")[0].style.display)
             $(".no-session").css({display:"inline"})
+            
           }
 
          
@@ -379,6 +381,8 @@ let count=0
           
 
           $("#srch").on('input',function(e){
+           
+
            
             var books=[]
             let local_books=localStorage.getItem('home_array')
@@ -391,20 +395,21 @@ let count=0
                  books=local_books.filter((book,index)=>{
                 return (book['Book_Title'].toLowerCase().includes(search)||book['Book_Author'].toLowerCase().includes(search))
                 })
-              }
-            
+              if(books.length!=0){
+              populateMain(books.slice(0,20))
+              }}
+                 
+
+
             if(books.length==0){
              console.log('search url')
               $.get(`../../api/search.php?term=${this.value}&&category=home`, function (data) {
                books=books.concat(JSON.parse(data))
                populateMain(books)
-            })}
-
-            if(books.length!=0){
-             populateMain(books.slice(0,20))
-            }}
             
-          })
+            })}
+          }
+        })
 
           
           
