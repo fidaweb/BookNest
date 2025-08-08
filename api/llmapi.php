@@ -7,7 +7,7 @@ $input=json_decode(file_get_contents("php://input"),true);
 $msg=$input['msg'];
 
 function call_llm($msg){
-    $GROQ_API_KEY='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';
+    $GROQ_API_KEY='';
     
     $curl=curl_init();
    
