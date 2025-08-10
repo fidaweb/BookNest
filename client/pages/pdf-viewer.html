@@ -331,7 +331,7 @@
         .sidebar {
           width: 100%;
           height: 40vh;
-          order: -1;
+          /*order: -1;*/
         }
 
         .pdf-section {
@@ -339,12 +339,20 @@
         }
 
         .toolbar {
-          padding: 8px 10px;
-          gap: 8px;
+          flex-wrap: nowrap;        
+          overflow-x: auto;         
+          white-space: nowrap;      
         }
 
+        .toolbar button,
+        .toolbar select,
+        .toolbar input {
+          flex-shrink: 0;           
+        }
         .toolbar-center {
-          flex-direction: column;
+          flex-direction: row;  
+          flex-wrap: nowrap;
+          overflow-x: auto;
           gap: 8px;
         }
 
