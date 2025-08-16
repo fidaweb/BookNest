@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://ajax.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
+    /> -->
+    <link
+      rel="preload"
+      href="../style.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript><link rel="stylesheet" href="../style.css" /></noscript>
+
+    <link
+      rel="preload"
+      href="bootstrap.min.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript><link rel="stylesheet" href="bootstrap.min.css" /></noscript>
+
+    <title>Book Nest</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <style>
+      :root {
+        --primary: #f4b400;
+        --dark-bg: #121212;
+        --accent: #00bcd4;
+        --light: #f9f9f9;
+        --book-bg: #222;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background-color: var(--dark-bg);
+        color: white;
+      }
+      header {
+        background-color: var(--primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+      }
+      header h1 {
+        margin: 0;
+        color: black;
+      }
+      a {
+        text-decoration: none;
+        color: black;
+      }
+
+      .search-bar {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .search-bar input {
+        padding: 0.6rem;
+        width: 300px;
+        border-radius: 6px 0 0 6px;
+        border: none;
+      }
+      .search-bar button {
+        padding: 0.6rem 1rem;
+        background-color: var(--accent);
+        border: none;
+        color: white;
+        border-radius: 0 6px 6px 0;
+        cursor: pointer;
+      }
+      .filters {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+      }
+      .filters a {
+        background-color: var(--accent);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+      .filters a:hover {
+        background-color: #00a0b0;
+      }
+      .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+      }
+      .book-card {
+        background-color: var(--book-bg);
+        border: 3px solid var(--primary);
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+      }
+      .book-card:hover {
+        transform: translateY(-5px);
+      }
+      .book-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+      }
+      .book-card h3 {
+        margin: 0.8rem 0 0.2rem;
+        font-size: 1.1rem;
+        line-height: 1.3;
+      }
+      .book-card p {
+        margin: 0.3rem 0;
+        color: #ccc;
+      }
+      .book-card .price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--primary);
+        margin: 0.5rem 0;
+      }
+      .book-card .button-group {
+        display: flex;
+        justify-content: space-around;
+        gap: 10px;
+        margin-top: 0.5rem;
+      }
+      .book-card button {
+        flex: 1;
+        padding: 0.5rem 1rem;
+        background-color: var(--accent);
+        border: none;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .book-card button:hover {
+        background-color: #00a0b0;
+      }
+      .book-card button.read-button {
+        background-color: #27ae60;
+      }
+      .book-card button.read-button:hover {
+        background-color: #229954;
+      }
+
+      /* Footer Styles */
+      .footer {
+        background: rgba(215, 128, 40, 0.95);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 3rem 0 1rem 0;
+        margin-top: auto;
+      }
+
+      .footer h5,
+      .footer h6 {
+        color: #fff;
+        margin-bottom: 1rem;
+      }
+
+      .footer ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer ul li a {
+        color: #fff;
+      }
+
+      .footer ul li a:hover {
+        color: #fff;
+      }
+
+      .payment-logo {
+        height: 30px;
+        margin-left: 0.5rem;
+        opacity: 1;
+      }
+      .social-links a {
+        color: #fff;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        text-decoration: none;
+      }
+
+      .social-links a:hover {
+        color: #fff;
+        opacity: 0.8;
+      }
+
+      .payment-logo {
+        height: 30px;
+        margin-left: 0.5rem;
+        opacity: 1;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 250px;
+        max-width: 300px;
+      }
+
+      .footer-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid #495057;
+      }
+
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-bottom {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+
+        .book-grid {
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script src="utility.js"></script>
+
+    <div class="filters">
+      <a href="mycommunities.html">My Communities</a>
+    </div>
+
+    <div id="books-container" class="book-grid">
+      <p style="text-align: center; width: 100%">Loading your books...</p>
+    </div>
+
+    <script>
+      function sanitizeInput(input) {
+        if (typeof input !== "string") return "";
+        return input.replace(/[<>\"'&]/g, function (match) {
+          const escapeMap = {
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#x27;",
+            "&": "&amp;",
+          };
+          return escapeMap[match];
+        });
+      }
+
+      function getCookie(cname) {
+        cname = cname + "=";
+        let cookie = decodeURIComponent(document.cookie).split(";");
+        for (let i = 0; i < cookie.length; i++) {
+          let c = cookie[i];
+          while (c.charAt(0) == " ") {
+            c = c.substring(1);
+          }
+          if (c.indexOf(cname) == 0) {
+            return c.substring(cname.length, c.length);
+          }
+        }
+        return "";
+      }
+
+      const CACHE_EXPIRATION_TIME = 5 * 60 * 1000;
+
+      $(document).ready(function () {
+        navbar();
+        const booksContainer = $("#books-container");
+
+        function fetchAndDisplayBooks() {
+          const userId = localStorage.getItem("user_id");
+          if (!userId) {
+            booksContainer.html(
+              '<p style="text-align: center; width: 100%; color: red;">Please log in to view your books.</p>'
+            );
+            return;
+          }
+          // Using a simple object for client-side cache
+          const booksCache = {};
+          const cacheKey = `user_books_${userId}`;
+          const cachedData = booksCache[cacheKey];
+
+          // Checking if data is in cache and not expired
+          if (
+            cachedData &&
+            Date.now() - cachedData.timestamp < CACHE_EXPIRATION_TIME
+          ) {
+            console.log("Loading books from client-side cache.");
+            renderBooks(cachedData.data);
+            return;
+          }
+
+          console.log("Fetching books from server...");
+          $.ajax({
+            url: "../../api/mybooks.php",
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+              console.log(data);
+              booksContainer.empty();
+              if (data.error) {
+                const sanitizedError = sanitizeInput(data.error);
+                booksContainer.html(
+                  '<p style="text-align: center; width: 100%; color: red;">Error: ' +
+                    sanitizedError +
+                    "</p>"
+                );
+              } else if (data.message) {
+                const sanitizedMessage = sanitizeInput(data.message);
+                booksContainer.html(
+                  '<p style="text-align: center; width: 100%;">' +
+                    sanitizedMessage +
+                    "</p>"
+                );
+              } else if (Array.isArray(data) && data.length > 0) {
+                console.log("Books found, attempting to render.");
+                booksCache[cacheKey] = {
+                  // Store data in cache
+                  data: data,
+                  timestamp: Date.now(),
+                };
+                renderBooks(data);
+              } else {
+                booksContainer.html(
+                  '<p style="text-align: center; width: 100%;">No books found for this user.</p>'
+                );
+              }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.error(
+                "AJAX Error:",
+                textStatus,
+                errorThrown,
+                jqXHR.responseText
+              );
+              booksContainer.html(
+                '<p style="text-align: center; width: 100%; color: red;">Failed to load books. Please try again later.</p>'
+              );
+            },
+          });
+        }
+
+        function renderBooks(books) {
+          booksContainer.empty();
+          books.forEach(function (book) {
+            //  Sanitize book data
+            const sanitizedTitle = sanitizeInput(
+              book.Book_Title || "Unknown Title"
+            );
+            const sanitizedAuthor = sanitizeInput(
+              book.Book_Author || "Unknown Author"
+            );
+            const sanitizedPrice = book.PRICE || "0.00";
+            //book card er image error ekhane handle korechi
+            let imageUrl;
+            //  if Image_URL_L is a full URL
+            if (
+              book.Image_URL_L &&
+              (book.Image_URL_L.startsWith("http://") ||
+                book.Image_URL_L.startsWith("https://"))
+            ) {
+              imageUrl = book.Image_URL_L;
+            } else if (book.Image_URL_L) {
+              //relative path/filename and prepending the local assets path.
+              imageUrl = `../assets/images/${book.Image_URL_L}`;
+            } else {
+              imageUrl = "../assets/images/default.webp";
+            }
+            // console.log(`Final image URL being used: ${imageUrl}`);
+
+            const bookCard = `
+                    <div class="book-card">
+                        <img
+                            src="${imageUrl}"
+                            alt="${sanitizedTitle}"
+                            loading="lazy"
+                            onerror="this.onerror=null; this.src='../assets/images/default.webp';" // Changed to default.webp
+                        />
+                        <h3>${sanitizedTitle}</h3>
+                        <p>by ${sanitizedAuthor}</p>
+                        <p class="price">$${sanitizedPrice}</p>
+                        <div class="button-group">
+                            <button class="read-button" onclick="window.location.href='pdf-viewer.html?book_id=${book.id}'">Read</button>
+                            <button onclick="window.open('../../api/download.php?book_id=${book.id}', '_blank')">Download</button>
+                        </div>
+                    </div>
+                `;
+            booksContainer.append(bookCard);
+          });
+        }
+
+        fetchAndDisplayBooks();
+        footer();
+      });
+    </script>
+  </body>
+</html>

@@ -6,8 +6,119 @@
     --text-dark:#141b20;
     --text-medium:#29423f;
     --main-background: linear-gradient(0deg,rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
+    --black:black
+  }
+
+  
+
+  .card {
+   
+    background: transparent;
+    height: 25rem;
+    color: black;
+    width: 20rem;
+
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.8s ease;
+   
   }
 
 
+
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .sinfo{
+    padding: 16px; 
+    /* margin-top: -30px; */
+    /* background-color:red; */
+    margin-top: 10px;
+  }
+  
+  .card h2{
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis
+  }
+  .cardimage{
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+
+  .footer {
+            background: rgba(215, 128, 40, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 3rem 0 1rem 0;
+            margin-top: auto;
+        }
+        
+        .footer h5, .footer h6 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        
+        .footer ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer ul li a {
+            color: #fff;
+        }
+        
+        .footer ul li a:hover {
+            color: #fff;
+        }
+        
+        
+        .payment-logo {
+            height: 30px;
+            margin-left: 0.5rem;
+            opacity: 1;
+        }
+
+
+
+
+
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--orange);
+    padding: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .menu {
+    display: flex;
+    gap: 3rem;
+  }
+
+  @media only screen and (max-width: 760px) {
+    .navbar {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin: 0;
+    }
+    .menu {
+      display: flex;
+
+      gap: 1;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: black;
+  }
+ 
 
  

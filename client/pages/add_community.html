@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New Community - BookNest</title>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+      body {
+        background: url("../assets/images/background.webp") center/cover
+          no-repeat;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: url("../assets/images/background.webp") center/cover
+          no-repeat;
+        filter: blur(5px);
+        z-index: -1;
+      }
+
+      .main-content {
+        position: relative;
+        z-index: 1;
+        padding: 2rem 0;
+        background: rgba(255, 255, 255, 0.9);
+        min-height: 100vh;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem 0;
+      }
+
+      .page-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+      }
+
+      .page-subtitle {
+        font-size: 1.2rem;
+        color: #6c757d;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .community-form {
+        background: white;
+        border-radius: 15px;
+        padding: 3rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e9ecef;
+      }
+
+      .form-group {
+        margin-bottom: 2rem;
+      }
+
+      .form-label {
+        display: block;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 1rem;
+        background: white;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      .form-input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        outline: none;
+      }
+
+      .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      .create-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+      }
+
+      .create-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      }
+
+      #successPopup.success-popup {
+        display: none;
+        background: #d4edda !important;
+        color: #155724 !important;
+        padding: 1rem;
+        border: 1px solid #c3e6cb !important;
+        border-radius: 8px;
+        margin-top: 1rem;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .error-popup {
+        display: none;
+        background: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        border: 1px solid #f5c6cb;
+        border-radius: 8px;
+        margin-top: 1rem;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .footer {
+        background: rgba(215, 128, 40, 0.95);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 3rem 0 1rem 0;
+        margin-top: auto;
+      }
+
+      .footer h5,
+      .footer h6 {
+        color: #fff;
+        margin-bottom: 1rem;
+      }
+
+      .footer ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer ul li a {
+        color: #fff;
+      }
+
+      .footer ul li a:hover {
+        color: #fff;
+      }
+
+      .payment-logo {
+        height: 30px;
+        margin-left: 0.5rem;
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        .page-title {
+          font-size: 2rem;
+        }
+
+        .page-subtitle {
+          font-size: 1rem;
+        }
+
+        .community-form {
+          padding: 2rem;
+        }
+
+        .form-container {
+          padding: 0 0.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-navbar></my-navbar> -->
+
+    <div class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Create New Community</h1>
+        <p class="page-subtitle">
+          Start your own book community and connect with readers who share your
+          passion for literature.
+        </p>
+      </div>
+
+      <div class="form-container">
+        <form id="communityForm" class="community-form">
+          <div class="form-group">
+            <label for="name" class="form-label">Community Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-input"
+              placeholder="Community Name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              class="form-input form-textarea"
+              placeholder="Description"
+              required
+            ></textarea>
+          </div>
+
+          <!-- <div class="form-group">
+                    <label for="image_url" class="form-label">Image URL</label>
+                    <input type="text" id="image_url" name="image_url" class="form-input" placeholder="Image URL">
+                </div> -->
+          <div class="form-group">
+            <label for="image_url" class="form-label">Select Image</label>
+            <!-- <input type="text" id="image_url" name="image_url" class="image_url form-input" placeholder="Image URL"> -->
+            <div>
+              <select name="image_url" id="book_img">
+                <option value="../assets/images/lit.webp">Literature</option>
+                <option value="../assets/history_politics.webp">
+                  History and Politics
+                </option>
+                <option value="../assets/kids.webp">Kids</option>
+                <option value="../assets/images/background.webp">
+                  Education
+                </option>
+                <option value="../assets/fiction.webp">Fiction</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="category" class="form-label">Category Name</label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              class="form-input"
+              placeholder="Category Name"
+              required
+            />
+          </div>
+
+          <button type="submit" class="create-btn">Create</button>
+
+          <div id="successPopup" class="success-popup">Community Created</div>
+
+          <div id="errorPopup" class="error-popup">
+            <span id="errorText"
+              >An error occurred while creating the community.</span
+            >
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="utility.js"></script>
+
+    <script src="bootstrap.bundle.min.js"></script>
+    <script>
+      navbar();
+      if (getCookie("session_id") === "") {
+        window.location.href = "home.html";
+      }
+      document
+        .getElementById("communityForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          document.getElementById("successPopup").style.display = "none";
+          document.getElementById("errorPopup").style.display = "none";
+
+          const formData = new FormData(this);
+          console.log(formData);
+          fetch("../../api/add_community.php", {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => res.text())
+            .then((data) => {
+              console.log("Server response:", data);
+
+              if (data.trim() === "success") {
+                document.getElementById("successPopup").style.display = "block";
+              } else {
+                document.getElementById("errorText").textContent = data;
+                document.getElementById("errorPopup").style.display = "block";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("errorText").textContent =
+                "Network error occurred. Please try again.";
+              document.getElementById("errorPopup").style.display = "block";
+            });
+        });
+      footer();
+    </script>
+  </body>
+</html>

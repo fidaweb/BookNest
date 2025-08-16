@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Blog Details</title>
+    <style>
+      :root {
+        --primary: #f4b400;
+        --dark-bg: #121212;
+        --accent: #00bcd4;
+        --light: #f9f9f9;
+        --book-bg: #222;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background-color: var(--dark-bg);
+        color: white;
+      }
+
+      header {
+        background-color: var(--primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+      }
+
+      header h1 {
+        margin: 0;
+        color: black;
+      }
+
+      nav a {
+        margin-left: 1.5rem;
+        color: black;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .blog-banner {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+
+      .content-container {
+        padding: 2rem;
+      }
+
+      .content-container h2 {
+        margin-bottom: 1.5rem;
+      }
+
+      .content-container p {
+        margin-bottom: 1.2rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+
+      .footer {
+        background: rgba(215, 128, 40, 0.95);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 3rem 1rem 1rem 1rem;
+      }
+
+      .footer h5,
+      .footer h6 {
+        color: #fff;
+        margin-bottom: 1rem;
+      }
+
+      .footer ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer ul li a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .footer ul li a:hover {
+        color: #fff;
+      }
+
+      .payment-logo {
+        height: 30px;
+        margin-left: 0.5rem;
+        opacity: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- <header>
+      <h1>Book Nest</h1>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="blogs.html">Blogs</a>
+        <a href="communities.html">Communities</a>
+      </nav>
+    </header> -->
+    <my-navbar></my-navbar>
+
+    <div class="content-container">
+      <img src="" class="blog-banner" alt="Blog Banner" />
+      <h2 class="title">How to Read More Books</h2>
+      <p class="content">
+        Reading more books isn't just about finishing books quickly; it's about
+        making reading a habit. The more you read, the more you learn. Here are
+        a few tips that can help you incorporate more books into your daily
+        routine. Start with books you enjoy, set a goal for daily reading, and
+        try to eliminate distractions like social media when reading. Also,
+        creating a dedicated reading time can help you maintain consistency.
+      </p>
+    </div>
+
+    <footer class="footer">
+      <div class="container py-5">
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <h5>BookNest</h5>
+            <p>
+              Your trusted online bookstore for all genres. Discover, read, and
+              grow with our vast collection of books.
+            </p>
+          </div>
+          <div class="col-lg-1 col-md-6 mb-4">
+            <h6>Quick Links</h6>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Books</a></li>
+              <li><a href="#">Categories</a></li>
+              <li><a href="#">Authors</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-4">
+            <h6>Contact Us</h6>
+            <p>&#9993; Email: booknest@gmail.com</p>
+            <p>&#9743; Phone: 01824673890</p>
+            <p>&#8962; Address: Block A Dhaka, Bangladesh</p>
+          </div>
+        </div>
+        <hr style="border-color: #495057" />
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <p class="mb-0">&copy; 2025 BookNest. All rights reserved.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <img
+              src="../assets/images/visa.jpg"
+              alt="Visa"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/mastercard.png"
+              alt="Mastercard"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/bkash.jpg"
+              alt="Bkash"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/nagad.png"
+              alt="Nagad"
+              class="payment-logo"
+            />
+            <img
+              src="../assets/images/upay.png"
+              alt="Upay"
+              class="payment-logo"
+            />
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script type="module">
+      import "../components/my-card.js";
+      import "../components/navbar.js";
+    </script>
+    <script>
+      param = new URLSearchParams(window.location.search);
+      id = param.get("id");
+      console.log(id);
+
+      $.get(`../../api/blog.php?id=${id}`, function (data) {
+        res = JSON.parse(data)[0];
+        $(".blog-banner")[0].src = res["image_url"];
+        $(".title").text(res["title"]);
+        $(".content").text(res["content"]);
+      });
+
+      function getCookie(cname) {
+        cname = cname + "=";
+        let cookie = decodeURIComponent(document.cookie).split(";");
+        for (let i = 0; i < cookie.length; i++) {
+          c = cookie[i];
+          while (c.charAt(0) == " ") {
+            c = c.substring(1);
+          }
+          if (c.indexOf(cname) == 0) {
+            return c.substring(cname.length, c.length);
+          }
+        }
+        return "";
+      }
+    </script>
+  </body>
+</html>

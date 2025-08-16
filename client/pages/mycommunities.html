@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Communities - BookNest</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+      body {
+        background: url("../assets/images/background.jpg") center/cover
+          no-repeat;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: url("../assets/images/background.jpg") center/cover
+          no-repeat;
+        filter: blur(5px);
+        z-index: -1;
+      }
+
+      .main-content {
+        position: relative;
+        z-index: 1;
+        padding: 2rem 0;
+        background: rgba(255, 255, 255, 0.9);
+        min-height: 100vh;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem 0;
+      }
+
+      .page-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+      }
+
+      .page-subtitle {
+        font-size: 1.2rem;
+        color: #6c757d;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .communities-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .community-card {
+        background: white;
+        border-radius: 15px;
+        padding: 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        height: 100%;
+        margin-bottom: 2rem;
+        position: relative;
+      }
+
+      .community-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .joined-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #28a745;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+      }
+
+      .community-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background-color: #f8f9fa;
+      }
+
+      .community-content {
+        padding: 1.5rem;
+      }
+
+      .community-name {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .community-icon {
+        color: #007bff;
+        font-size: 1.2rem;
+      }
+
+      .community-description {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        height: 60px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+      }
+
+      .community-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 0.5rem 0;
+        border-top: 1px solid #e9ecef;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .stat-item {
+        text-align: center;
+        flex: 1;
+      }
+
+      .stat-item .stat-number {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #007bff;
+        display: block;
+      }
+
+      .stat-item .stat-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .community-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .check-btn {
+        flex: 2;
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+        color: white;
+        border: none;
+        padding: 0.875rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .check-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      }
+
+      .leave-btn {
+        flex: 1;
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        border: none;
+        padding: 0.875rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .leave-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .empty-icon {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 1rem;
+      }
+
+      .empty-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #6c757d;
+        margin-bottom: 1rem;
+      }
+
+      .empty-text {
+        color: #6c757d;
+        margin-bottom: 2rem;
+      }
+
+      .browse-btn {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .browse-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        color: white;
+        text-decoration: none;
+      }
+
+      .footer {
+        background: rgba(215, 128, 40, 0.95);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 3rem 0 1rem 0;
+        margin-top: auto;
+      }
+
+      .footer h5,
+      .footer h6 {
+        color: #fff;
+        margin-bottom: 1rem;
+      }
+
+      .footer ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer ul li a {
+        color: #fff;
+      }
+
+      .footer ul li a:hover {
+        color: #fff;
+      }
+
+      .payment-logo {
+        height: 30px;
+        margin-left: 0.5rem;
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        .page-title {
+          font-size: 2rem;
+        }
+
+        .page-subtitle {
+          font-size: 1rem;
+        }
+
+        .community-stats {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .stat-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          text-align: left;
+        }
+
+        .community-actions {
+          flex-direction: column;
+        }
+      }
+
+      .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #007bff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .error-message {
+        text-align: center;
+        color: #dc3545;
+        padding: 2rem;
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 8px;
+        margin: 2rem 0;
+      }
+
+      .success-message {
+        text-align: center;
+        color: #155724;
+        padding: 1rem;
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+        margin: 1rem 0;
+        display: none;
+      }
+
+      .login-required {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .login-btn {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="utility.js"></script>
+
+    <div class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">
+          <i class="fas fa-users"></i>
+          My Communities
+        </h1>
+        <p class="page-subtitle">
+          Manage and explore all the book communities you've joined. Stay
+          connected with fellow readers and discover new discussions.
+        </p>
+      </div>
+
+      <div class="communities-container">
+        <div id="successMessage" class="success-message">
+          <h5>Success!</h5>
+          <p id="successText">Action completed successfully.</p>
+        </div>
+
+        <div id="loadingSpinner" class="loading-spinner">
+          <div class="spinner"></div>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none">
+          <h4>Error Loading Communities</h4>
+          <p id="errorText">
+            Unable to load your communities at this time. Please try again
+            later.
+          </p>
+          <button class="btn btn-primary" onclick="loadUserCommunities()">
+            Retry
+          </button>
+        </div>
+
+        <!-- Communities grid -->
+        <div class="row" id="communitiesGrid">
+          <!-- dynamically communities load korbo -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Footerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr -->
+
+    
+    <script>
+      var userCommunities = [];
+      var currentUserId = null;
+
+      $(document).ready(function () {
+        navbar();
+        loadUserCommunities();
+        footer();//utility.js a define
+      });
+
+      function getUserId() {
+        return currentUserId;
+      }
+
+      function loadUserCommunities() {
+        var apiUrl = "../../api/mycommunities.php";
+        console.log("Attempting to fetch from URL:", apiUrl);
+
+        $.ajax({
+          url: apiUrl,
+          type: "GET",
+
+          dataType: "xml",
+          timeout: 10000,
+          cache: false,
+          success: function (data, status, xhr) {
+            var success = $(data).find("success").text();
+
+            if (success === "true") {
+              currentUserId = $(data).find("user_id").text();
+              parseXMLResponse(data);
+              hideLoading();
+            } else {
+              var error = $(data).find("error").text();
+              if (error.includes("log in")) {
+                showLoginRequired();
+              } else {
+                showError("Server Error: " + error);
+              }
+            }
+          },
+          error: function (xhr, status, error) {
+            console.log("AJAX Error Details:");
+            console.log("Status:", status);
+            console.log("Error:", error);
+            console.log("Response Text:", xhr.responseText);
+            console.log("Status Code:", xhr.status);
+
+            var errorMsg = "Network Error: ";
+            if (xhr.status === 0) {
+              errorMsg += "Cannot connect to server.";
+            } else if (xhr.status === 404) {
+              errorMsg += "API endpoint not found.";
+            } else if (xhr.status === 500) {
+              errorMsg += "Server error.";
+            } else {
+              errorMsg += "An unexpected error occurred. Status: " + xhr.status;
+            }
+
+            showError(errorMsg);
+          },
+        });
+      }
+
+      function parseXMLResponse(xml) {
+        userCommunities = [];
+
+        $(xml)
+          .find("community")
+          .each(function () {
+            var community = {
+              community_id: $(this).find("community_id").text(),
+              name: $(this).find("name").text(),
+              description: $(this).find("description").text(),
+              image_url: $(this).find("image_url").text(),
+              category: $(this).find("category").text(),
+            };
+            userCommunities.push(community);
+          });
+
+        renderCommunities(userCommunities);
+      }
+
+      function renderCommunities(communities) {
+        const grid = $("#communitiesGrid");
+        grid.empty();
+
+        if (communities.length === 0) {
+          showEmptyState();
+          return;
+        }
+
+        communities.forEach((community) => {
+          var imageUrl = community.image_url;
+          if (!imageUrl || imageUrl.trim() === "") {
+            imageUrl =
+              "https://via.placeholder.com/400x200/007bff/ffffff?text=BookNest+Community";
+          }
+
+          var description =
+            community.description ||
+            "Join this amazing community of book lovers.";
+          var categoryIcon = getCommunityIcon(community.category);
+
+          const cardHtml = `
+                    <div class="col-lg-4 col-md-6 community-item" data-category="${community.category}" id="community-${community.community_id}">
+                        <div class="community-card">
+                            <div class="joined-badge">
+                                <i class="fas fa-check"></i> Joined
+                            </div>
+                            <img src="${imageUrl}" alt="${community.name}" class="community-image" onerror="this.style.display='none'
+                                ">
+                            <div class="community-content">
+                                <h3 class="community-name">
+                                    <i class="${categoryIcon} community-icon"></i>
+                                    ${community.name}
+                                </h3>
+                                <p class="community-description">
+                                    ${description}
+                                </p>
+                                <div class="community-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number">Active</span>
+                                        <span class="stat-label">Status</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">Joined</span>
+                                        <span class="stat-label">Member</span>
+                                    </div>
+                                </div>
+                                <div class="community-actions">
+                                    <button class="check-btn" onclick="enterCommunityChat('${community.name}', ${community.community_id})">
+                                        <i class="fas fa-comments"></i>
+                                        Check Community
+                                    </button>
+                                    <button class="leave-btn" onclick="showLeaveAlert('${community.name}', ${community.community_id})">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Leave
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          grid.append(cardHtml);
+        });
+      }
+
+      function getCommunityIcon(category) {
+        var icons = {
+          fiction: "fas fa-book-open",
+          "non-fiction": "fas fa-chart-line",
+          mystery: "fas fa-search",
+          romance: "fas fa-heart",
+          "sci-fi": "fas fa-rocket",
+          biography: "fas fa-user-circle",
+          fantasy: "fas fa-dragon",
+          history: "fas fa-landmark",
+          poetry: "fas fa-feather-alt",
+          science: "fas fa-flask",
+          business: "fas fa-chart-bar",
+        };
+        return icons[category] || "fas fa-users";
+      }
+
+      function showEmptyState() {
+        const grid = $("#communitiesGrid");
+        const emptyStateHtml = `
+                <div class="col-12">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="empty-title">No Communities Yet</h3>
+                        <p class="empty-text">
+                            You haven't joined any communities yet. Explore our vibrant book communities and connect with fellow readers who share your interests.
+                        </p>
+                        <a href="communities.html" class="browse-btn">
+                            <i class="fas fa-search"></i>
+                            Browse Communities
+                        </a>
+                    </div>
+                </div>
+            `;
+        grid.html(emptyStateHtml);
+      }
+
+      function showLoginRequired() {
+        hideLoading();
+        const grid = $("#communitiesGrid");
+        const loginHtml = `
+                <div class="col-12">
+                    <div class="login-required">
+                        <div class="empty-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3 class="empty-title">Login Required</h3>
+                        <p class="empty-text">
+                            Please log in to view your communities and connect with fellow readers.
+                        </p>
+                        <a href="../pages/login.html" class="login-btn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Login Now
+                        </a>
+                    </div>
+                </div>
+            `;
+        grid.html(loginHtml);
+      }
+
+      function enterCommunityChat(communityName, communityId) {
+        window.location.href = `community.html?id=${communityId}&name=${encodeURIComponent(
+          communityName
+        )}`;
+      }
+
+      function showLeaveAlert(communityName, communityId) {
+        if (
+          confirm(
+            `Are you sure you want to leave "${communityName}"?\n\nYou will no longer receive updates from this community and this action cannot be undone.`
+          )
+        ) {
+          leaveCommunity(communityId, communityName);
+        }
+      }
+
+      function leaveCommunity(communityId, communityName) {
+        var apiUrl = "../../api/mycommunities.php";
+        if (!currentUserId) {
+          alert("Session expired. Please refresh the page and try again.");
+          return;
+        }
+
+        $("#successMessage").hide();
+
+        $.ajax({
+          url: apiUrl,
+          type: "POST",
+          data: {
+            action: "leave_community",
+            community_id: communityId,
+          },
+          dataType: "xml",
+          cache: false,
+          success: function (data) {
+            var success = $(data).find("success").text();
+
+            if (success === "true") {
+              var message = $(data).find("message").text();
+
+              $("#successText").text(message);
+              $("#successMessage").show();
+
+              //remove community card
+              $("#community-" + communityId).remove();
+
+              // remove from local array
+              userCommunities = userCommunities.filter(function (community) {
+                return community.community_id != communityId;
+              });
+              if (userCommunities.length === 0) {
+                showEmptyState();
+              }
+
+              setTimeout(function () {
+                $("#successMessage").hide();
+              }, 5000);
+            } else {
+              var error = $(data).find("error").text();
+              if (error.includes("log in")) {
+                alert(
+                  "Session expired. Please refresh the page and log in again."
+                );
+                window.location.reload();
+              } else {
+                alert("Error: " + error);
+              }
+            }
+          },
+          error: function () {
+            alert("Failed to leave community. Please try again.");
+          },
+        });
+      }
+
+      function hideLoading() {
+        $("#loadingSpinner").hide();
+      }
+
+      function showError(message) {
+        $("#loadingSpinner").hide();
+        $("#errorText").text(message);
+        $("#errorMessage").show();
+      }
+      // function getCookie(cname) {
+      //   cname = cname + "=";
+      //   let cookie = decodeURIComponent(document.cookie).split(";");
+      //   for (let i = 0; i < cookie.length; i++) {
+      //     c = cookie[i];
+      //     while (c.charAt(0) == " ") {
+      //       c = c.substring(1);
+      //     }
+      //     if (c.indexOf(cname) == 0) {
+      //       return c.substring(cname.length, c.length);
+      //     }
+      //   }
+      //   return "";
+      // }
+    </script>
+    <script type="module">
+      import "../components/navbar.js";
+    </script>
+  </body>
+</html>

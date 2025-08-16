@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blogs</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+      :root {
+        --primary: #f4b400;
+        --dark-bg: #121212;
+        --accent: #00bcd4;
+        --light: #f9f9f9;
+        --book-bg: #222;
+      }
+      a {
+        text-decoration: none;
+        color: black;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background-color: var(--dark-bg);
+        color: white;
+      }
+
+      header {
+        background-color: var(--primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+      }
+
+      header h1 {
+        margin: 0;
+        color: black;
+      }
+
+      nav a {
+        margin-left: 1.5rem;
+        color: black;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+      }
+
+      .blog-card {
+        background-color: var(--book-bg);
+        border: 3px solid var(--primary);
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .blog-card h3 {
+        margin: 0.8rem 0 0.2rem;
+      }
+
+      .blog-card p {
+        margin: 0.3rem 0;
+      }
+      .page-title {
+        text-align: center;
+      }
+
+      .blog-card button {
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: var(--accent);
+        border: none;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .footer {
+        background: rgba(215, 128, 40, 0.95);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 3rem 1rem 1rem 1rem;
+      }
+
+      .footer h5,
+      .footer h6 {
+        color: #fff;
+        margin-bottom: 1rem;
+      }
+
+      .footer ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer ul li a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .footer ul li a:hover {
+        color: #fff;
+      }
+
+      .payment-logo {
+        height: 30px;
+        margin-left: 0.5rem;
+        opacity: 1;
+      }
+      .blog_img {
+        object-fit: cover;
+        height: 200px;
+        width: 100%;
+      }
+
+      .filters {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+      }
+      .filters a {
+        background-color: var(--accent);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="filters">
+      <a href="add_blog.html">Add Blog</a>
+    </div>
+
+    <div class="container py-4">
+      <h2 class="page-title mb-4">Latest Blogs</h2>
+      <div class="blog-grid"></div>
+    </div>
+
+    <script src="utility.js"></script>
+
+    <script>
+      navbar();
+      $.get("../../api/blogs.php", function (data) {
+        data = JSON.parse(data);
+        data.forEach((blog) => {
+          card = `
+        <div class="blog-card">
+          <img class="blog_img" src='${blog["image_url"]}' alt="">
+          <h3>${blog["title"]}</h3>
+          <p>by<p>${blog["name"]}</p></p>
+          <button onclick="cli(${blog["blog_id"]})">Read More</button>
+        </div>
+        `;
+          $(".blog-grid").append(card);
+        });
+      });
+
+      footer();
+
+      function cli(id) {
+        window.location.href = `blog.html?id=${id}`;
+      }
+
+      function getCookie(cname) {
+        cname = cname + "=";
+        let cookie = decodeURIComponent(document.cookie).split(";");
+        for (let i = 0; i < cookie.length; i++) {
+          c = cookie[i];
+          while (c.charAt(0) == " ") {
+            c = c.substring(1);
+          }
+          if (c.indexOf(cname) == 0) {
+            return c.substring(cname.length, c.length);
+          }
+        }
+        return "";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <h1>llm</h1>
+    <input id="in" type="text" />
+    <p id="w"></p>
+    <button onclick="send()" type="button">click</button>
+  </body>
+  <script>
+    function send() {
+      inq = document.getElementById("in");
+      w = document.getElementById("w");
+      console.log(inq.value);
+      $.ajax({
+        url: "../../api/llmapi.php",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ msg: inq.value }),
+        success: function (data) {
+          console.log(data);
+          data = JSON.parse(data)["choices"][0]["message"]["content"];
+          console.log(data);
+          w.textContent = data;
+        },
+      });
+    }
+  </script>
+</html>

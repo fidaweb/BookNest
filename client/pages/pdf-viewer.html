@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookNest PDF Reader</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f5;
+        overflow: hidden;
+      }
+
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      /* PDF Viewer Section */
+      .pdf-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border-right: 1px solid #ddd;
+      }
+
+      .toolbar {
+        background: #2c3e50;
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .toolbar-center {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+        justify-content: center;
+      }
+
+      .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .toolbar button {
+        background: #34495e;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .toolbar button:hover {
+        background: #4a6741;
+      }
+
+      .toolbar button:disabled {
+        background: #7f8c8d;
+        cursor: not-allowed;
+      }
+
+      .toolbar input,
+      .toolbar select {
+        padding: 6px 10px;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+        background: white;
+      }
+
+      .toolbar input {
+        width: 80px;
+        text-align: center;
+      }
+
+      .pdf-container {
+        flex: 1;
+        overflow: auto;
+        background: #525659;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .pdf-pages {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .pdf-page {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: white;
+        margin-bottom: 10px;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 400px;
+        background: white;
+        border-left: 1px solid #ddd;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        background: #34495e;
+        color: white;
+        padding: 15px 20px;
+        font-weight: bold;
+      }
+
+      .sidebar-content {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .section {
+        margin-bottom: 30px;
+      }
+
+      .section h3 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #3498db;
+      }
+
+      /* Dictionary Section */
+      .dictionary-container {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+      }
+
+      .dictionary-container h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 24px;
+      }
+
+      #dict {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #bdc3c7;
+        border-radius: 6px;
+        font-size: 16px;
+        margin-bottom: 20px;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+
+      #dict:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+      }
+
+      #meaning {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      #meaning h1 {
+        text-align: center;
+        color: #2c3e50;
+        font-size: 28px;
+        margin-bottom: 15px;
+        text-transform: capitalize;
+      }
+
+      .meaning-item {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        border-left: 4px solid #3498db;
+      }
+
+      .part-of-speech {
+        text-align: center;
+        font-weight: bold;
+        color: #e74c3c;
+        font-size: 16px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+
+      .definition {
+        text-align: center;
+        color: #2c3e50;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      /* Bookmark Section */
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #555;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+        width: 100%;
+      }
+
+      .btn:hover {
+        background: #2980b9;
+      }
+
+      .btn-success {
+        background: #27ae60;
+      }
+
+      .btn-success:hover {
+        background: #229954;
+      }
+
+      .error {
+        color: #e74c3c;
+        background: #fdf2f2;
+        border: 1px solid #fecaca;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      .success {
+        color: #059669;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      .loading {
+        text-align: center;
+        color: #7f8c8d;
+        padding: 20px;
+      }
+
+      .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #3498db;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Current page indicator */
+      .current-page-indicator {
+        position: fixed;
+        top: 50%;
+        right: 420px;
+        transform: translateY(-50%);
+        background: rgba(52, 73, 94, 0.9);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        z-index: 1000;
+        transition: opacity 0.3s;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          height: 40vh;
+          /*order: -1;*/
+        }
+
+        .pdf-section {
+          height: 60vh;
+        }
+
+        .toolbar {
+          flex-wrap: nowrap;        
+          overflow-x: auto;         
+          white-space: nowrap;      
+        }
+
+        .toolbar button,
+        .toolbar select,
+        .toolbar input {
+          flex-shrink: 0;           
+        }
+        .toolbar-center {
+          flex-direction: row;  
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          gap: 8px;
+        }
+
+        .current-page-indicator {
+          right: 10px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- PDF Viewer Section -->
+      <div class="pdf-section">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <span>BookNest Reader</span>
+          </div>
+
+          <div class="toolbar-center">
+            <button id="prev-page">◀ Previous</button>
+            <span>Page: </span>
+            <input type="number" id="page-num" value="1" min="1" />
+            <span id="page-count">of 0</span>
+            <button id="next-page">Next ▶</button>
+
+            <div
+              style="border-left: 1px solid #555; height: 30px; margin: 0 10px"
+            ></div>
+
+            <button id="zoom-out">Zoom Out</button>
+            <select id="zoom-select">
+              <option value="0.5">50%</option>
+              <option value="0.75">75%</option>
+              <option value="1" selected>100%</option>
+              <option value="1.25">125%</option>
+              <option value="1.5">150%</option>
+              <option value="2">200%</option>
+            </select>
+            <button id="zoom-in">Zoom In</button>
+          </div>
+        </div>
+
+        <div class="pdf-container" id="pdf-container">
+          <div class="pdf-pages" id="pdf-pages"></div>
+        </div>
+      </div>
+
+      <!-- Current page indicator -->
+      <div
+        class="current-page-indicator"
+        id="current-page-indicator"
+        style="display: none"
+      >
+        Page 1
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-header">Reading Tools</div>
+        <div class="sidebar-content">
+          <!-- Dictionary Section -->
+          <div class="section">
+            <h3>Dictionary Lookup</h3>
+            <div class="dictionary-container">
+              <h1>Your Words of the Day!</h1>
+              <input
+                id="dict"
+                type="text"
+                placeholder="Enter a word to lookup..."
+              />
+              <div id="meaning"></div>
+            </div>
+          </div>
+
+          <!-- Bookmark Section -->
+          <div class="section">
+            <h3>Bookmark</h3>
+            <div class="input-group">
+              <label for="bookmark-page">Page Number:</label>
+              <input
+                type="number"
+                id="bookmark-page"
+                min="1"
+                placeholder="Enter page number"
+              />
+            </div>
+            <button class="btn btn-success" id="bookmark-btn">
+              Update Bookmark
+            </button>
+            <div id="bookmark-result"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Main application script, now as a module -->
+    <script type="module">
+      // Import pdfjsLib from the module
+      import * as pdfjsLib from "https://unpkg.com/pdfjs-dist@4.4.168/build/pdf.mjs";
+
+      // Set PDF.js worker
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.mjs";
+      console.log("PDF.js loaded successfully and worker set.");
+
+      // Global variables
+      let pdfDoc = null;
+      let currentPage = 1;
+      let scale = 1;
+      let isRendering = false;
+      let pageElements = [];
+      let userId = null;
+      let bookId = null; // This will still be used for bookmarking
+
+      // Dictionary functionality (same as test version)
+      function wordsearch(word) {
+        if (!word || word.trim() === "") {
+          $("#meaning").empty();
+          return;
+        }
+
+        console.log("Searching for word:", word);
+        $("#meaning").html(
+          '<div class="loading"><div class="spinner"></div>Looking up word...</div>'
+        );
+
+        $.ajax({
+          url: `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(
+            word
+          )}`,
+          method: "GET",
+          timeout: 10000,
+          success: function (data) {
+            console.log("API Response:", data);
+            if (data && data.length > 0) {
+              displayDictionaryResult(data[0]);
+            } else {
+              showError("No definition found for this word.");
+            }
+          },
+          error: function (xhr, textStatus, errorThrown) {
+            console.error("Dictionary API Error:", textStatus, errorThrown);
+            if (textStatus === "timeout") {
+              showError("Request timed out. Please try again.");
+            } else if (xhr.status === 404) {
+              showError("Word not found in dictionary.");
+            } else {
+              showError(
+                "Dictionary service unavailable. Please try again later."
+              );
+            }
+          },
+        });
+      }
+
+      function displayDictionaryResult(data) {
+        const m = $("#meaning");
+        m.empty();
+
+        m.append(`<h1>${data.word || "Unknown"}</h1>`);
+
+        if (data.phonetics && data.phonetics.length > 0) {
+          for (let phonetic of data.phonetics) {
+            if (phonetic.text) {
+              m.append(
+                `<div style="text-align: center; font-style: italic; color: #666; margin-bottom: 15px;">${phonetic.text}</div>`
+              );
+              break;
+            }
+          }
+        }
+
+        if (data.meanings && data.meanings.length > 0) {
+          for (let i = 0; i < Math.min(data.meanings.length, 3); i++) {
+            const meaning = data.meanings[i];
+            if (meaning.definitions && meaning.definitions.length > 0) {
+              m.append(`<div class="meaning-item">
+                            <div class="part-of-speech">${
+                              meaning.partOfSpeech || "Unknown"
+                            }</div>
+                            <div class="definition">${
+                              meaning.definitions[0].definition ||
+                              "No definition available"
+                            }</div>
+                        </div>`);
+            }
+          }
+        } else {
+          showError("No definitions available for this word.");
+        }
+      }
+
+      function showError(message) {
+        $("#meaning").html(`<div class="error">${message}</div>`);
+      }
+
+      const words = [
+        "Luminous",
+        "Zephyr",
+        "Serendipity",
+        "Effervescent",
+        "Mellifluous",
+        "Ethereal",
+        "Solace",
+        "Ruminate",
+        "Ephemeral",
+        "Vellichor",
+      ];
+
+      $(document).ready(function () {
+        console.log("jQuery loaded successfully");
+
+        setupEventListeners();
+        getUserSession(); // This will call loadBookmark and then loadPDF
+
+        setTimeout(function () {
+          const randomWord = words[Math.floor(Math.random() * words.length)];
+          $("#dict").val(randomWord);
+          wordsearch(randomWord);
+        }, 1000);
+      });
+
+      let searchTimeout;
+      $("#dict").on("input", function () {
+        const word = this.value.trim();
+
+        if (searchTimeout) {
+          clearTimeout(searchTimeout);
+        }
+
+        searchTimeout = setTimeout(function () {
+          if (word) {
+            wordsearch(word);
+          } else {
+            $("#meaning").empty();
+          }
+        }, 500);
+      });
+
+      // Get user session
+      function getUserSession() {
+        const urlParams = new URLSearchParams(window.location.search);
+        bookId = urlParams.get("book_id") || "default_books_pdf"; // Use a default if not provided
+        $.ajax({
+          url: `../../api/pdf-handler.php?action=get_pdf&book_id=${bookId}`,
+          type: "GET",
+          // dataType: "json",
+          // dataType: "application/pdf",
+          xhrFields: {
+            responseType: "blob",
+          },
+          success: function (response) {
+            console.log(response);
+
+            try {
+              // userId = response.user_id;
+              userId = localStorage.getItem("user_id");
+              // Even if PDF is hardcoded, we still need bookId for bookmarking
+              // We'll try to get it from URL, or default to a generic ID for 'books.pdf'
+
+              loadBookmark(); // Load bookmark before loadPDF();
+              const url = URL.createObjectURL(response);
+              loadPDF(url);
+            } catch {
+              console.error("Failed to get user session");
+              alert("Please login to access this book");
+            }
+          },
+          error: function (er) {
+            console.log(er);
+            console.error("Error getting user session");
+            alert("Session error. Please login again.");
+          },
+        });
+      }
+
+      // Modified loadPDF to use a fixed relative path
+      function loadPDF(pdfUrl) {
+        pdfjsLib
+          .getDocument(pdfUrl)
+          .promise.then(function (pdfDoc_) {
+            pdfDoc = pdfDoc_;
+            document.getElementById("page-count").textContent =
+              "of " + pdfDoc.numPages;
+            document.getElementById("page-num").max = pdfDoc.numPages;
+            document.getElementById("bookmark-page").max = pdfDoc.numPages;
+
+            const bookmarkedPage = getBookmarkFromStorage();
+            if (bookmarkedPage && bookmarkedPage <= pdfDoc.numPages) {
+              currentPage = bookmarkedPage;
+              document.getElementById("page-num").value = currentPage;
+            } else {
+              currentPage = 1; // Default to page 1 if no bookmark or expired
+              document.getElementById("page-num").value = currentPage;
+            }
+
+            renderAllPages();
+            setupScrollListener();
+
+            // Scroll to bookmarked page after rendering
+            if (bookmarkedPage) {
+              setTimeout(() => scrollToPage(bookmarkedPage), 1000);
+            }
+
+            console.log("PDF loaded successfully");
+          })
+          .catch(function (error) {
+            console.error("Error loading PDF:", error);
+            alert(
+              'Error loading PDF. Please ensure "../../pdfs/books.pdf" is accessible.'
+            );
+            // Optionally redirect or show a more user-friendly error
+            // window.location.href = 'mybooks.html';
+          });
+      }
+
+      function renderAllPages() {
+        if (isRendering) return;
+        isRendering = true;
+
+        const pagesContainer = document.getElementById("pdf-pages");
+        pagesContainer.innerHTML = "";
+        pageElements = [];
+
+        const renderPromises = [];
+
+        for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+          const canvas = document.createElement("canvas");
+          canvas.className = "pdf-page";
+          canvas.dataset.pageNum = pageNum;
+          pagesContainer.appendChild(canvas);
+          pageElements.push(canvas);
+
+          const renderPromise = pdfDoc.getPage(pageNum).then(function (page) {
+            const viewport = page.getViewport({ scale: scale });
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+              canvasContext: canvas.getContext("2d"),
+              viewport: viewport,
+            };
+
+            return page.render(renderContext).promise;
+          });
+
+          renderPromises.push(renderPromise);
+        }
+
+        Promise.all(renderPromises)
+          .then(function () {
+            isRendering = false;
+            console.log("All pages rendered");
+            updateCurrentPageIndicator();
+          })
+          .catch(function (error) {
+            isRendering = false;
+            console.error("Error rendering pages:", error);
+          });
+      }
+
+      function setupScrollListener() {
+        const container = document.getElementById("pdf-container");
+
+        container.addEventListener("scroll", function () {
+          const containerRect = container.getBoundingClientRect();
+          const containerCenter = containerRect.top + containerRect.height / 2;
+
+          let closestPage = 1;
+          let closestDistance = Infinity;
+
+          pageElements.forEach(function (canvas, index) {
+            const canvasRect = canvas.getBoundingClientRect();
+            const canvasCenter = canvasRect.top + canvasRect.height / 2;
+            const distance = Math.abs(canvasCenter - containerCenter);
+
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestPage = index + 1;
+            }
+          });
+
+          if (closestPage !== currentPage) {
+            currentPage = closestPage;
+            document.getElementById("page-num").value = currentPage;
+            updateCurrentPageIndicator();
+          }
+        });
+      }
+
+      function updateCurrentPageIndicator() {
+        const indicator = document.getElementById("current-page-indicator");
+        indicator.textContent = `Page ${currentPage}`;
+        indicator.style.display = "block";
+
+        setTimeout(function () {
+          indicator.style.opacity = "0";
+          setTimeout(function () {
+            indicator.style.display = "none";
+            indicator.style.opacity = "1";
+          }, 300);
+        }, 2000);
+      }
+
+      function scrollToPage(pageNum) {
+        if (pageNum < 1 || pageNum > pdfDoc.numPages) return;
+
+        const targetCanvas = pageElements[pageNum - 1];
+        if (targetCanvas) {
+          targetCanvas.scrollIntoView({ behavior: "smooth", block: "center" });
+          currentPage = pageNum;
+          document.getElementById("page-num").value = currentPage;
+          updateCurrentPageIndicator();
+        }
+      }
+
+      function setupEventListeners() {
+        document
+          .getElementById("prev-page")
+          .addEventListener("click", function () {
+            if (currentPage > 1) {
+              scrollToPage(currentPage - 1);
+            }
+          });
+
+        document
+          .getElementById("next-page")
+          .addEventListener("click", function () {
+            if (currentPage < pdfDoc.numPages) {
+              scrollToPage(currentPage + 1);
+            }
+          });
+
+        document
+          .getElementById("page-num")
+          .addEventListener("change", function () {
+            const num = parseInt(this.value);
+            if (num >= 1 && num <= pdfDoc.numPages) {
+              scrollToPage(num);
+            } else {
+              this.value = currentPage;
+            }
+          });
+
+        document
+          .getElementById("zoom-select")
+          .addEventListener("change", function () {
+            scale = parseFloat(this.value);
+            if (pdfDoc) {
+              renderAllPages();
+            }
+          });
+
+        document
+          .getElementById("zoom-in")
+          .addEventListener("click", function () {
+            if (scale < 2) {
+              scale += 0.25;
+              document.getElementById("zoom-select").value = scale;
+              if (pdfDoc) {
+                renderAllPages();
+              }
+            }
+          });
+
+        document
+          .getElementById("zoom-out")
+          .addEventListener("click", function () {
+            if (scale > 0.5) {
+              scale -= 0.25;
+              document.getElementById("zoom-select").value = scale;
+              if (pdfDoc) {
+                renderAllPages();
+              }
+            }
+          });
+
+        $("#bookmark-btn").click(function () {
+          const page = $("#bookmark-page").val();
+          if (page) {
+            updateBookmark(parseInt(page));
+          } else {
+            updateBookmark(currentPage);
+          }
+        });
+      }
+
+      // Bookmark functions
+      function updateBookmark(page) {
+        if (!userId || !bookId) {
+          $("#bookmark-result").html(
+            '<div class="error">User session or book ID not found.</div>'
+          );
+          return;
+        }
+        if (!pdfDoc) {
+          $("#bookmark-result").html(
+            '<div class="error">No PDF loaded to bookmark.</div>'
+          );
+          return;
+        }
+        if (page < 1 || page > pdfDoc.numPages) {
+          $("#bookmark-result").html(
+            '<div class="error">Invalid page number.</div>'
+          );
+          return;
+        }
+
+        saveBookmarkToStorage(page);
+        $("#bookmark-result").html(
+          '<div class="success">Bookmark updated successfully!</div>'
+        );
+        setTimeout(function () {
+          $("#bookmark-result").html("");
+        }, 3000);
+      }
+
+      function saveBookmarkToStorage(page) {
+        const bookmarkKey = `bookmark_${userId}_${bookId}`;
+        const bookmarkData = {
+          page: page,
+          timestamp: Date.now(),
+          expires: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days expiration
+        };
+        localStorage.setItem(bookmarkKey, JSON.stringify(bookmarkData));
+      }
+
+      function getBookmarkFromStorage() {
+        if (!userId || !bookId) return null;
+
+        const bookmarkKey = `bookmark_${userId}_${bookId}`;
+        const bookmarkData = localStorage.getItem(bookmarkKey);
+
+        if (bookmarkData) {
+          const data = JSON.parse(bookmarkData);
+          if (Date.now() < data.expires) {
+            return data.page;
+          } else {
+            localStorage.removeItem(bookmarkKey); // Remove expired bookmark
+          }
+        }
+        return null;
+      }
+
+      function loadBookmark() {
+        const bookmarkedPage = getBookmarkFromStorage();
+        if (bookmarkedPage) {
+          $("#bookmark-page").val(bookmarkedPage);
+        }
+      }
+
+      $(document).keydown(function (e) {
+        if (e.target.tagName.toLowerCase() === "input") return;
+
+        switch (e.which) {
+          case 37: // Left arrow
+            document.getElementById("prev-page").click();
+            break;
+          case 39: // Right arrow
+            document.getElementById("next-page").click();
+            break;
+          case 38: // Up arrow
+            e.preventDefault();
+            document.getElementById("prev-page").click();
+            break;
+          case 40: // Down arrow
+            e.preventDefault();
+            document.getElementById("next-page").click();
+            break;
+          case 187: // Plus key
+            if (e.ctrlKey) {
+              e.preventDefault();
+              document.getElementById("zoom-in").click();
+            }
+            break;
+          case 189: // Minus key
+            if (e.ctrlKey) {
+              e.preventDefault();
+              document.getElementById("zoom-out").click();
+            }
+            break;
+        }
+      });
+    </script>
+  </body>
+</html>

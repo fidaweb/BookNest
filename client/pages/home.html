@@ -1,52 +1,444 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="../assets/bootstrap.min.css">
-    <link rel="stylesheet" href="../style.css">
-    <script src="../assets/bootstrap.bundle.min.js.js"></script>
-    <style>
-        body{
-            padding: 0;
-            margin: 0;
-            border: 0;
-            /* background-color: rebeccapurple; */
-            background-color: var(--tertiary-color)
-        }
-    </style>
-</head>
-<body>
-    <my-navbar></my-navbar>
-    <div class="p-3 gap-3  d-flex justify-content-around" style="background: var(--main-background);">
+   
+
+    <link rel="preload" href="bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="bootstrap.min.css"></noscript>
+  
+    <link rel="preload" href="../style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../style.css"></noscript>
     
-    <my-card>
-        <span slot="title">Hello World</span>
-        <span slot="content">This is loaded from external files.</span>
-    </my-card>
+    <script src="bootstrap.bundle.min.js.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <my-card>
-        <span slot="title">Hello World</span>
-        <span slot="content">This is loaded from external files.</span>
-    </my-card>
+  
+   
 
-    <my-card>
-        <span slot="title">Hello World</span>
-        <span slot="content">This is loaded from external files.</span>
-    </my-card>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+      
+      body {
+       
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+      
+       
+     
 
+      h2 {
+        width: 20rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .card.author.hid,
+      .card.price.hid {
+        display: none;
+      }
+      .desc {
+        display: none;
+      }
+      a {
+      text-decoration: none;
+      color: black;
+    }
+
+      .modal-header {
+        background: transparent;
+       
+      }
+
+      #main{
+      
+        min-height: 100vh;
+      
+      }
+
+      
+        .no-session{
+          display:none;
+        }
+
+        
+        
+
+    </style>
+  </head>
+  <body >
+    
+
+
+    <script src="./utility.js" >
+
+    </script>
+
+<!-- Most of the logic of home.html is the same as the other category pages -->
+ 
+
+
+    <!--This is the modal for add to cart notification which is almost the same modal as done in class for bootstrap
+the addtocart button is attached to function on click event that renders a bootstrap element based on this modal defined below
+-->
+
+    <div class="container">
+      <div
+       
+        class="modal fade"
+        id="mymodal"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header rounded border p-">
+              <h1 id="modtitle" class="modal-title">Book Added To Cart!</h1>
+              <button
+                data-bs-dismiss="modal"
+                type="button"
+                class="btn-close"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     
+
+
+
+<!--This is the modal for category which is almost the same modal as done in class for bootstrap
+the category button is attached to function on click event that renders a bootstrap element based on this modal defined below
+-->
+    <div
+        
+      
+        class="modal fade"
+        id="categorymodal"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header rounded border p-">
+             <div class="gap-3 d-flex flex-wrap">
+              <a class="navbar-link" href="fiction.html">Fiction</a>
+              <a class="navbar-link" href="history_politics.html">History & Politics</a>
+              <a class="navbar-link" href="educational.html">Educational</a>
+              <a class="navbar-link" href="kids.html">Kids</a>
+             </div>
+              <button
+                data-bs-dismiss="modal"
+                type="button"
+                class="btn-close"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div
+   
+    id="llmr"
+     class="modal fade">
+     <div class="modal-dialog p-3">
+        <div class="modal-content">
+          <div class="p-1">
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+        
+        <div class="modal-header d-flex flex-column p-2">
+          <div class="d-flex  justify-content-center gap-2" style="width: 30rem;">
+             <input id="search_in" class="rounded-3 " 
+              placeholder="Search" style="width: 20rem;"  type="text" />
+            <button type="button" id="sendllm" class="btn btn-outline-dark search rounded-3">Send</button>
+          </div>
+         
+          <div class="d-flex flex-column p-2" id="llmtext"></div>
+          
+        </div>
+    </div>
+    </div>
+    
+    </div>
+
+
+
+
+
+
+
+    <!-- This is the bar that shows the search compnent and buttons to navigate to different pages except the catagory button -->
+    <div
+      class="d-flex p-3 align-center justify-content-between flex-wrap gap-3" 
+    >
+      <div class="search align-center ">
+        <input id="srch"  class="search rounded-3" placeholder="Search" style="height: 100%"  type="text" />
+          <button class="btn btn-dark" type="button" id="llms">Ask LLM</button>
+       
+      </div>
+     
+      <div class="d-flex flex-wrap gap-1">
+        <button class="category btn btn-secondary">Category</button>
+        <div class="user-nav">
+          <button class="cart btn btn-secondary">Cart</button>
+        <button class="mybooks btn btn-secondary">My Books</button>
+        <button class="mycommunities btn btn-secondary">My Communities</button>
+        <button class="logout btn btn-secondary">Logout</button>
+        </div>
+        <span class="no-session">
+          <button class="login btn btn-secondary">Login</button>
+        </span>
+        
+      </div>
+      
+    </div>
+  
+   
+<!-- This is the main container that is initially empty and then populated by cards using javascript below -->
+    <div
+      id="main"
+      class="p-3 gap-5  d-flex justify-content-center flex-wrap"
+     
+    ></div>
+    <div class="d-flex align-center justify-content-center p-3">
+      <button class="more btn btn-dark">More...</button>
+    </div>
+  
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    
+    
+
+
+
+
+
+<script >
+   
+   theme()
+
+navbar()
+let count=0
+
+    function populateMain(books){
+      books.forEach((book) => {
+      card = createCard(book);
+      //append or populate main element with newly embedded card
+     
+      $("#main").append(card);
+      });
+    }
+
+     
+      function loadBooks(count) {
+   $.get(`../../api/category.php?page=home&offset=${count}`, function (data) {
+    //   this is data array representing what will be fetched from database
+    console.log("new");
+
+    //since database echos an array of JSON format objects as string  and send it as data
+    //JSON.parse parses the string into an array of JSON objects
+    const books = JSON.parse(data);
+    let home_arr=[]
+    local_array=localStorage.getItem('home_array')
+    if(local_array!==null){
+        home_arr=JSON.parse(local_array)
+    }
+    if(home_arr.length<200){
+       localStorage.setItem('home_array',JSON.stringify([...home_arr,...books]))
+    }
+   console.log(books)
+    populateMain(books)
+    
+  });
+}
+
+
+      // loadBooks is called only after document reloads
+      $(document).ready(function () {
+      
+        if((new Date(localStorage.getItem('expiration')-new Date()))/(24*60*60*1000)>30){
+         localStorage.removeItem('home_array')
+         localStorage.removeItem('user_id')
+        }
+        
+
+        if(localStorage.getItem('home_array')==null){
+          // console.log('url')
+          loadBooks(0)
+          localStorage.setItem('expiration',new Date().toISOString())
+        }
+        else{
+          // console.log('local')
+          data=localStorage.getItem('home_array')
+          const books = JSON.parse(data).slice(0,20);
+         
+          populateMain(books)
+        }
+        
       
 
+          
+          //attach a flip function to cards
+          $("#main .card").click(function () {
+            //on click, first add flip class if without flip class and remove flip class if flip class present
+            $(this).toggleClass("flip");
+            
+
+            //after toggling flip class conditionally add styles based on flip state
+            if ($(this).hasClass("flip")) {
+              //a card with flip class do not display author,price,button  but description
+              $(this).find(".author").css({ display: "none" });
+              $(this).find(".price").css({ display: "none" });
+              $(this).find(".btn").css({ display: "none" });
+              $(this).find(".desc").css({ display: "block" });
+            } else {
+               //a card without flip class do not display description but displays author and price and button
+              $(this).find(".author").css({ display: "block" });
+              $(this).find(".price").css({ display: "block" });
+              $(this).find(".btn").css({ display: "block" });
+              $(this).find(".desc").css({ display: "none" });
+            }
+          });
+          //this is where the category button is attached to the function that creates a bootstrap modal element based on the modal styled above
+          //then shows the modal
+          $(".category").click(function(){
+            new bootstrap.Modal($("#categorymodal")[0]).show();
+          });
+
+          $("#llms").click(function(){
+           
+              new bootstrap.Modal($('#llmr')[0]).show()
+           
+          })
+          $('#sendllm').click(function(){
+             mesg=$("#search_in")[0].value
+            
+             $.ajax({
+                // url: "../../api/llmapi.php",
+                url:"https://fidaullah.test/Project/api/llmapi.php",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ msg: mesg }),
+                success: function (data) {
+                  console.log(data);
+                  data = JSON.parse(data)["choices"][0]["message"]["content"];
+
+                  $('#llmtext').empty()
+                  $('#llmtext').append(`<p>${data}</p>`)
+                },
+                error:function(a,status,text){
+                  console.log(text)
+                }
+                
+              });
+          })
+
+          $(".more").click(function(){
+            count+=20
+            local_array=localStorage.getItem('home_array')
+            if(local_array!==null&& JSON.parse(local_array).length>count){
+              console.log('more local')
+              data=localStorage.getItem('home_array')
+              const books = JSON.parse(data).slice(count,count+20);
+              populateMain(books)
+            }
+            else{
+              console.log('more url')
+              loadBooks(count);
+            }
+           
+          })
+          $(".logout").click(function(){
+            
+            deleteCookie("session_id",1,1);
+            window.location.reload()
+          })
+
+          $(".login").click(function(){
+            window.location.href='login.html'
+          })
+          
+          if(getCookie("session_id")===""){
+          console.log($(".user-nav")[0].style.display)
+            $(".user-nav").css({display:"none"})
+            console.log($(".user-nav")[0].style.display)
+            $(".no-session").css({display:"inline"})
+            
+          }
+
+         
+         
+         
+
+          
+
+          $("#srch").on('input',function(e){
+           
+
+           
+            var books=[]
+            let local_books=localStorage.getItem('home_array')
+            if(this.value!=undefined){
+             
+              $('#main').empty()
+              let search=this.value.toLowerCase()
+              if(local_books!==null){
+                local_books=JSON.parse(local_books)
+                 books=local_books.filter((book,index)=>{
+                return (book['Book_Title'].toLowerCase().includes(search)||book['Book_Author'].toLowerCase().includes(search))
+                })
+              if(books.length!=0){
+              populateMain(books.slice(0,20))
+              }}
+                 
+
+
+            if(books.length==0){
+             console.log('search url')
+              $.get(`../../api/search.php?term=${this.value}&&category=home`, function (data) {
+               books=books.concat(JSON.parse(data))
+               populateMain(books)
+            
+            })}
+          }
+        })
+
+          
+          
+         
+
+
+          //this is the mycommunities button when clicked sets the current window location to mycommunities.html
+          $(".mycommunities").click(function(){
+            window.location.href='mycommunities.html'
+          });
+          //this is the mybooks button when clicked sets the current window location to mybooks.html
+          $(".mybooks").click(function(){
+            window.location.href='mybooks.html'
+          });
+          //this is the cart button when clicked sets the current window location to cart.html'
+          $(".cart").click(function(){
+            window.location.href='cart.html'
+          });
+         
+
+          var tooltipTriggerList =
+        [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+        footer()
       
-    
-      <!-- Load the JavaScript that defines the custom element -->
-      <script type="module">
-        import '../components/my-card.js';
-        import '../components/navbar.js';
-      </script>
-    
-</body>
+
+      });
+    </script>
+  </body>
 </html>
